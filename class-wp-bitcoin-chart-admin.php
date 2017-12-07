@@ -1,6 +1,6 @@
 <?php
 /**
- * WP Bitcoin Chart
+ * WP Bitcoin Chart Admin
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -8,11 +8,15 @@
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
-class WpBitcoinChart {
+class WpBitcoinChart_Admin {
+
   private static $initiated = false;
 
+  /**
+	 * init
+	 */
 	public static function init() {
-		if(!self::$initiated) {
+		if ( !self::$initiated ) {
 			self::init_hooks();
 		}
 	}
@@ -23,28 +27,4 @@ class WpBitcoinChart {
 	private static function init_hooks() {
 		self::$initiated = true;
 	}
-
-  /**
-   * wp_bitcoin_chart_activation
-   *
-   * @return void
-   */
-	public static function wp_bitcoin_chart_activation() {}
-
-  /**
-   * wp_bitcoin_chart_deactivation
-   *
-   * @return void
-   */
-	public static function wp_bitcoin_chart_deactivation() {}
-
-  /**
-   * wp_bitcoin_chart_uninstall
-   *
-   * @return void
-   */
-	public static function wp_bitcoin_chart_uninstall() {
-    // Delete the set options
-    // delete_option('');
-  }
 }
