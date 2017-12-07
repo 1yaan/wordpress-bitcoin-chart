@@ -43,5 +43,8 @@ class WpBitcoinChart {
    *
    * @return void
    */
-	public static function wp_bitcoin_chart_uninstall() {}
+	public static function wp_bitcoin_chart_uninstall() {
+    // Delete the set options
+    // delete_option('');
+  }
 }
