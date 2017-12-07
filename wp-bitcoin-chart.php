@@ -47,11 +47,11 @@ register_deactivation_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart
 register_uninstall_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_uninstall' ) );				// アンインストール時の処理
 
 require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
-add_action( 'init', array( 'WpBitcoinChart', 'init' ) );
+add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
 
 if ( is_admin() ) {
 	require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'class-wp-bitcoin-chart-admin.php' );
-	add_action( 'init', array( 'WpBitcoinChart_Admin', 'init' ) );
+	add_action( 'init', array( 'WP_Bitcoin_Chart_Admin', 'init' ) );
 }
 
 //add wrapper class around deprecated Espa Link Update functions that are referenced elsewhere
