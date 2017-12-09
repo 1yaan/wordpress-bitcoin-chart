@@ -16,6 +16,8 @@ class WP_Bitcoin_Chart {
 
 	/**
 	 * initiated
+	 *
+	 * @var boolean
 	 */
 	private static $initiated = false;
 
