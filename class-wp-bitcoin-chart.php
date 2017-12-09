@@ -14,9 +14,9 @@
  */
 class WP_Bitcoin_Chart {
 
-  private static $initiated = false;
+	private static $initiated = false;
 
-  /**
+	/**
 	 * init
 	 */
 	public static function init() {
@@ -32,27 +32,27 @@ class WP_Bitcoin_Chart {
 		self::$initiated = true;
 	}
 
-  /**
-   * wp_bitcoin_chart_activation
-   *
-   * @return void
-   */
+	/**
+	 * wp_bitcoin_chart_activation
+	 *
+	 * @return void
+	 */
 	public static function wp_bitcoin_chart_activation() {}
 
-  /**
-   * wp_bitcoin_chart_deactivation
-   *
-   * @return void
-   */
+	/**
+	 * wp_bitcoin_chart_deactivation
+	 *
+	 * @return void
+	 */
 	public static function wp_bitcoin_chart_deactivation() {}
 
-  /**
-   * wp_bitcoin_chart_uninstall
-   *
-   * @return void
-   */
+	/**
+	 * wp_bitcoin_chart_uninstall
+	 *
+	 * @return void
+	 */
 	public static function wp_bitcoin_chart_uninstall() {
-    // Delete the set options
-    // delete_option('');
-  }
+		// Delete the set options
+		// delete_option('');
+	}
 }

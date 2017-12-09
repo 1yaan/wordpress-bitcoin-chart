@@ -14,9 +14,9 @@
  */
 class WP_Bitcoin_Chart_Admin {
 
-  private static $initiated = false;
+	private static $initiated = false;
 
-  /**
+	/**
 	 * init
 	 */
 	public static function init() {
