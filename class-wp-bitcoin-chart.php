@@ -14,19 +14,26 @@
  */
 class WP_Bitcoin_Chart {
 
+	/**
+	 * initiated
+	 */
 	private static $initiated = false;
 
 	/**
 	 * init
+	 *
+	 * @return void
 	 */
 	public static function init() {
-		if ( !self::$initiated ) {
+		if ( ! self::$initiated ) {
 			self::init_hooks();
 		}
 	}
 
 	/**
 	 * Initializes WordPress hooks
+	 *
+	 * @return void
 	 */
 	private static function init_hooks() {
 		self::$initiated = true;
