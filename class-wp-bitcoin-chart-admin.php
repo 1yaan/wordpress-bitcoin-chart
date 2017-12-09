@@ -15,14 +15,14 @@
 class WP_Bitcoin_Chart_Admin {
 
 	/**
-	 * initiated
+	 * initiated 初期設定initが1回だけ実行されることをチェックします。
 	 *
 	 * @var boolean
 	 */
 	private static $initiated = false;
 
 	/**
-	 * init
+	 * initialize
 	 *
 	 * @return void
 	 */

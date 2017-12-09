@@ -15,14 +15,14 @@
 class WP_Bitcoin_Chart {
 
 	/**
-	 * initiated
+	 * initiated 初期設定initが1回だけ実行されることをチェックします。
 	 *
 	 * @var boolean
 	 */
 	private static $initiated = false;
 
 	/**
-	 * init
+	 * initialize
 	 *
 	 * @return void
 	 */
@@ -42,26 +42,24 @@ class WP_Bitcoin_Chart {
 	}
 
 	/**
-	 * wp_bitcoin_chart_activation
+	 * WP Bitcoin Chart activation
 	 *
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_activation() {}
 
 	/**
-	 * wp_bitcoin_chart_deactivation
+	 * WP Bitcoin Chart deactivation
 	 *
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_deactivation() {}
 
 	/**
-	 * wp_bitcoin_chart_uninstall
+	 * WP Bitcoin Chart Plugin uninstall
 	 *
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_uninstall() {
-		// Delete the set options
-		// delete_option('');
 	}
 }
