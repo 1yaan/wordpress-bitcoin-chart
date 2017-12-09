@@ -17,6 +17,7 @@ class WP_Bitcoin_Chart_Admin {
 	/**
 	 * Initial setting Flag to check that init is executed only once.
 	 *
+	 * @access private
 	 * @var boolean
 	 */
 	private static $initiated = false;

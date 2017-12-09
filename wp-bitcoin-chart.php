@@ -30,13 +30,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Make sure we don't expose any info if called directly
+// Make sure we don't expose any info if called directly.
 if ( ! function_exists( 'add_action' ) ) {
 	echo "Hi there! I'm just a plugin, not much I can do when called directly.";
 	exit;
 }
 
-// initialize
+// This plugin version.
 define( 'WP_BITCOIN_CHART__VERSION', '0.1' );
 // The absolute path of the directory that contains the file, with trailing slash ("/").
 define( 'WP_BITCOIN_CHART__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
@@ -53,5 +53,5 @@ if ( is_admin() ) {
 	add_action( 'init', array( 'WP_Bitcoin_Chart_Admin', 'init' ) );
 }
 
-// add wrapper class around deprecated WP Bitcoin Chart functions that are referenced elsewhere
+// add wrapper class around deprecated WP Bitcoin Chart functions that are referenced elsewhere.
 require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'wrapper.php' );
