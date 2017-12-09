@@ -15,7 +15,18 @@
  * @return string
  */
 function wp_bitcoin_chart_view_shortcode($atts) {
-	return "";
+	// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する。
+	$atts = shortcode_atts(
+		array(
+			'foo' => 'no foo',
+			'bar' => 'default bar',
+		),
+		$atts,
+		'wp-bitcoin-chart-view'
+	);
+
+	// 表示内容をreturnする。
+	return 'wp-bitcoin-chart-view: ' . $atts['foo'] . ' ' . $atts['bar'];
 }
 
 // Exp: [wp-bitcoin-chart-view]
