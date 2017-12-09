@@ -15,7 +15,7 @@
  * @param array $atts
  * @return string
  */
-public function wp_bitcoin_chart_view_shortcode( array $atts ) {
+function wp_bitcoin_chart_view_shortcode( array $atts ) {
 	// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 	$atts = shortcode_atts(
 		array(
