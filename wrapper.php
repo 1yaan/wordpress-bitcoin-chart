@@ -12,7 +12,7 @@
 /**
  * WP Bitcoin Chart view shortcode
  *
- * @param array $atts User defined attributes in shortcode tag
+ * @param array $atts User defined attributes in shortcode tag.
  * @return string
  */
 function wp_bitcoin_chart_view_shortcode( array $atts ) {
