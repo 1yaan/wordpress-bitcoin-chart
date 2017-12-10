@@ -109,7 +109,7 @@ class WP_Bitcoin_Chart {
 	 * @param  boolean $cache Use filecache.
 	 * @return string
 	 */
-	public static function output_chart( $atts, $cache = true ) {
+	public static function output_chart( array $atts, boolean $cache = true ) {
 
 		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
 		$output_text = '';
@@ -159,7 +159,7 @@ EOT;
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public static function get_chart( $atts ) {
+	public static function get_chart( array $atts ) {
 		$labels   = get_data_label( $atts['periods'] );
 		$datasets = array();
 
@@ -226,7 +226,7 @@ EOT;
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return array
 	 */
-	public static function get_data_label( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
+	public static function get_data_label( integer $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result   = array();
@@ -246,7 +246,7 @@ EOT;
 	 * @param  integer $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
 	 * @return array
 	 */
-	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = null ) {
+	public static function get_graph_data( integer $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, integer $assort = null ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result   = array();
@@ -267,7 +267,7 @@ EOT;
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
 	 */
-	public static function get_cryptowatch_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
+	public static function get_cryptowatch_data( integer $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
 		// No periods. Exist.
 		if ( empty( $periods ) or ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
 			return 1;
@@ -287,7 +287,7 @@ EOT;
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw   = json_decode( $json, true );
 
-		if ( ! empty( $cw[ 'result' ][ strval( $periods ) ] ) ) {
+		if ( ! empty( $cw['result'][ strval( $periods ) ] ) ) {
 
 			$this_period_keys = array_column( $cw['result'][ strval( $periods ) ], 0 );
 			$this_period_data = array_combine( $this_period_keys, $cw['result'][ strval( $periods ) ] );
