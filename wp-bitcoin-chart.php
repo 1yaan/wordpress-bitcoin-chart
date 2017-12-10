@@ -40,6 +40,16 @@ if ( ! function_exists( 'add_action' ) ) {
 define( 'WP_BITCOIN_CHART__VERSION', '0.1' );
 // The absolute path of the directory that contains the file, with trailing slash ("/").
 define( 'WP_BITCOIN_CHART__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'WP_BITCOIN_CHART__PLUGIN_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
+define( 'WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS', 86400 );
+define( 'WP_BITCOIN_CHART__DEFAULT_CHART_START', 1483319400 ); // January 2, 2017 AM 10: 10 is my son's 11th birthday.
+define( 'WP_BITCOIN_CHART__DEFAULT_CHART_NAME', 'WPBITCHART' );
+
+define( 'WP_BITCOIN_CHART__DEFAULT_OP_COLOR', 'Red' );
+define( 'WP_BITCOIN_CHART__DEFAULT_HP_COLOR', 'Green' );
+define( 'WP_BITCOIN_CHART__DEFAULT_LP_COLOR', 'Blue' );
+define( 'WP_BITCOIN_CHART__DEFAULT_CP_COLOR', 'Yellow' );
+define( 'WP_BITCOIN_CHART__DEFAULT_VO_COLOR', 'Magenta' );
 
 register_activation_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_activation' ) );
 register_deactivation_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_deactivation' ) );

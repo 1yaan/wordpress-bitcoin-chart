@@ -19,15 +19,20 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 	// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 	$atts = shortcode_atts(
 		array(
-			'foo' => 'no foo',
-			'bar' => 'default bar',
+			'name' => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
+			'periods' => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
+			'op_color' => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
+			'hp_color' => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
+			'lp_color' => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
+			'cp_color' => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
+			'vo_color' => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
 		),
 		$atts,
 		'wp-bitcoin-chart-view'
 	);
 
 	// 表示内容をreturnする.
-	return 'wp-bitcoin-chart-view: ' . $atts['foo'] . ' ' . $atts['bar'];
+	return WP_Bitcoin_Chart::output_chart( $atts );
 }
 
 // Exp: [wp-bitcoin-chart-view]
