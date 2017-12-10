@@ -271,7 +271,7 @@ EOT;
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw = json_decode( $json, true );
 
-		if ( ! empty( $cw['result'][strval( $periods )] ) {
+		if ( ! empty( $cw['result'][strval( $periods )] ) ) {
 
 			$this_period_keys = array_column( $cw['result'][strval( $periods )], 0 );
 			$this_period_data = array_combine( $this_period_keys, $cw['result'][strval( $periods )] );
