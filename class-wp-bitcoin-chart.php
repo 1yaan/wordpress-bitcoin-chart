@@ -103,7 +103,7 @@ class WP_Bitcoin_Chart {
 	}
 
 	/**
-	 * get output string for chart.
+	 * Get output string for chart.
 	 *
 	 * @param  array   $atts  User defined attributes in shortcode tag.
 	 * @param  boolean $cache Use filecache.
@@ -154,7 +154,7 @@ EOT;
 	}
 
 	/**
-	 * get chart datasets and labels.
+	 * Get chart datasets and labels.
 	 *
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
@@ -212,18 +212,18 @@ EOT;
 				'options'  => array(
 					'title' => array(
 						'display' => true,
-						'text'    => 'BTC/JPY'
-					)
-				)
-			)
-	  );
+						'text'    => 'BTC/JPY',
+					),
+				),
+			),
+		);
 		return $chart;
 	}
 
 	/**
-	 * get only label data.
+	 * Get only label data.
 	 *
-	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return array
 	 */
 	public static function get_data_label( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
@@ -233,25 +233,25 @@ EOT;
 
 		if ( file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result   = array_keys($all_data);
+			$result   = array_keys( $all_data );
 		}
 
 		return $result;
 	}
 
 	/**
-	 * get only single graph data.
+	 * Get only single graph data.
 	 *
-	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  int $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
+	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
 	 * @return array
 	 */
-	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = NULL ) {
+	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = null ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result   = array();
 
-		if ( $assort !== NULL and file_exists( $filename ) ) {
+		if ( null !== $assort and file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
 			$result   = array_column( $all_data, $assort );
 		}
@@ -260,12 +260,12 @@ EOT;
 	}
 
 	/**
-	 * get cryptowatch data
+	 * Get cryptowatch data
 	 * Cryptowatch.jpからデータを取得します.この処理は再帰的な処理を含みます.
 	 * データが取得できなくなるまで取得します。
 	 *
-	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @return int response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
+	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
 	 */
 	public static function get_cryptowatch_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
 		// No periods. Exist.
@@ -287,10 +287,10 @@ EOT;
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw   = json_decode( $json, true );
 
-		if ( ! empty( $cw['result'][strval( $periods )] ) ) {
+		if ( ! empty( $cw[ 'result' ][ strval( $periods ) ] ) ) {
 
-			$this_period_keys = array_column( $cw['result'][strval( $periods )], 0 );
-			$this_period_data = array_combine( $this_period_keys, $cw['result'][strval( $periods )] );
+			$this_period_keys = array_column( $cw['result'][ strval( $periods ) ], 0 );
+			$this_period_data = array_combine( $this_period_keys, $cw['result'][ strval( $periods ) ] );
 			$filename         = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 
 			if ( file_exists( $filename ) ) {
@@ -299,7 +299,7 @@ EOT;
 				$all_data = json_decode( $all_data, true );
 				$arr      = array_merge( $all_data, $this_period_data );
 				$result   = file_put_contents( $filename, json_encode( $arr ) );
-				if ( $result === false ) {
+				if ( false === $result ) {
 					return 3;
 				}
 			}
@@ -308,7 +308,7 @@ EOT;
 		// アクセス直前の時間をcheck_periodsに設定します.
 		$last_access = $now_time;
 
-		// 現在時刻を最後にアクセスした時間とします。
+		// 現在時刻を最後にアクセスした時間とします.
 		update_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ), $last_access );
 
 		// Finished.
