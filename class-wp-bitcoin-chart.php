@@ -158,7 +158,7 @@ EOT;
 			$datasets[] = array(
 				"label" => "Open Price",
 				"borderColor" => $atts['op_color'],
-				"data" => get_data( $atts['periods'], 0 ),
+				"data" => get_graph_data( $atts['periods'], 0 ),
 				"drawBorder" => false,
 			);
 		}
@@ -166,7 +166,7 @@ EOT;
 			$datasets[] = array(
 				"label" => "High Price",
 				"borderColor" => $atts['hp_color'],
-				"data" => get_data( $atts['periods'], 1 ),
+				"data" => get_graph_data( $atts['periods'], 1 ),
 				"drawBorder" => false,
 			);
 		}
@@ -174,7 +174,7 @@ EOT;
 			$datasets[] = array(
 				"label" => "Low Price",
 				"borderColor" => $atts['lp_color'],
-				"data" => get_data( $atts['periods'], 2 ),
+				"data" => get_graph_data( $atts['periods'], 2 ),
 				"drawBorder" => false,
 			);
 		}
@@ -182,7 +182,7 @@ EOT;
 			$datasets[] = array(
 				"label" => "Close Price",
 				"borderColor" => $atts['cp_color'],
-				"data" => get_data( $atts['periods'], 3 ),
+				"data" => get_graph_data( $atts['periods'], 3 ),
 				"drawBorder" => false,
 			);
 		}
@@ -190,7 +190,7 @@ EOT;
 			$datasets[] = array(
 				"label" => "Volume",
 				"borderColor" => $atts['vo_color'],
-				"data" => get_data( $atts['periods'], 4 ),
+				"data" => get_graph_data( $atts['periods'], 4 ),
 				"drawBorder" => false,
 			);
 		}
@@ -229,12 +229,12 @@ EOT;
 	}
 
 	/**
-	 * get_data
+	 * get_graph_data
 	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @param  int $type 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
 	 * @return array
 	 */
-	public static function get_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $type = 0 ) {
+	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $type = 0 ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result = array();
