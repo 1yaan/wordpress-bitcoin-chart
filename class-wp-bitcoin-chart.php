@@ -202,7 +202,7 @@ EOT;
 				"options" => array(
 					"title" => array(
 						"display" => true,
-						"text": "BTC/JPY"
+						"text" => "BTC/JPY"
 					)
 				)
 			)
