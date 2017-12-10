@@ -234,12 +234,12 @@ EOT;
 	 * @param  int $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
 	 * @return array
 	 */
-	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = 0 ) {
+	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = NULL ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result = array();
 
-		if ( file_exists( $filename ) ) {
+		if ( $assort !== NULL and file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
 			$result = array_column( $all_data, $assort );
 		}
