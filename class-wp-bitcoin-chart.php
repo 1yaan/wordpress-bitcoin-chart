@@ -54,10 +54,18 @@ class WP_Bitcoin_Chart {
 		$wp_bitcoin_chart_check_periods_3600  = get_option( 'wp_bitcoin_chart_check_periods_3600' );
 		$wp_bitcoin_chart_check_periods_86400 = get_option( 'wp_bitcoin_chart_check_periods_86400' );
 
-		if ( ! $wp_bitcoin_chart_check_periods_300 )   $wp_bitcoin_chart_check_periods_300   = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( ! $wp_bitcoin_chart_check_periods_1800 )  $wp_bitcoin_chart_check_periods_1800  = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( ! $wp_bitcoin_chart_check_periods_3600 )  $wp_bitcoin_chart_check_periods_3600  = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( ! $wp_bitcoin_chart_check_periods_86400 ) $wp_bitcoin_chart_check_periods_86400 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		if ( ! $wp_bitcoin_chart_check_periods_300 ) {
+			$wp_bitcoin_chart_check_periods_300 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		}
+		if ( ! $wp_bitcoin_chart_check_periods_1800 ) {
+			$wp_bitcoin_chart_check_periods_1800 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		}
+		if ( ! $wp_bitcoin_chart_check_periods_3600 ) {
+			$wp_bitcoin_chart_check_periods_3600 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		}
+		if ( ! $wp_bitcoin_chart_check_periods_86400 ) {
+			$wp_bitcoin_chart_check_periods_86400 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		}
 
 		update_option( 'wp_bitcoin_chart_check_periods_300', $wp_bitcoin_chart_check_periods_300 );
 		update_option( 'wp_bitcoin_chart_check_periods_1800', $wp_bitcoin_chart_check_periods_1800 );
@@ -65,7 +73,9 @@ class WP_Bitcoin_Chart {
 		update_option( 'wp_bitcoin_chart_check_periods_86400', $wp_bitcoin_chart_check_periods_86400 );
 
 		// Check data directory.
-		if ( ! file_exists( WP_BITCOIN_CHART__PLUGIN_DATA_DIR ) ) mkdir( WP_BITCOIN_CHART__PLUGIN_DATA_DIR, 0777 );
+		if ( ! file_exists( WP_BITCOIN_CHART__PLUGIN_DATA_DIR ) ) {
+			mkdir( WP_BITCOIN_CHART__PLUGIN_DATA_DIR, 0777 );
+		}
 	}
 
 	/**
@@ -150,59 +160,59 @@ EOT;
 	 * @return string
 	 */
 	public static function get_chart( $atts ) {
-		$labels = get_data_label( $atts['periods'] );
+		$labels   = get_data_label( $atts['periods'] );
 		$datasets = array();
 
 		// どのデータを表示するのかを識別して設定する.
 		if ( array_key_exists( 'op', $atts ) ) {
 			$datasets[] = array(
-				'label' => 'Open Price',
+				'label'       => 'Open Price',
 				'borderColor' => $atts['op_color'],
-				'data' => get_graph_data( $atts['periods'], 0 ),
-				'drawBorder' => false,
+				'data'        => get_graph_data( $atts['periods'], 0 ),
+				'drawBorder'  => false,
 			);
 		}
 		if ( array_key_exists( 'hp', $atts ) ) {
 			$datasets[] = array(
-				'label' => 'High Price',
+				'label'       => 'High Price',
 				'borderColor' => $atts['hp_color'],
-				'data' => get_graph_data( $atts['periods'], 1 ),
-				'drawBorder' => false,
+				'data'        => get_graph_data( $atts['periods'], 1 ),
+				'drawBorder'  => false,
 			);
 		}
 		if ( array_key_exists( 'lp', $atts ) ) {
 			$datasets[] = array(
-				'label' => 'Low Price',
+				'label'       => 'Low Price',
 				'borderColor' => $atts['lp_color'],
-				'data' => get_graph_data( $atts['periods'], 2 ),
-				'drawBorder' => false,
+				'data'        => get_graph_data( $atts['periods'], 2 ),
+				'drawBorder'  => false,
 			);
 		}
 		if ( array_key_exists( 'cp', $atts ) ) {
 			$datasets[] = array(
-				'label' => 'Close Price',
+				'label'       => 'Close Price',
 				'borderColor' => $atts['cp_color'],
-				'data' => get_graph_data( $atts['periods'], 3 ),
-				'drawBorder' => false,
+				'data'        => get_graph_data( $atts['periods'], 3 ),
+				'drawBorder'  => false,
 			);
 		}
 		if ( array_key_exists( 'vo', $atts ) ) {
 			$datasets[] = array(
-				'label' => 'Volume',
+				'label'       => 'Volume',
 				'borderColor' => $atts['vo_color'],
-				'data' => get_graph_data( $atts['periods'], 4 ),
-				'drawBorder' => false,
+				'data'        => get_graph_data( $atts['periods'], 4 ),
+				'drawBorder'  => false,
 			);
 		}
 		$chart = array(
 			'type' => 'line',
 			'data' => array(
-				'labels' => $labels,
+				'labels'   => $labels,
 				'datasets' => $datasets,
-				'options' => array(
+				'options'  => array(
 					'title' => array(
 						'display' => true,
-						'text' => 'BTC/JPY'
+						'text'    => 'BTC/JPY'
 					)
 				)
 			)
@@ -219,11 +229,11 @@ EOT;
 	public static function get_data_label( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
-		$result = array();
+		$result   = array();
 
 		if ( file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result = array_keys($all_data);
+			$result   = array_keys($all_data);
 		}
 
 		return $result;
@@ -239,11 +249,11 @@ EOT;
 	public static function get_graph_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, int $assort = NULL ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
-		$result = array();
+		$result   = array();
 
 		if ( $assort !== NULL and file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result = array_column( $all_data, $assort );
+			$result   = array_column( $all_data, $assort );
 		}
 
 		return $result;
@@ -259,33 +269,39 @@ EOT;
 	 */
 	public static function get_cryptowatch_data( int $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
 		// No periods. Exist.
-		if ( empty( $periods ) or ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) return 1;
+		if ( empty( $periods ) or ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
+			return 1;
+		}
 
 		// 最後にアクセスした時間を取得します.
 		$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
-		$now_time = time();
+		$now_time    = time();
 
 		// Interval is too short.
-		if ( ( $now_time - $last_access ) < $periods ) return 2;
+		if ( ( $now_time - $last_access ) < $periods ) {
+			return 2;
+		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
 		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw = json_decode( $json, true );
+		$cw   = json_decode( $json, true );
 
 		if ( ! empty( $cw['result'][strval( $periods )] ) ) {
 
 			$this_period_keys = array_column( $cw['result'][strval( $periods )], 0 );
 			$this_period_data = array_combine( $this_period_keys, $cw['result'][strval( $periods )] );
-			$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+			$filename         = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 
 			if ( file_exists( $filename ) ) {
 				// 2つの配列のデータをマージする.
 				$all_data = file_get_contents( $filename );
 				$all_data = json_decode( $all_data, true );
-				$arr = array_merge( $all_data, $this_period_data );
-				$result = file_put_contents( $filename, json_encode( $arr ) );
-				if ( $result === false ) return 3;
+				$arr      = array_merge( $all_data, $this_period_data );
+				$result   = file_put_contents( $filename, json_encode( $arr ) );
+				if ( $result === false ) {
+					return 3;
+				}
 			}
 		}
 

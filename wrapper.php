@@ -19,8 +19,8 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 	// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 	$atts = shortcode_atts(
 		array(
-			'name' => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
-			'periods' => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
+			'name'     => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
+			'periods'  => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
 			'op_color' => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
 			'hp_color' => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
 			'lp_color' => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
