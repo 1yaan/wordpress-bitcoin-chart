@@ -101,7 +101,7 @@ class WP_Bitcoin_Chart {
 	 */
 	public static function output_chart( $atts, $cache = true ) {
 
-		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.html';
+		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
 		$output_text = "";
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
