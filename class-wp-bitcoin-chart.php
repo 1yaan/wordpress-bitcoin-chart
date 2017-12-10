@@ -49,15 +49,15 @@ class WP_Bitcoin_Chart {
 	 */
 	public static function wp_bitcoin_chart_activation() {
 		// Insert options.
-		$wp_bitcoin_chart_check_periods_300 = get_option( 'wp_bitcoin_chart_check_periods_300' );
-		$wp_bitcoin_chart_check_periods_1800 = get_option( 'wp_bitcoin_chart_check_periods_1800' );
-		$wp_bitcoin_chart_check_periods_3600 = get_option( 'wp_bitcoin_chart_check_periods_3600' );
+		$wp_bitcoin_chart_check_periods_300   = get_option( 'wp_bitcoin_chart_check_periods_300' );
+		$wp_bitcoin_chart_check_periods_1800  = get_option( 'wp_bitcoin_chart_check_periods_1800' );
+		$wp_bitcoin_chart_check_periods_3600  = get_option( 'wp_bitcoin_chart_check_periods_3600' );
 		$wp_bitcoin_chart_check_periods_86400 = get_option( 'wp_bitcoin_chart_check_periods_86400' );
 
-		if ( !$wp_bitcoin_chart_check_periods_300 ) $wp_bitcoin_chart_check_periods_300 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( !$wp_bitcoin_chart_check_periods_1800 ) $wp_bitcoin_chart_check_periods_1800 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( !$wp_bitcoin_chart_check_periods_3600 ) $wp_bitcoin_chart_check_periods_3600 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
-		if ( !$wp_bitcoin_chart_check_periods_86400 ) $wp_bitcoin_chart_check_periods_86400 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		if ( ! $wp_bitcoin_chart_check_periods_300 )   $wp_bitcoin_chart_check_periods_300   = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		if ( ! $wp_bitcoin_chart_check_periods_1800 )  $wp_bitcoin_chart_check_periods_1800  = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		if ( ! $wp_bitcoin_chart_check_periods_3600 )  $wp_bitcoin_chart_check_periods_3600  = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+		if ( ! $wp_bitcoin_chart_check_periods_86400 ) $wp_bitcoin_chart_check_periods_86400 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
 
 		update_option( 'wp_bitcoin_chart_check_periods_300', $wp_bitcoin_chart_check_periods_300 );
 		update_option( 'wp_bitcoin_chart_check_periods_1800', $wp_bitcoin_chart_check_periods_1800 );
@@ -93,21 +93,21 @@ class WP_Bitcoin_Chart {
 	}
 
 	/**
-	 * output chart
+	 * get output string for chart.
 	 *
-	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @param  array   $atts  User defined attributes in shortcode tag.
 	 * @param  boolean $cache Use filecache.
 	 * @return string
 	 */
 	public static function output_chart( $atts, $cache = true ) {
 
-		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
-		$output_text = "";
+		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
+		$output_text = '';
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $cache ) {
-			$now_time = time();
-			$periods = $atts['periods'];
+			$now_time    = time();
+			$periods     = $atts['periods'];
 			$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
 			if ( ( $now_time - $last_access ) > $periods and file_exists( $filename ) ) {
 				$output_text = file_get_contents( $filename );
@@ -115,8 +115,8 @@ class WP_Bitcoin_Chart {
 			}
 		}
 
-		$name = $atts['name'];
-		$chart = json_decode( get_chart( $atts ) );
+		$name        = $atts['name'];
+		$chart       = json_decode( get_chart( $atts ) );
 		$output_text = <<<EOT
 <div class='wp-bitcoin-chart-field'>
 	<canvas id='${name}'></canvas>
@@ -144,7 +144,7 @@ EOT;
 	}
 
 	/**
-	 * get chart
+	 * get chart datasets and labels.
 	 *
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
@@ -156,53 +156,53 @@ EOT;
 		// どのデータを表示するのかを識別して設定する.
 		if ( array_key_exists( 'op', $atts ) ) {
 			$datasets[] = array(
-				"label" => "Open Price",
-				"borderColor" => $atts['op_color'],
-				"data" => get_graph_data( $atts['periods'], 0 ),
-				"drawBorder" => false,
+				'label' => 'Open Price',
+				'borderColor' => $atts['op_color'],
+				'data' => get_graph_data( $atts['periods'], 0 ),
+				'drawBorder' => false,
 			);
 		}
 		if ( array_key_exists( 'hp', $atts ) ) {
 			$datasets[] = array(
-				"label" => "High Price",
-				"borderColor" => $atts['hp_color'],
-				"data" => get_graph_data( $atts['periods'], 1 ),
-				"drawBorder" => false,
+				'label' => 'High Price',
+				'borderColor' => $atts['hp_color'],
+				'data' => get_graph_data( $atts['periods'], 1 ),
+				'drawBorder' => false,
 			);
 		}
 		if ( array_key_exists( 'lp', $atts ) ) {
 			$datasets[] = array(
-				"label" => "Low Price",
-				"borderColor" => $atts['lp_color'],
-				"data" => get_graph_data( $atts['periods'], 2 ),
-				"drawBorder" => false,
+				'label' => 'Low Price',
+				'borderColor' => $atts['lp_color'],
+				'data' => get_graph_data( $atts['periods'], 2 ),
+				'drawBorder' => false,
 			);
 		}
 		if ( array_key_exists( 'cp', $atts ) ) {
 			$datasets[] = array(
-				"label" => "Close Price",
-				"borderColor" => $atts['cp_color'],
-				"data" => get_graph_data( $atts['periods'], 3 ),
-				"drawBorder" => false,
+				'label' => 'Close Price',
+				'borderColor' => $atts['cp_color'],
+				'data' => get_graph_data( $atts['periods'], 3 ),
+				'drawBorder' => false,
 			);
 		}
 		if ( array_key_exists( 'vo', $atts ) ) {
 			$datasets[] = array(
-				"label" => "Volume",
-				"borderColor" => $atts['vo_color'],
-				"data" => get_graph_data( $atts['periods'], 4 ),
-				"drawBorder" => false,
+				'label' => 'Volume',
+				'borderColor' => $atts['vo_color'],
+				'data' => get_graph_data( $atts['periods'], 4 ),
+				'drawBorder' => false,
 			);
 		}
 		$chart = array(
-			"type" => "line",
-			"data" => array(
-				"labels" => $labels,
-				"datasets" => $datasets,
-				"options" => array(
-					"title" => array(
-						"display" => true,
-						"text" => "BTC/JPY"
+			'type' => 'line',
+			'data' => array(
+				'labels' => $labels,
+				'datasets' => $datasets,
+				'options' => array(
+					'title' => array(
+						'display' => true,
+						'text' => 'BTC/JPY'
 					)
 				)
 			)
@@ -211,7 +211,8 @@ EOT;
 	}
 
 	/**
-	 * get_data_label
+	 * get only label data.
+	 *
 	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return array
 	 */
@@ -229,7 +230,8 @@ EOT;
 	}
 
 	/**
-	 * get_graph_data
+	 * get only single graph data.
+	 *
 	 * @param  int $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @param  int $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
 	 * @return array
