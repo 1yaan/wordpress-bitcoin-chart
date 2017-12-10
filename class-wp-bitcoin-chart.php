@@ -243,7 +243,7 @@ EOT;
 	 * Get only single graph data.
 	 *
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  integer $assort 取得するデータの種類です。 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume
+	 * @param  integer $assort 取得するデータの種類です. 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume.
 	 * @return array
 	 */
 	public static function get_graph_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $assort = null ) {
@@ -262,7 +262,7 @@ EOT;
 	/**
 	 * Get cryptowatch data
 	 * Cryptowatch.jpからデータを取得します.この処理は再帰的な処理を含みます.
-	 * データが取得できなくなるまで取得します。
+	 * データが取得できなくなるまで取得します.
 	 *
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
