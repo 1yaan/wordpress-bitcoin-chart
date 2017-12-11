@@ -244,10 +244,10 @@ EOT;
 		if ( file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
 			$result   = array_keys( json_decode( $all_data, true ) );
-			// 時刻を読めるように変換
+			// 時刻を読めるように変換.
 			if ( ! empty( $result ) ) {
-				foreach( $result as $key => $value ) {
-					$result[$key] = date( 'n月t日 G:i', $value );
+				foreach ( $result as $key => $value ) {
+					$result[ $key ] = date( 'n月t日 G:i', $value );
 				}
 			}
 		}
@@ -309,7 +309,7 @@ EOT;
 
 			$periods_keys = array_column( $cw['result'][ strval( $periods ) ], 0 );
 			$periods_data = array_combine( $periods_keys, $cw['result'][ strval( $periods ) ] );
-			$filename         = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+			$filename     = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 
 			if ( file_exists( $filename ) ) {
 				// 2つの配列のデータをマージする.
