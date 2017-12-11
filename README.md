@@ -64,7 +64,7 @@ http://blog.goo.ne.jp/xmldtp/e/95890e6dd83d76d601b66513bf3f1993
 
 ## ショートコード
 
-'''
-[wp-bitcoin-chart-view name="WPBITCHART2" op=1 hp=1 hp_color="PURPLE" op_color="PINK" lp_color="BLACK" cp_color="ORANGE"]
-[wp-bitcoin-chart-view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
-'''
+  ```
+  [wp-bitcoin-chart-view name="WPBITCHART2" op=1 hp=1 hp_color="PURPLE" op_color="PINK" lp_color="BLACK" cp_color="ORANGE"]
+  [wp-bitcoin-chart-view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
+  ```
