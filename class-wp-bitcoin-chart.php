@@ -271,7 +271,7 @@ EOT;
 					unset( $all_data[ $key ] );
 					continue;
 				}
-				if ( $periods == WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY ) {
+				if ( WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY == $periods ) {
 					$all_data[ $key ] = date( 'n月j日', $data_timestamp );
 				} else {
 					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
