@@ -26,11 +26,11 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 			'lp_color' => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
 			'cp_color' => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
 			'vo_color' => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
-			'op' => 0,
-			'hp' => 0,
-			'lp' => 0,
-			'cp' => 0,
-			'vo' => 0,
+			'op'       => 0,
+			'hp'       => 0,
+			'lp'       => 0,
+			'cp'       => 0,
+			'vo'       => 0,
 		),
 		$atts,
 		'wp-bitcoin-chart-view'
@@ -45,7 +45,8 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 add_shortcode( 'wp-bitcoin-chart-view', 'wp_bitcoin_chart_view_shortcode' );
 
 /**
- * Register jquery
+ * Register jquery.
+ *
  * @return void
  */
 function register_jquery() {
@@ -56,4 +57,4 @@ function register_jquery() {
   wp_enqueue_script( 'chartjs' );
 }
 
-add_action('wp_enqueue_scripts', 'register_jquery');
+add_action( 'wp_enqueue_scripts', 'register_jquery' );
