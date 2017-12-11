@@ -121,8 +121,9 @@ class WP_Bitcoin_Chart {
 	 * @return string
 	 */
 	public static function output_chart( $atts, $cache = true ) {
+		$name        = $atts['name'];
 		$periods     = $atts['periods'];
-		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
+		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . '.htm';
 		$output_text = '';
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
@@ -135,7 +136,6 @@ class WP_Bitcoin_Chart {
 			}
 		}
 
-		$name        = $atts['name'];
 		$chart       = json_encode( self::get_chart( $atts ) );
 		$output_text = <<<EOT
 <div class='wp-bitcoin-chart-field'>
