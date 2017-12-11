@@ -76,6 +76,12 @@ class WP_Bitcoin_Chart {
 		if ( ! file_exists( WP_BITCOIN_CHART__PLUGIN_DATA_DIR ) ) {
 			mkdir( WP_BITCOIN_CHART__PLUGIN_DATA_DIR, 0777 );
 		}
+
+		// 有効下時点でのデータを保持しておく.
+		self::get_cryptowatch_data( 300 );
+		self::get_cryptowatch_data( 1800 );
+		self::get_cryptowatch_data( 3600 );
+		self::get_cryptowatch_data( 86400 );
 	}
 
 	/**
@@ -84,8 +90,13 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_deactivation() {
-		// 無効化時点でのデータを保持しておく.
-		get_cryptowatch_data();
+		if ( defined( 'WP_DEBUG' ) ) {
+			// WP_DEBUGが設定されていたら、フラグを削除する.
+			delete_option( 'wp_bitcoin_chart_check_periods_300' );
+			delete_option( 'wp_bitcoin_chart_check_periods_1800' );
+			delete_option( 'wp_bitcoin_chart_check_periods_3600' );
+			delete_option( 'wp_bitcoin_chart_check_periods_86400' );
+		}
 	}
 
 	/**
@@ -110,14 +121,13 @@ class WP_Bitcoin_Chart {
 	 * @return string
 	 */
 	public static function output_chart( $atts, $cache = true ) {
-
+		$periods     = $atts['periods'];
 		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . strval( $periods ) . '.htm';
 		$output_text = '';
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $cache ) {
 			$now_time    = time();
-			$periods     = $atts['periods'];
 			$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
 			if ( ( $now_time - $last_access ) > $periods and file_exists( $filename ) ) {
 				$output_text = file_get_contents( $filename );
@@ -126,7 +136,7 @@ class WP_Bitcoin_Chart {
 		}
 
 		$name        = $atts['name'];
-		$chart       = json_decode( get_chart( $atts ) );
+		$chart       = json_encode( self::get_chart( $atts ) );
 		$output_text = <<<EOT
 <div class='wp-bitcoin-chart-field'>
 	<canvas id='${name}'></canvas>
@@ -160,47 +170,47 @@ EOT;
 	 * @return string
 	 */
 	public static function get_chart( $atts ) {
-		$labels   = get_data_label( $atts['periods'] );
+		$labels   = self::get_data_label( $atts['periods'] );
 		$datasets = array();
 
 		// どのデータを表示するのかを識別して設定する.
-		if ( array_key_exists( 'op', $atts ) ) {
+		if ( ! empty( $atts['op'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Open Price',
 				'borderColor' => $atts['op_color'],
-				'data'        => get_graph_data( $atts['periods'], 0 ),
+				'data'        => self::get_graph_data( $atts['periods'], 1 ),
 				'drawBorder'  => false,
 			);
 		}
-		if ( array_key_exists( 'hp', $atts ) ) {
+		if ( ! empty( $atts['hp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'High Price',
 				'borderColor' => $atts['hp_color'],
-				'data'        => get_graph_data( $atts['periods'], 1 ),
+				'data'        => self::get_graph_data( $atts['periods'], 2 ),
 				'drawBorder'  => false,
 			);
 		}
-		if ( array_key_exists( 'lp', $atts ) ) {
+		if ( ! empty( $atts['lp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Low Price',
 				'borderColor' => $atts['lp_color'],
-				'data'        => get_graph_data( $atts['periods'], 2 ),
+				'data'        => self::get_graph_data( $atts['periods'], 3 ),
 				'drawBorder'  => false,
 			);
 		}
-		if ( array_key_exists( 'cp', $atts ) ) {
+		if ( ! empty( $atts['cp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Close Price',
 				'borderColor' => $atts['cp_color'],
-				'data'        => get_graph_data( $atts['periods'], 3 ),
+				'data'        => self::get_graph_data( $atts['periods'], 4 ),
 				'drawBorder'  => false,
 			);
 		}
-		if ( array_key_exists( 'vo', $atts ) ) {
+		if ( ! empty( $atts['vo'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Volume',
 				'borderColor' => $atts['vo_color'],
-				'data'        => get_graph_data( $atts['periods'], 4 ),
+				'data'        => self::get_graph_data( $atts['periods'], 5 ),
 				'drawBorder'  => false,
 			);
 		}
@@ -233,7 +243,13 @@ EOT;
 
 		if ( file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result   = array_keys( $all_data );
+			$result   = array_keys( json_decode( $all_data, true ) );
+			// 時刻を読めるように変換
+			if ( ! empty( $result ) ) {
+				foreach( $result as $key => $value ) {
+					$result[$key] = date( 'n月t日 G:i', $value );
+				}
+			}
 		}
 
 		return $result;
@@ -243,7 +259,7 @@ EOT;
 	 * Get only single graph data.
 	 *
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  integer $assort 取得するデータの種類です. 0: Open Price, 1: High Price, 2: Low Price, 3: Close Price, 4: Volume.
+	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
 	 * @return array
 	 */
 	public static function get_graph_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $assort = null ) {
@@ -253,7 +269,7 @@ EOT;
 
 		if ( null !== $assort and file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result   = array_column( $all_data, $assort );
+			$result   = array_column( json_decode( $all_data, true ), $assort );
 		}
 
 		return $result;
@@ -278,30 +294,33 @@ EOT;
 		$now_time    = time();
 
 		// Interval is too short.
-		if ( ( $now_time - $last_access ) < $periods ) {
+		if ( ! defined( 'WP_DEBUG' ) and ( $now_time - $last_access ) < $periods ) {
 			return 2;
 		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
+		error_log( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
 		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
+
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw   = json_decode( $json, true );
 
 		if ( ! empty( $cw['result'][ strval( $periods ) ] ) ) {
 
-			$this_period_keys = array_column( $cw['result'][ strval( $periods ) ], 0 );
-			$this_period_data = array_combine( $this_period_keys, $cw['result'][ strval( $periods ) ] );
+			$periods_keys = array_column( $cw['result'][ strval( $periods ) ], 0 );
+			$periods_data = array_combine( $periods_keys, $cw['result'][ strval( $periods ) ] );
 			$filename         = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 
 			if ( file_exists( $filename ) ) {
 				// 2つの配列のデータをマージする.
-				$all_data = file_get_contents( $filename );
-				$all_data = json_decode( $all_data, true );
-				$arr      = array_merge( $all_data, $this_period_data );
-				$result   = file_put_contents( $filename, json_encode( $arr ) );
-				if ( false === $result ) {
-					return 3;
-				}
+				$all_data     = file_get_contents( $filename );
+				$all_data     = json_decode( $all_data, true );
+				$periods_data = array_merge( $all_data, $periods_data );
+			}
+
+			$result = file_put_contents( $filename, json_encode( $periods_data ) );
+			if ( false === $result ) {
+				return 3;
 			}
 		}
 

@@ -51,9 +51,9 @@ define( 'WP_BITCOIN_CHART__DEFAULT_LP_COLOR', 'Blue' );
 define( 'WP_BITCOIN_CHART__DEFAULT_CP_COLOR', 'Yellow' );
 define( 'WP_BITCOIN_CHART__DEFAULT_VO_COLOR', 'Magenta' );
 
-register_activation_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_activation' ) );
-register_deactivation_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_deactivation' ) );
-register_uninstall_hook( __FILE__, array( 'WpBitcoinChart', 'wp_bitcoin_chart_uninstall' ) );
+register_activation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_activation' ) );
+register_deactivation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_deactivation' ) );
+register_uninstall_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_uninstall' ) );
 
 require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
 add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
