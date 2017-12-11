@@ -179,9 +179,9 @@ EOT;
 			$to_timestamp = strtotime( $atts['to'] );
 		}
 
-		$labels    = self::get_data_label( $atts['periods'], $from_timestamp, $to_timestamp );
-		$datasets  = array();
-		$periods   = $atts['periods'];
+		$periods  = $atts['periods'];
+		$labels   = self::get_data_label( $periods, $from_timestamp, $to_timestamp );
+		$datasets = array();
 
 		// どのデータを表示するのかを識別して設定する.
 		if ( ! empty( $atts['op'] ) ) {
@@ -278,8 +278,8 @@ EOT;
 	/**
 	 * Get only single graph data.
 	 *
-	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
+	 * @param  integer   $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer   $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
 	 * @param  timestamp $from_timestamp 開始時間.
 	 * @param  timestamp $to_timestamp   終了時間.
 	 * @return array
