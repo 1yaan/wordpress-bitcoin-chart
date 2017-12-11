@@ -42,6 +42,7 @@ define( 'WP_BITCOIN_CHART__VERSION', '0.1' );
 define( 'WP_BITCOIN_CHART__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WP_BITCOIN_CHART__PLUGIN_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
 define( 'WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS', 86400 );
+define( 'WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY', 86400 );
 define( 'WP_BITCOIN_CHART__DEFAULT_CHART_START', 1483319400 ); // January 2, 2017 AM 10: 10 is my son's 11th birthday.
 define( 'WP_BITCOIN_CHART__DEFAULT_CHART_NAME', 'WPBITCHART' );
 

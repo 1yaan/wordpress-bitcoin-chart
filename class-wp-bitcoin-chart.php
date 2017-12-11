@@ -157,7 +157,10 @@ class WP_Bitcoin_Chart {
 		</div>
 	</div>
 </div>
-<script>var ctx = document.getElementById('${name}').getContext('2d');var chart = new Chart(ctx, ${chart});</script>
+<script>
+	var ctx = document.getElementById('${name}').getContext('2d');
+	var chart = new Chart(ctx, ${chart});
+</script>
 EOT;
 
 		file_put_contents( $filename, $output_text );
@@ -268,7 +271,11 @@ EOT;
 					unset( $all_data[ $key ] );
 					continue;
 				}
-				$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
+				if ( $periods == WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY ) {
+					$all_data[ $key ] = date( 'n月j日', $data_timestamp );
+				} else {
+					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
+				}
 			}
 		}
 
