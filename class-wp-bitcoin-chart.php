@@ -123,6 +123,8 @@ class WP_Bitcoin_Chart {
 	public static function output_chart( $atts, $cache = true ) {
 		$name        = $atts['name'];
 		$periods     = $atts['periods'];
+		$from_date   = $atts['from'];
+		$to_date     = $atts['to'];
 		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . '.htm';
 		$output_text = '';
 
@@ -151,7 +153,7 @@ class WP_Bitcoin_Chart {
 			</div>
 		</div>
 		<div class='column'>
-			From:&nbsp;<input type='text' id='${name}-from-input' value='2017-11-30'>&nbsp;To:&nbsp;<input type='text' id='myChart-to-input' value='2017-12-06'>
+			From:&nbsp;<input type='text' id='${name}-from-input' value='${from_date}'>&nbsp;To:&nbsp;<input type='text' id='myChart-to-input' value='${to_date}'>
 		</div>
 	</div>
 </div>
@@ -170,15 +172,23 @@ EOT;
 	 * @return string
 	 */
 	public static function get_chart( $atts ) {
-		$labels   = self::get_data_label( $atts['periods'] );
-		$datasets = array();
+		if ( ! empty( $atts['from'] ) ) {
+			$from_timestamp = strtotime( $atts['from'] );
+		}
+		if ( ! empty( $atts['to'] ) ) {
+			$to_timestamp = strtotime( $atts['to'] );
+		}
+
+		$labels    = self::get_data_label( $atts['periods'], $from_timestamp, $to_timestamp );
+		$datasets  = array();
+		$periods   = $atts['periods'];
 
 		// どのデータを表示するのかを識別して設定する.
 		if ( ! empty( $atts['op'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Open Price',
 				'borderColor' => $atts['op_color'],
-				'data'        => self::get_graph_data( $atts['periods'], 1 ),
+				'data'        => self::get_graph_data( $periods, 1, $from_timestamp, $to_timestamp ),
 				'drawBorder'  => false,
 			);
 		}
@@ -186,7 +196,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'High Price',
 				'borderColor' => $atts['hp_color'],
-				'data'        => self::get_graph_data( $atts['periods'], 2 ),
+				'data'        => self::get_graph_data( $periods, 2, $from_timestamp, $to_timestamp ),
 				'drawBorder'  => false,
 			);
 		}
@@ -194,7 +204,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Low Price',
 				'borderColor' => $atts['lp_color'],
-				'data'        => self::get_graph_data( $atts['periods'], 3 ),
+				'data'        => self::get_graph_data( $periods, 3, $from_timestamp, $to_timestamp ),
 				'drawBorder'  => false,
 			);
 		}
@@ -202,7 +212,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Close Price',
 				'borderColor' => $atts['cp_color'],
-				'data'        => self::get_graph_data( $atts['periods'], 4 ),
+				'data'        => self::get_graph_data( $periods, 4, $from_timestamp, $to_timestamp ),
 				'drawBorder'  => false,
 			);
 		}
@@ -210,14 +220,14 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Volume',
 				'borderColor' => $atts['vo_color'],
-				'data'        => self::get_graph_data( $atts['periods'], 5 ),
+				'data'        => self::get_graph_data( $periods, 5, $from_timestamp, $to_timestamp ),
 				'drawBorder'  => false,
 			);
 		}
 		$chart = array(
 			'type' => 'line',
 			'data' => array(
-				'labels'   => $labels,
+				'labels'   => array_values( $labels ),
 				'datasets' => $datasets,
 				'options'  => array(
 					'title' => array(
@@ -233,26 +243,36 @@ EOT;
 	/**
 	 * Get only label data.
 	 *
-	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer   $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  timestamp $from_timestamp 開始時間.
+	 * @param  timestamp $to_timestamp   終了時間.
 	 * @return array
 	 */
-	public static function get_data_label( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
+	public static function get_data_label( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
-		$result   = array();
+		$all_data = array();
 
 		if ( file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result   = array_keys( json_decode( $all_data, true ) );
+			$all_data = array_keys( json_decode( $all_data, true ) );
 			// 時刻を読めるように変換.
-			if ( ! empty( $result ) ) {
-				foreach ( $result as $key => $value ) {
-					$result[ $key ] = date( 'n月t日 G:i', $value );
+			foreach ( $all_data as $key => $data_timestamp ) {
+				if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
+					// from よりも前のデータは削除する.
+					unset( $all_data[ $key ] );
+					continue;
 				}
+				if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+					// to よりも後のデータは削除する.
+					unset( $all_data[ $key ] );
+					continue;
+				}
+				$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
 			}
 		}
 
-		return $result;
+		return $all_data;
 	}
 
 	/**
@@ -260,16 +280,33 @@ EOT;
 	 *
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
+	 * @param  timestamp $from_timestamp 開始時間.
+	 * @param  timestamp $to_timestamp   終了時間.
 	 * @return array
 	 */
-	public static function get_graph_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $assort = null ) {
+	public static function get_graph_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null ) {
 
 		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result   = array();
 
 		if ( null !== $assort and file_exists( $filename ) ) {
 			$all_data = file_get_contents( $filename );
-			$result   = array_column( json_decode( $all_data, true ), $assort );
+			$all_data = json_decode( $all_data, true );
+			// from to の対応をする.
+			if ( ! empty( $from_timestamp ) or ! empty( $to_timestamp ) ) {
+				foreach ( $all_data as $data_timestamp => $data ) {
+					if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
+						// from よりも前のデータは削除する.
+						unset( $all_data[ $data_timestamp ] );
+					}
+					if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+						// to よりも後のデータは削除する.
+						unset( $all_data[ $data_timestamp ] );
+					}
+				}
+			}
+
+			$result = array_column( $all_data, $assort );
 		}
 
 		return $result;
@@ -299,7 +336,6 @@ EOT;
 		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
-		error_log( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
 		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
 
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );

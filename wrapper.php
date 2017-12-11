@@ -31,6 +31,8 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 			'lp'       => 0,
 			'cp'       => 0,
 			'vo'       => 0,
+			'from'     => date( 'Y-m-d', strtotime( '-1 month' ) ),
+			'to'       => date( 'Y-m-d' ),
 		),
 		$atts,
 		'wp-bitcoin-chart-view'
