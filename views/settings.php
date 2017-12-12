@@ -1,6 +1,6 @@
 <?php
 /**
- * settings
+ * Admin settings.
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -8,6 +8,7 @@
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
+
 ?>
 <div class="wrap">
 
@@ -19,17 +20,19 @@
 			<h3>ショートコード 例</h3>
 			<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
 			<figure>
-				<?php echo WP_Bitcoin_Chart::output_chart( array(
-					'name'          => "WPBITCHART2",
+				<?php
+				echo WP_Bitcoin_Chart::output_chart( array(
+					'name'          => 'WPBITCHART2',
 					'periods'       => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
-					'op_color'      => "PINK",
-					'hp_color'      => "PURPLE",
+					'op_color'      => 'PINK',
+					'hp_color'      => 'PURPLE',
 					'op'            => 1,
 					'hp'            => 1,
 					'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 					'to'            => date( 'Y-m-d' ),
 					'tool_position' => 'none', // none, top, bottom or both.
-				) ); ?>
+				) );
+				?>
 				<figcaption>上の例のショートコードから表示されるグラフ</figcaption>
 			</figure>
 
@@ -186,16 +189,16 @@
 
 <style>
 .wp_bitcoin_chart_settings_main {
-  background: none repeat scroll 0 0 #F3F1EB;
-  border: 1px solid #DEDBD1;
-  padding: 10px;
-  width: 750px;
-  height: auto;
-  float: left;
+	background: none repeat scroll 0 0 #F3F1EB;
+	border: 1px solid #DEDBD1;
+	padding: 10px;
+	width: 750px;
+	height: auto;
+	float: left;
 }
 
 .wp_bitcoin_chart_settings_right {
-  float: right;
-  width: 222px;
+	float: right;
+	width: 222px;
 }
 </style>

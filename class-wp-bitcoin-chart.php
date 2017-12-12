@@ -140,7 +140,7 @@ class WP_Bitcoin_Chart {
 
 		$chart = json_encode( self::get_chart( $atts ) );
 
-		// ツール部分のHTML
+		// ツール部分のHTML.
 		$tools_text = <<<EOT
 <div class='columns'>
 	<div class='column'>
@@ -158,7 +158,7 @@ class WP_Bitcoin_Chart {
 </div>
 EOT;
 
-		// スクリプト部分のHTML
+		// スクリプト部分のHTML.
 		$scripts_text = <<<EOT
 <script>
 	var ctx = document.getElementById('${name}').getContext('2d');
@@ -173,10 +173,10 @@ EOT;
 			$output_text .= $tools;
 		}
 		$output_text .= "<canvas id='${name}'></canvas>";
-		if ( $atts['tool_position'] == 'bottom' or 'both' == $atts['tool_position'] ) {
+		if ( 'bottom' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
 			$output_text .= $tools_text;
 		}
-		$output_text .= "</div>";
+		$output_text .= '</div>';
 		$output_text .= $scripts_text;
 
 		file_put_contents( $filename, $output_text );
