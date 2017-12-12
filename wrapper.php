@@ -19,20 +19,21 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 	// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 	$atts = shortcode_atts(
 		array(
-			'name'     => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
-			'periods'  => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
-			'op_color' => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
-			'hp_color' => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
-			'lp_color' => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
-			'cp_color' => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
-			'vo_color' => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
-			'op'       => 0,
-			'hp'       => 0,
-			'lp'       => 0,
-			'cp'       => 0,
-			'vo'       => 0,
-			'from'     => date( 'Y-m-d', strtotime( '-1 month' ) ),
-			'to'       => date( 'Y-m-d' ),
+			'name'          => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
+			'periods'       => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
+			'op_color'      => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
+			'hp_color'      => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
+			'lp_color'      => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
+			'cp_color'      => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
+			'vo_color'      => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
+			'op'            => 0,
+			'hp'            => 0,
+			'lp'            => 0,
+			'cp'            => 0,
+			'vo'            => 0,
+			'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
+			'to'            => date( 'Y-m-d' ),
+			'tool_position' => 'top', // none, top, bottom or both.
 		),
 		$atts,
 		'wp-bitcoin-chart-view'
@@ -42,9 +43,9 @@ function wp_bitcoin_chart_view_shortcode( array $atts ) {
 	return WP_Bitcoin_Chart::output_chart( $atts );
 }
 
-// Exp: [wp-bitcoin-chart-view]
+// Exp: [wp_bitcoin_chart_view]
 // ショートコードで画面にグラフを表示する.
-add_shortcode( 'wp-bitcoin-chart-view', 'wp_bitcoin_chart_view_shortcode' );
+add_shortcode( 'wp_bitcoin_chart_view', 'wp_bitcoin_chart_view_shortcode' );
 
 /**
  * Register jquery.
@@ -60,3 +61,4 @@ function register_jquery() {
 }
 
 add_action( 'wp_enqueue_scripts', 'register_jquery' );
+add_action( 'admin_enqueue_scripts', 'register_jquery' );

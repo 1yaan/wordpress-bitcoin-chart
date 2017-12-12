@@ -138,30 +138,46 @@ class WP_Bitcoin_Chart {
 			}
 		}
 
-		$chart       = json_encode( self::get_chart( $atts ) );
-		$output_text = <<<EOT
-<div class='wp-bitcoin-chart-field'>
-	<canvas id='${name}'></canvas>
-	<div class='columns'>
-		<div class='column'>
-			<div class='buttons has-addons'>
-				Zoom:&nbsp;
-				<a href='#' id='${name}-zoom-10min' class='button'>10min</a>
-				<a href='#' id='${name}-zoom-30min' class='button'>30min</a>
-				<a href='#' id='${name}-zoom-1hour' class='button'>1hour</a>
-				<a href='#' id='${name}-zoom-1day' class='button'>1day</a>
-			</div>
-		</div>
-		<div class='column'>
-			From:&nbsp;<input type='text' id='${name}-from-input' value='${from_date}'>&nbsp;To:&nbsp;<input type='text' id='myChart-to-input' value='${to_date}'>
+		$chart = json_encode( self::get_chart( $atts ) );
+
+		// ツール部分のHTML
+		$tools_text = <<<EOT
+<div class='columns'>
+	<div class='column'>
+		<div class='buttons has-addons'>
+			Zoom:&nbsp;
+			<a href='#' id='${name}-zoom-10min' class='button'>10min</a>
+			<a href='#' id='${name}-zoom-30min' class='button'>30min</a>
+			<a href='#' id='${name}-zoom-1hour' class='button'>1hour</a>
+			<a href='#' id='${name}-zoom-1day' class='button'>1day</a>
 		</div>
 	</div>
+	<div class='column'>
+		From:&nbsp;<input type='text' id='${name}-from-input' value='${from_date}'>&nbsp;To:&nbsp;<input type='text' id='myChart-to-input' value='${to_date}'>
+	</div>
 </div>
+EOT;
+
+		// スクリプト部分のHTML
+		$scripts_text = <<<EOT
 <script>
 	var ctx = document.getElementById('${name}').getContext('2d');
 	var chart = new Chart(ctx, ${chart});
 </script>
 EOT;
+
+		// 画面に表示する内容を加工して整理する.
+		$output_text           = "<div class='wp-bitcoin-chart-field'>";
+		$atts['tool_position'] = strtolower( $atts['tool_position'] );
+		if ( 'top' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
+			$output_text .= $tools;
+		}
+		$output_text .= "<canvas id='${name}'></canvas>";
+		if ( $atts['tool_position'] == 'bottom' or 'both' == $atts['tool_position'] ) {
+			$output_text .= $tools_text;
+		}
+		$output_text .= "</div>";
+		$output_text .= $scripts_text;
 
 		file_put_contents( $filename, $output_text );
 

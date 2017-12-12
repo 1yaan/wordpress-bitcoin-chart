@@ -1,4 +1,4 @@
-# wordpress-bitcoin-chart
+# Wordpress Bitcoin Chart Plugin
 This is WordPress plugin. This plugin views BTC/JPY chart by Chart.js
 
 ## ただいま作成中でっす！＼(^o^)／
@@ -62,9 +62,14 @@ https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=86400&after=148331
 UNIX TIMESTAMP を取得しておき、3600秒毎にデータを取得するようにする。
 http://blog.goo.ne.jp/xmldtp/e/95890e6dd83d76d601b66513bf3f1993
 
+Chartjsをリアルタイムへ
+http://blog.goo.ne.jp/xmldtp/e/95890e6dd83d76d601b66513bf3f1993
+プラグインでAjaxを使う
+https://wpdocs.osdn.jp/%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7_AJAX_%E3%82%92%E4%BD%BF%E3%81%86
+
 ## ショートコード
 
   ```
-  [wp-bitcoin-chart-view name="WPBITCHART2" op=1 hp=1 hp_color="PURPLE" op_color="PINK" lp_color="BLACK" cp_color="ORANGE"]
-  [wp-bitcoin-chart-view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
+  [wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 hp_color="PURPLE" op_color="PINK" lp_color="BLACK" cp_color="ORANGE"]
+  [wp_bitcoin_chart_view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
   ```
