@@ -1,6 +1,10 @@
 # Wordpress Bitcoin Chart Plugin
 This is WordPress plugin. This plugin views BTC/JPY chart by Chart.js
 
+Github page
+https://1yaan.github.io/wp-bitcoin-chart/
+
+
 ## ただいま作成中でっす！＼(^o^)／
 
 ## 以下、いろいろメモも入ってるけどあとでまとめます！！

@@ -1,115 +1,380 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>WP Bitcoin Chart Example</title>
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>WP Bitcoin Chart Example</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<style>
+	html,body {
+		background: #EFF3F4;
+		font-family: 游ゴシック体, 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', メイリオ, Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
+	}
+	.hero-body .container {
+		max-width: 700px;
+	}
+	.hero-body .title {
+		color: hsl(192,17%,99%) !important;
+	}
+	.hero-body .subtitle {
+		color: hsl(192,17%,99%) !important;
+		padding-top: 2rem;
+		line-height: 1.5;
+	}
+	.features {
+		padding: 5rem 0;
+	}
+	.box.cta {
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+	}
+	.card-image > .fa {
+		font-size: 8rem;
+		padding-top: 2rem;
+		padding-bottom: 2rem;
+		color: #209cee;
+	}
+	.card-content .content {
+		font-size: 14px;
+		margin: 1rem 1rem;
+	}
+	.card-content .content h4 {
+		font-size: 16px;
+		font-weight: 700;
+	}
+	.card {
+		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.18);
+		margin-bottom: 2rem;
+	}
+	.intro {
+		padding: 5rem 0;
+		text-align: center;
+	}
+	.sandbox {
+		padding: 5rem 0;
+	}
+	.tile.notification {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+	}
+	</style>
 </head>
 <body>
-  <section class="section">
-    <div class="container">
-      <h1 class="title">WP Bitcoin Chart Example</h1>
-      <p class="subtitle">
-        このようなグラフが表示されるでしょう！
-      </p>
-      <div class="content">
-        <ul>
-          <li>WP Bitcoin Chartプラグインで使っているデータは、<a href="https://cryptowatch.jp/bitflyer/btcjpy" target="_blank">Cryptwatch BTC/JPY</a>を使用しています。</li>
-          <li>WP Bitcoin Chartプラグインでは、<a href="http://www.chartjs.org/" target="_blank">Chartjs</a>を使用してグラフを表示します。</li>
-          <li>WP Bitcoin Chartプラグインでは、10min, 30min, 60min, 1dayのデータを表示できます。表示期間の初期値は30日です。</li>
-          <li>このサンプルページでは、UTC timestamp=1512054000(2017/12/01 00:00:00)時点から2017/12/06までの、1日ごとのBTC/JPYの取引について表示します。</li>
-          <li>このサンプルページのスタイルは、<a href="https://bulma.io" target="_blank">BULMA (https://bulma.io)</a>を使用しています。</li>
-        </ul>
-      </div>
-      <div class="wp-bitcoin-chart-field">
-        <canvas id="myChart"></canvas>
-        <div class="columns">
-          <div class="column">
-            <div class="buttons has-addons">
-              Zoom:&nbsp;
-              <a href="#" id="myChart-zoom-10min" class="button">10min</a>
-              <a href="#" id="myChart-zoom-30min" class="button is-info is-selected">30min</a>
-              <a href="#" id="myChart-zoom-60min" class="button">60min</a>
-              <a href="#" id="myChart-zoom-1day" class="button">1day</a>
-            </div>
-          </div>
-          <div class="column">
-            From:&nbsp;<input type="text" id="myChart-from-input" value="2017-11-30">&nbsp;To:&nbsp;<input type="text" id="myChart-to-input" value="2017-12-06">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+	<section class="hero is-medium is-info">
+		<div class="hero-head">
+			<nav class="navbar">
+				<div class="container">
+					<div class="navbar-brand">
+						<a class="navbar-item" href="https://1yaan.github.io/wp-bitcoin-chart/">
+							WP Bitcoin Chart
+						</a>
+						<span class="navbar-burger burger" data-target="navbarMenu">
+							<span></span>
+							<span></span>
+							<span></span>
+						</span>
+					</div>
+					<div id="navbarMenu" class="navbar-menu">
+						<div class="navbar-end">
+							<a class="navbar-item" href="https://twitter.com/1yaan" target="_blank">
+								<span class="icon">
+									<i class="fa fa-twitter"></i>
+								</span>
+							</a>
+							<span class="navbar-item">
+								<a class="button is-white is-outlined is-small" href="https://github.com/1yaan/wp-bitcoin-chart" target="_blank">
+									<span class="icon">
+										<i class="fa fa-github"></i>
+									</span>
+									<span>View Source</span>
+								</a>
+							</span>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="hero-body">
+			<div class="container has-text-centered">
+				<h1 class="title">WP Bitcoin Chart Plugin</h1>
+				<h2 class="subtitle">
+					WP Bitcoin Chart Pluginは、Wordpressのプラグインです。<br>プラグインの設定はありません！<br>ショートコードを発行するだけで、すぐにBTC/JPYのグラフをあなたのWordpressに挿入することができます。
+				</h2>
+			</div>
+		</div>
 
-  <script>
-  var ctx = document.getElementById("myChart").getContext("2d");
-  // https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=86400&after=1512054000
-  // {"result":{"86400":[[1512000000,1141802,1317140,980000,1134017,42518.234],[1512086400,1134017,1273402,1035001,1174880,33419.438],[1512172800,1171219,1239711,1094900,1235998,21826.799],[1512259200,1235995,1255000,1207719,1232714,16287.729],[1512345600,1230501,1327536,1218253,1282000,18746.816],[1512432000,1282000,1308000,1250001,1303906,14576.17],[1512518400,1303500,1306000,1292000,1297593,2391.8408]]},"allowance":{"cost":1180428,"remaining":7996635637}}
-  // [ CloseTime, OpenPrice, HighPrice, LowPrice, ClosePrice, Volume ]
-  // http://url-c.com/tc/ UNIX timestamp変換
+	</section>
 
-  var openPriceData  = [1141802,1134017,1171219,1235995,1230501,1282000,1303500];
-  var highPriceData  = [1317140,1273402,1239711,1255000,1327536,1308000,1306000];
-  var lowPriceData   = [ 980000,1035001,1094900,1207719,1218253,1250001,1292000];
-  var closePriceData = [1134017,1174880,1235998,1232714,1282000,1303906,1297593];
-  var volumeData     = [42518.234,33419.438,21826.799,16287.729,18746.816,14576.17,3385.9707]
+	<div class="box cta">
+		<p class="has-text-centered">
+			<span class="tag is-primary">Latest</span> Version 0.1.0 画面に複数件のグラフが挿入できるようになりました！ refs <a href="https://github.com/1yaan/wp-bitcoin-chart/issues/7" target="_blank">#7</a>
+		</p>
+	</div>
 
-  var formatS = "MM/DD";
+	<section class="container">
+		<div class="columns features">
+			<div class="column is-4">
+				<div class="card">
+					<div class="card-image has-text-centered">
+						<i class="fa fa-btc"></i>
+					</div>
+					<div class="card-content">
+						<div class="content">
+							<p>WP Bitcoin Chartプラグインで使っているデータは、<a href="https://cryptowatch.jp/bitflyer/btcjpy" target="_blank">Cryptwatch BTC/JPY</a>を使用しています。</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column is-4">
+				<div class="card">
+					<div class="card-image has-text-centered">
+							<i class="fa fa-line-chart"></i>
+					</div>
+					<div class="card-content">
+						<div class="content">
+							<p>WP Bitcoin Chartプラグインでは、<a href="http://www.chartjs.org/" target="_blank">Chartjs</a>を使用してグラフを表示します。</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="column is-4">
+				<div class="card">
+					<div class="card-image has-text-centered">
+							<i class="fa fa-clock-o"></i>
+					</div>
+					<div class="card-content">
+						<div class="content">
+							<p>WP Bitcoin Chartプラグインでは、10min, 30min, 60min, 1dayのデータを表示できます。表示期間の初期値は30日です。</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-  var chart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: [
-          moment.unix(1512000000).format(formatS),
-          moment.unix(1512086400).format(formatS),
-          moment.unix(1512172800).format(formatS),
-          moment.unix(1512259200).format(formatS),
-          moment.unix(1512345600).format(formatS),
-          moment.unix(1512432000).format(formatS),
-          moment.unix(1512518400).format(formatS)
-        ], // 選択された期間とする [10min、30min、60min、1day]
-        datasets: [
-          {
-            label: "Open Price",
-            borderColor: "Red", // 可変とする
-            data: openPriceData, // 選択された期間分のデータを表示する
-            drawBorder: false,
-          },
-          {
-            label: "High Price",
-            borderColor: "Green", // 可変とする
-            data: highPriceData, // 選択された期間分のデータを表示する
-          },
-          {
-            label: "Low Price",
-            borderColor: "Yellow", // 可変とする
-            data: lowPriceData, // 選択された期間分のデータを表示する
-          },
-          {
-            label: "Close Price",
-            borderColor: "Blue", // 可変とする
-            data: closePriceData, // 選択された期間分のデータを表示する
-          },
-          {
-            label: "Volume",
-            borderColor: "Magenta", // 可変とする
-            data: volumeData, // 選択された期間分のデータを表示する
-          },
-        ]
-      },
-      options: {
-        title: {
-          display: true,
-          text: "BTC/JPY"
-        }
-      }
-  });
-  </script>
+		<div class="intro column is-8 is-offset-2">
+			<h2 class="title">This plugin can be easily installed without knowing PHP!</h2><br>
+			<p class="subtitle">This plugin will enter all the settings in the shortcode. Look at this page and look for your favorite setting!</p>
+		</div>
+
+		<div class="sandbox">
+			<div class="tile is-ancestor">
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-white">
+						<p class="title">ショートコード 例</p>
+						<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
+						<figure>
+							<div class='wp-bitcoin-chart-field'>
+								<canvas id='WPBITCHART2'></canvas>
+							</div>
+							<script>
+								var ctx = document.getElementById('WPBITCHART2').getContext('2d');
+								var chart = new Chart(ctx, {"type":"line","data":{"labels":["11\u670812\u65e5","11\u670813\u65e5","11\u670814\u65e5","11\u670815\u65e5","11\u670816\u65e5","11\u670817\u65e5","11\u670818\u65e5","11\u670819\u65e5","11\u670820\u65e5","11\u670821\u65e5","11\u670822\u65e5","11\u670823\u65e5","11\u670824\u65e5","11\u670825\u65e5","11\u670826\u65e5","11\u670827\u65e5","11\u670828\u65e5","11\u670829\u65e5","11\u670830\u65e5","12\u67081\u65e5","12\u67082\u65e5","12\u67083\u65e5","12\u67084\u65e5","12\u67085\u65e5","12\u67086\u65e5","12\u67087\u65e5","12\u67088\u65e5","12\u67089\u65e5","12\u670810\u65e5","12\u670811\u65e5","12\u670812\u65e5"],"datasets":[{"label":"Open Price","borderColor":"PINK","data":[744601,720794,666778,755214,763219,827733,887352,868427,875755,896837,930574,914218,918669,893818,915908,973806,1037890,1084999,1141802,1134017,1171219,1235995,1230501,1282000,1303500,1325099,1563054,2208435,1986014,1790008,1737000],"drawBorder":false},{"label":"High Price","borderColor":"PURPLE","data":[779000,737741,784720,781288,831000,899500,913000,883258,901249,936638,936499,929000,922519,925019,976950,1044500,1092800,1145999,1317140,1273402,1239711,1255000,1327536,1308000,1332497,1568878,2298580,2312100,1999000,1830000,1994000],"drawBorder":false}],"options":{"title":{"display":true,"text":"BTC\/JPY"}}}});
+							</script>
+							<figcaption>上の例のショートコードから表示されるグラフ</figcaption>
+						</figure>
+					</article>
+				</div>
+			</div>
+			<div class="tile is-ancestor">
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-white">
+						<p class="title">ショートコードで使用できるパラメーター</p>
+						<p class="subtitle">ショートコードで以下のすべてのパラメーターを使用できます。</p>
+						<div class="content">
+							<table class="table is-bordered is-striped is-narrow is-fullwidth">
+								<thead>
+									<tr>
+										<th>オプション</th>
+										<th>概要</th>
+										<th>初期値</th>
+										<th>入力できる値</th>
+										<th>備考</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>name</td>
+										<td>このショートコードの名前</td>
+										<td>WPBITCHART</td>
+										<td>半角英数字（小文字/大文字）</td>
+										<td>それぞれのグラフで、UNIQUEになるように設定してください。</td>
+									</tr>
+									<tr>
+										<td>periods</td>
+										<td>データの間隔</td>
+										<td>86400</td>
+										<td>300, 1800, 3600, 86400の4種類を指定可能です。</td>
+										<td>300秒=5分、1800秒=30分、3600秒=1時間、86400秒=1日です。</td>
+									</tr>
+									<tr>
+										<td>op_color</td>
+										<td>開始金額のグラフの色</td>
+										<td>Red</td>
+										<td>CSSで利用可能なカラーネームを指定可能です。</td>
+										<td>
+											<a href="http://www.htmq.com/color/colorname.shtml" target="_blank">参考</a><br>
+											英名："Red", 16進表記："#FF0000"
+										</td>
+									</tr>
+									<tr>
+										<td>hp_color</td>
+										<td>最高金額のグラフの色</td>
+										<td>Green</td>
+										<td>CSSで利用可能なカラーネームを指定可能です。</td>
+										<td>
+											<a href="http://www.htmq.com/color/colorname.shtml" target="_blank">参考</a><br>
+											英名："Red", 16進表記："#FF0000"
+										</td>
+									</tr>
+									<tr>
+										<td>lp_color</td>
+										<td>最低金額のグラフの色</td>
+										<td>Blue</td>
+										<td>CSSで利用可能なカラーネームを指定可能です。</td>
+										<td>
+											<a href="http://www.htmq.com/color/colorname.shtml" target="_blank">参考</a><br>
+											英名："Red", 16進表記："#FF0000"
+										</td>
+									</tr>
+									<tr>
+										<td>cp_color</td>
+										<td>終了金額のグラフの色</td>
+										<td>Yellow</td>
+										<td>CSSで利用可能なカラーネームを指定可能です。</td>
+										<td>
+											<a href="http://www.htmq.com/color/colorname.shtml" target="_blank">参考</a><br>
+											英名："Red", 16進表記："#FF0000"
+										</td>
+									</tr>
+									<tr>
+										<td>vo_color</td>
+										<td>取引量のグラフの色</td>
+										<td>Magenta</td>
+										<td>CSSで利用可能なカラーネームを指定可能です。</td>
+										<td>
+											<a href="http://www.htmq.com/color/colorname.shtml" target="_blank">参考</a><br>
+											英名："Red", 16進表記："#FF0000"
+										</td>
+									</tr>
+									<tr>
+										<td>op</td>
+										<td>開始金額のグラフを表示するかどうか</td>
+										<td>0</td>
+										<td>0=表示しない, 1=表示する</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>hp</td>
+										<td>最大金額のグラフを表示するかどうか</td>
+										<td>0</td>
+										<td>0=表示しない, 1=表示する</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>lp</td>
+										<td>最低金額のグラフを表示するかどうか</td>
+										<td>0</td>
+										<td>0=表示しない, 1=表示する</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>cp</td>
+										<td>終了金額のグラフを表示するかどうか</td>
+										<td>0</td>
+										<td>0=表示しない, 1=表示する</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>vo</td>
+										<td>取引量のグラフを表示するかどうか</td>
+										<td>0</td>
+										<td>0=表示しない, 1=表示する</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>from</td>
+										<td>グラフをいつから表示するか</td>
+										<td>今日から1ヶ月前</td>
+										<td>"Y-m-d H:i"形式で入力してください。</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>to</td>
+										<td>グラフをいつまで表示するか</td>
+										<td>今日まで</td>
+										<td>"Y-m-d H:i"形式で入力してください。</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>tool_position</td>
+										<td>グラフ切替ツールをどこに表示するか</td>
+										<td>top</td>
+										<td>
+											top=グラフの上<br>
+											bottom=グラフの下<br>
+											both=グラフの上下両方<br>
+											none=表示しない
+										</td>
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</article>
+				</div>
+			</div>
+
+			<div class="tile is-ancestor">
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-danger">
+						<p class="title">ご要望について</p>
+						<div class="content">
+							<p>ご要望の受け付けは、TwitterのDMにお願いします。</p>
+							<a href="https://twitter.com/1yaan" target="_blank">こちら ( @1yaan )</a>
+						</div>
+					</article>
+				</div>
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-success">
+						<p class="title">その他、お仕事の相談について</p>
+						<div class="content">
+							<p>私はフリーランスのプログラマです。お仕事の御見積依頼のご連絡お待ちしております！</p>
+							<a href="https://twitter.com/1yaan" target="_blank">こちら ( @1yaan )</a>
+						</div>
+					</article>
+				</div>
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-white">
+						<div class="content">
+							<p class="title">PR</p>
+						</div>
+					</article>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="content has-text-centered">
+				<p>
+					<strong>WP Bitcoin Chart plugin</strong> by <a href="https://github.com/1yaan">1yaan</a>. The source code is licensed
+					<a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
+				</p>
+				<p>
+					<a class="icon" href="https://github.com/1yaan/wp-bitcoin-chart">
+						<i class="fa fa-github"></i>
+					</a>
+				</p>
+			</div>
+		</div>
+	</footer>
+	<script async type="text/javascript" src="../js/bulma.js"></script>
 </body>
 </html>
