@@ -73,3 +73,11 @@ https://wpdocs.osdn.jp/%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A7_AJ
   [wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 hp_color="PURPLE" op_color="PINK" lp_color="BLACK" cp_color="ORANGE"]
   [wp_bitcoin_chart_view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
   ```
+
+ビットコインのアイコンこちらから
+http://icooon-mono.com/10328-%E7%99%BD%E6%8A%9C%E3%81%8D%E3%81%AE%E3%83%93%E3%83%83%E3%83%88%E3%82%B3%E3%82%A4%E3%83%B3%E3%82%A2%E3%82%A4%E3%82%B3%E3%83%B32/
+ICOOON MONO
+商用利用可能なモノトーンのアイコン素材をフリー(無料)でダウンロードできる素材配布サイトです。
+http://icooon-mono.com/
+icooon-mono-logo.png
+ビットコインのアイコンを使用させていただきました！ありがとうございました！！
