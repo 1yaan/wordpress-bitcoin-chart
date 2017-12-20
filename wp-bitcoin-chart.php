@@ -76,5 +76,12 @@ if ( is_admin() ) {
 	add_action( 'init', array( 'WP_Bitcoin_Chart_Admin', 'init' ) );
 }
 
-// add wrapper class around deprecated WP Bitcoin Chart functions that are referenced elsewhere.
-require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'wrapper.php' );
+// Add Action.
+add_action( 'wp_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
+add_action( 'admin_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
+add_action( 'wp_ajax_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
+add_action( 'wp_ajax_nopriv_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
+
+// Exp: [wp_bitcoin_chart_view]
+// ショートコードで画面にグラフを表示する.
+add_shortcode( 'wp_bitcoin_chart_view', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_view_shortcode' ) );
