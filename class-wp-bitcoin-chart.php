@@ -49,32 +49,32 @@ class WP_Bitcoin_Chart {
 	 */
 	public static function wp_bitcoin_chart_activation() {
 		// Insert options.
-		$wp_bitcoin_chart_check_periods_300   = get_option( 'wp_bitcoin_chart_check_periods_300' );
-		$wp_bitcoin_chart_check_periods_1800  = get_option( 'wp_bitcoin_chart_check_periods_1800' );
-		$wp_bitcoin_chart_check_periods_3600  = get_option( 'wp_bitcoin_chart_check_periods_3600' );
-		$wp_bitcoin_chart_check_periods_86400 = get_option( 'wp_bitcoin_chart_check_periods_86400' );
+		$wp_bitcoin_chart_check_periods_300   = get_option( WBC__DEFAULT_PERIODS_300_NAME );
+		$wp_bitcoin_chart_check_periods_1800  = get_option( WBC__DEFAULT_PERIODS_1800_NAME );
+		$wp_bitcoin_chart_check_periods_3600  = get_option( WBC__DEFAULT_PERIODS_3600_NAME );
+		$wp_bitcoin_chart_check_periods_86400 = get_option( WBC__DEFAULT_PERIODS_86400_NAME );
 
 		if ( ! $wp_bitcoin_chart_check_periods_300 ) {
-			$wp_bitcoin_chart_check_periods_300 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+			$wp_bitcoin_chart_check_periods_300 = WBC__DEFAULT_CHART_START;
 		}
 		if ( ! $wp_bitcoin_chart_check_periods_1800 ) {
-			$wp_bitcoin_chart_check_periods_1800 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+			$wp_bitcoin_chart_check_periods_1800 = WBC__DEFAULT_CHART_START;
 		}
 		if ( ! $wp_bitcoin_chart_check_periods_3600 ) {
-			$wp_bitcoin_chart_check_periods_3600 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+			$wp_bitcoin_chart_check_periods_3600 = WBC__DEFAULT_CHART_START;
 		}
 		if ( ! $wp_bitcoin_chart_check_periods_86400 ) {
-			$wp_bitcoin_chart_check_periods_86400 = WP_BITCOIN_CHART__DEFAULT_CHART_START;
+			$wp_bitcoin_chart_check_periods_86400 = WBC__DEFAULT_CHART_START;
 		}
 
-		update_option( 'wp_bitcoin_chart_check_periods_300', $wp_bitcoin_chart_check_periods_300 );
-		update_option( 'wp_bitcoin_chart_check_periods_1800', $wp_bitcoin_chart_check_periods_1800 );
-		update_option( 'wp_bitcoin_chart_check_periods_3600', $wp_bitcoin_chart_check_periods_3600 );
-		update_option( 'wp_bitcoin_chart_check_periods_86400', $wp_bitcoin_chart_check_periods_86400 );
+		update_option( WBC__DEFAULT_PERIODS_300_NAME, $wp_bitcoin_chart_check_periods_300 );
+		update_option( WBC__DEFAULT_PERIODS_1800_NAME, $wp_bitcoin_chart_check_periods_1800 );
+		update_option( WBC__DEFAULT_PERIODS_3600_NAME, $wp_bitcoin_chart_check_periods_3600 );
+		update_option( WBC__DEFAULT_PERIODS_86400_NAME, $wp_bitcoin_chart_check_periods_86400 );
 
 		// Check data directory.
-		if ( ! file_exists( WP_BITCOIN_CHART__PLUGIN_DATA_DIR ) ) {
-			mkdir( WP_BITCOIN_CHART__PLUGIN_DATA_DIR, 0777 );
+		if ( ! file_exists( WBC__PLUGIN_DATA_DIR ) ) {
+			mkdir( WBC__PLUGIN_DATA_DIR, 0777 );
 		}
 
 		// 有効下時点でのデータを保持しておく.
@@ -92,10 +92,10 @@ class WP_Bitcoin_Chart {
 	public static function wp_bitcoin_chart_deactivation() {
 		if ( defined( 'WP_DEBUG' ) ) {
 			// WP_DEBUGが設定されていたら、フラグを削除する.
-			delete_option( 'wp_bitcoin_chart_check_periods_300' );
-			delete_option( 'wp_bitcoin_chart_check_periods_1800' );
-			delete_option( 'wp_bitcoin_chart_check_periods_3600' );
-			delete_option( 'wp_bitcoin_chart_check_periods_86400' );
+			delete_option( WBC__DEFAULT_PERIODS_300_NAME );
+			delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
+			delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
+			delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
 		}
 	}
 
@@ -107,10 +107,10 @@ class WP_Bitcoin_Chart {
 	public static function wp_bitcoin_chart_uninstall() {
 		// Delete options.
 		// True, if option is successfully deleted. False on failure, or option does not exist.
-		delete_option( 'wp_bitcoin_chart_check_periods_300' );
-		delete_option( 'wp_bitcoin_chart_check_periods_1800' );
-		delete_option( 'wp_bitcoin_chart_check_periods_3600' );
-		delete_option( 'wp_bitcoin_chart_check_periods_86400' );
+		delete_option( WBC__DEFAULT_PERIODS_300_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
 	}
 
 	/**
@@ -125,7 +125,7 @@ class WP_Bitcoin_Chart {
 		$periods     = $atts['periods'];
 		$from_date   = $atts['from'];
 		$to_date     = $atts['to'];
-		$filename    = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . '.htm';
+		$filename    = WBC__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . '.htm';
 		$output_text = '';
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
@@ -290,9 +290,9 @@ EOT;
 	 * @param  timestamp $to_timestamp   終了時間.
 	 * @return array
 	 */
-	public static function get_data_label( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null ) {
+	public static function get_data_label( $periods = WBC__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null ) {
 
-		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+		$filename = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$all_data = array();
 
 		if ( file_exists( $filename ) ) {
@@ -310,7 +310,7 @@ EOT;
 					unset( $all_data[ $key ] );
 					continue;
 				}
-				if ( WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY == $periods ) {
+				if ( WBC__CHART_PERIODS_ONE_DAY == $periods ) {
 					$all_data[ $key ] = date( 'n月j日', $data_timestamp );
 				} else {
 					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
@@ -330,9 +330,9 @@ EOT;
 	 * @param  timestamp $to_timestamp   終了時間.
 	 * @return array
 	 */
-	public static function get_graph_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null ) {
+	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null ) {
 
-		$filename = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+		$filename = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 		$result   = array();
 
 		if ( null !== $assort and file_exists( $filename ) ) {
@@ -366,7 +366,7 @@ EOT;
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
 	 */
-	public static function get_cryptowatch_data( $periods = WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS ) {
+	public static function get_cryptowatch_data( $periods = WBC__DEFAULT_CHART_PERIODS ) {
 		// No periods. Exist.
 		if ( empty( $periods ) or ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
 			return 1;
@@ -391,7 +391,7 @@ EOT;
 
 			$periods_keys = self::array_column( $cw['result'][ strval( $periods ) ], 0 );
 			$periods_data = array_combine( $periods_keys, $cw['result'][ strval( $periods ) ] );
-			$filename     = WP_BITCOIN_CHART__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+			$filename     = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 
 			if ( file_exists( $filename ) ) {
 				// 2つの配列のデータをマージする.
@@ -450,13 +450,13 @@ EOT;
 		// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 		$atts = shortcode_atts(
 			array(
-				'name'          => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
-				'periods'       => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
-				'op_color'      => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
-				'hp_color'      => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
-				'lp_color'      => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
-				'cp_color'      => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
-				'vo_color'      => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
+				'name'          => WBC__DEFAULT_CHART_NAME,
+				'periods'       => WBC__DEFAULT_CHART_PERIODS,
+				'op_color'      => WBC__DEFAULT_OP_COLOR,
+				'hp_color'      => WBC__DEFAULT_HP_COLOR,
+				'lp_color'      => WBC__DEFAULT_LP_COLOR,
+				'cp_color'      => WBC__DEFAULT_CP_COLOR,
+				'vo_color'      => WBC__DEFAULT_VO_COLOR,
 				'op'            => 0,
 				'hp'            => 0,
 				'lp'            => 0,
@@ -498,13 +498,13 @@ EOT;
 
 		$atts = shortcode_atts(
 			array(
-				'name'          => WP_BITCOIN_CHART__DEFAULT_CHART_NAME,
-				'periods'       => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
-				'op_color'      => WP_BITCOIN_CHART__DEFAULT_OP_COLOR,
-				'hp_color'      => WP_BITCOIN_CHART__DEFAULT_HP_COLOR,
-				'lp_color'      => WP_BITCOIN_CHART__DEFAULT_LP_COLOR,
-				'cp_color'      => WP_BITCOIN_CHART__DEFAULT_CP_COLOR,
-				'vo_color'      => WP_BITCOIN_CHART__DEFAULT_VO_COLOR,
+				'name'          => WBC__DEFAULT_CHART_NAME,
+				'periods'       => WBC__DEFAULT_CHART_PERIODS,
+				'op_color'      => WBC__DEFAULT_OP_COLOR,
+				'hp_color'      => WBC__DEFAULT_HP_COLOR,
+				'lp_color'      => WBC__DEFAULT_LP_COLOR,
+				'cp_color'      => WBC__DEFAULT_CP_COLOR,
+				'vo_color'      => WBC__DEFAULT_VO_COLOR,
 				'op'            => 0,
 				'hp'            => 0,
 				'lp'            => 0,

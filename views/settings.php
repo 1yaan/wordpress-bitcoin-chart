@@ -23,7 +23,7 @@
 				<?php
 				echo WP_Bitcoin_Chart::output_chart( array(
 					'name'          => 'WPBITCHART2',
-					'periods'       => WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS,
+					'periods'       => WBC__DEFAULT_CHART_PERIODS,
 					'op_color'      => 'PINK',
 					'hp_color'      => 'PURPLE',
 					'op'            => 1,

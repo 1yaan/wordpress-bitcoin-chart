@@ -46,33 +46,38 @@ if ( ! function_exists( 'add_action' ) ) {
 }
 
 // This plugin version.
-define( 'WP_BITCOIN_CHART__VERSION', '0.1' );
+define( 'WBC__VERSION', '0.1' );
 // The absolute path of the directory that contains the file, with trailing slash ("/").
-define( 'WP_BITCOIN_CHART__PLUGIN_NAME', 'wp-bitcoin-chart' );
-define( 'WP_BITCOIN_CHART__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-define( 'WP_BITCOIN_CHART__PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
-define( 'WP_BITCOIN_CHART__PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
-define( 'WP_BITCOIN_CHART__PLUGIN_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
-define( 'WP_BITCOIN_CHART__DEFAULT_CHART_PERIODS', 86400 );
-define( 'WP_BITCOIN_CHART__CHART_PERIODS_ONE_DAY', 86400 );
-define( 'WP_BITCOIN_CHART__DEFAULT_CHART_START', 1483319400 ); // January 2, 2017 AM 10: 10 is my son's 11th birthday.
-define( 'WP_BITCOIN_CHART__DEFAULT_CHART_NAME', 'WPBITCHART' );
-define( 'WP_BITCOIN_CHART__DEFAULT_OP_COLOR', 'Red' );
-define( 'WP_BITCOIN_CHART__DEFAULT_HP_COLOR', 'Green' );
+define( 'WBC__PLUGIN_NAME', 'wp-bitcoin-chart' );
+define( 'WBC__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'WBC__PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
+define( 'WBC__PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
+define( 'WBC__PLUGIN_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
+define( 'WBC__DEFAULT_CHART_PERIODS', 86400 );
+define( 'WBC__CHART_PERIODS_ONE_DAY', 86400 );
+define( 'WBC__DEFAULT_CHART_START', 1483319400 ); // January 2, 2017 AM 10: 10 is my son's 11th birthday.
+define( 'WBC__DEFAULT_CHART_NAME', 'WPBITCHART' );
+define( 'WBC__DEFAULT_OP_COLOR', 'Red' );
+define( 'WBC__DEFAULT_HP_COLOR', 'Green' );
 
-define( 'WP_BITCOIN_CHART__DEFAULT_LP_COLOR', 'Blue' );
-define( 'WP_BITCOIN_CHART__DEFAULT_CP_COLOR', 'Yellow' );
-define( 'WP_BITCOIN_CHART__DEFAULT_VO_COLOR', 'Magenta' );
+define( 'WBC__DEFAULT_LP_COLOR', 'Blue' );
+define( 'WBC__DEFAULT_CP_COLOR', 'Yellow' );
+define( 'WBC__DEFAULT_VO_COLOR', 'Magenta' );
+
+define( 'WBC__DEFAULT_PERIODS_300_NAME', 'wp_bitcoin_chart_check_periods_300' );
+define( 'WBC__DEFAULT_PERIODS_1800_NAME', 'wp_bitcoin_chart_check_periods_1800' );
+define( 'WBC__DEFAULT_PERIODS_3600_NAME', 'wp_bitcoin_chart_check_periods_3600' );
+define( 'WBC__DEFAULT_PERIODS_86400_NAME', 'wp_bitcoin_chart_check_periods_86400' );
 
 register_activation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_activation' ) );
 register_deactivation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_deactivation' ) );
 register_uninstall_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_uninstall' ) );
 
-require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
+require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
 add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
 
 if ( is_admin() ) {
-	require_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'class-wp-bitcoin-chart-admin.php' );
+	require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart-admin.php' );
 	add_action( 'init', array( 'WP_Bitcoin_Chart_Admin', 'init' ) );
 }
 

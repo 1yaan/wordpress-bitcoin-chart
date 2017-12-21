@@ -41,7 +41,7 @@ class WP_Bitcoin_Chart_Admin {
 	private static function init_hooks() {
 		self::$initiated = true;
 		add_action( 'admin_menu', array( 'WP_Bitcoin_Chart_Admin', 'add_plugin_admin_menu' ) );
-		add_filter( 'plugin_action_links_' . WP_BITCOIN_CHART__PLUGIN_BASENAME, array( 'WP_Bitcoin_Chart_Admin', 'add_plugin_settings_link' ), 'add_plugin_settings_link', 10, 4 );
+		add_filter( 'plugin_action_links_' . WBC__PLUGIN_BASENAME, array( 'WP_Bitcoin_Chart_Admin', 'add_plugin_settings_link' ), 'add_plugin_settings_link', 10, 4 );
 	}
 
 	/**
@@ -50,7 +50,7 @@ class WP_Bitcoin_Chart_Admin {
 	 * @return void
 	 */
 	public static function add_plugin_admin_menu() {
-		add_menu_page( 'WP Bitcoin Chart', 'WP Bitcoin Chart', 'manage_options', WP_BITCOIN_CHART__PLUGIN_NAME, array( 'WP_Bitcoin_Chart_Admin', 'display_plugin_admin_page' ), WP_BITCOIN_CHART__PLUGIN_DIR_URL . 'img/bitcoin.png', 15.234 );
+		add_menu_page( 'WP Bitcoin Chart', 'WP Bitcoin Chart', 'manage_options', WBC__PLUGIN_NAME, array( 'WP_Bitcoin_Chart_Admin', 'display_plugin_admin_page' ), WBC__PLUGIN_DIR_URL . 'img/bitcoin.png', 15.234 );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class WP_Bitcoin_Chart_Admin {
 	 * @return array
 	 */
 	function add_plugin_settings_link( $links ) {
-		$links[] = '<a href="' . admin_url( 'options-general.php?page=' . WP_BITCOIN_CHART__PLUGIN_NAME ) . '">' . __( 'Settings' ) . '</a>';
+		$links[] = '<a href="' . admin_url( 'options-general.php?page=' . WBC__PLUGIN_NAME ) . '">' . __( 'Settings' ) . '</a>';
 		return $links;
 	}
 
@@ -70,6 +70,6 @@ class WP_Bitcoin_Chart_Admin {
 	 * @since 0.1
 	 */
 	function display_plugin_admin_page() {
-		include_once( WP_BITCOIN_CHART__PLUGIN_DIR . 'views/settings.php' );
+		include_once( WBC__PLUGIN_DIR . 'views/settings.php' );
 	}
 }
