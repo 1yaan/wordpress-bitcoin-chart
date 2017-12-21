@@ -8,16 +8,17 @@
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
+
 ?>
 <div class="wrap">
 
 	<h2>WP Bitcoin Chart</h2>
 
 	<?php
-		if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
-			WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
-			echo "<p>初期化しました！</p>";
-		}
+	if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
+		WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
+		echo '<p>初期化しました！</p>';
+	}
 	?>
 
 	<p>WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。</p>
@@ -187,8 +188,8 @@
 			<p>ボタンをクリックして、データを初期化してください。</p>
 			<form action="" method="post">
 				<?php
-					// おまじない
-					wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
+				// おまじない.
+				wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 				?>
 				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="初期化" /></p>
 			</form>

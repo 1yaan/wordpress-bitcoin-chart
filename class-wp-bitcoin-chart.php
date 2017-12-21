@@ -48,7 +48,7 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_activation() {
-		//  data directory.
+		// data directory.
 		if ( ! file_exists( WBC__PLUGIN_DATA_DIR ) ) {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
@@ -594,27 +594,27 @@ EOT;
 	 */
 	public static function array_column( $target_data, $column_key, $index_key = null ) {
 
-			if ( false === is_array( $target_data ) || 0 === count( $target_data ) ) {
-				return false;
-			}
+		if ( false === is_array( $target_data ) || 0 === count( $target_data ) ) {
+			return false;
+		}
 
-			$result = array();
-			foreach ( $target_data as $array ) {
-				if ( false === array_key_exists( $column_key, $array ) ) {
-					continue;
-				}
-				if ( false === is_null( $index_key ) and true === array_key_exists( $index_key, $array ) ) {
-					$result[ $array[ $index_key ] ] = $array[ $column_key ];
-					continue;
-				}
-				$result[] = $array[ $column_key ];
+		$result = array();
+		foreach ( $target_data as $array ) {
+			if ( false === array_key_exists( $column_key, $array ) ) {
+				continue;
 			}
-
-			if ( 0 === count( $result ) ) {
-				return false;
+			if ( false === is_null( $index_key ) and true === array_key_exists( $index_key, $array ) ) {
+				$result[ $array[ $index_key ] ] = $array[ $column_key ];
+				continue;
 			}
+			$result[] = $array[ $column_key ];
+		}
 
-			return $result;
+		if ( 0 === count( $result ) ) {
+			return false;
+		}
+
+		return $result;
 	}
 
 	/**
@@ -624,7 +624,7 @@ EOT;
 	 * @return boolean
 	 */
 	public static function remove_dir( $dir_path ) {
-		$filepath = $dir_path . "*";
+		$filepath = $dir_path . '*';
 		foreach ( glob( $filepath ) as $file ) {
 			unlink( $file );
 		}
