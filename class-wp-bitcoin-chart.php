@@ -471,7 +471,12 @@ EOT;
 		);
 
 		// 表示内容をreturnする.
-		return self::output_chart( $atts );
+		$cache = true;
+		if ( defined( 'WP_DEBUG' ) ) {
+			$cache = false;
+		}
+
+		return self::output_chart( $atts, $cache );
 	}
 
 /**

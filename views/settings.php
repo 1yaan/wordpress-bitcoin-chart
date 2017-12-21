@@ -21,6 +21,11 @@
 			<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
 			<figure>
 				<?php
+				$cache = true;
+				if ( defined( 'WP_DEBUG' ) ) {
+					$cache = false;
+				}
+
 				echo WP_Bitcoin_Chart::output_chart( array(
 					'name'          => 'WPBITCHART2',
 					'periods'       => WBC__DEFAULT_CHART_PERIODS,
@@ -31,7 +36,7 @@
 					'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 					'to'            => date( 'Y-m-d' ),
 					'tool_position' => 'none', // none, top, bottom or both.
-				) );
+				), $cache );
 				?>
 				<figcaption>上の例のショートコードから表示されるグラフ</figcaption>
 			</figure>
