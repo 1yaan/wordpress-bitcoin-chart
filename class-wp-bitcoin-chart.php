@@ -15,7 +15,7 @@
 class WP_Bitcoin_Chart {
 
 	/**
-	 * Initial setting Flag to check that init is executed only once.
+	 * Initial setting Flag to  that init is executed only once.
 	 *
 	 * @access private
 	 * @var boolean
@@ -48,7 +48,7 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_activation() {
-		// Check data directory.
+		//  data directory.
 		if ( ! file_exists( WBC__PLUGIN_DATA_DIR ) ) {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
@@ -94,7 +94,7 @@ class WP_Bitcoin_Chart {
 	 */
 	public static function wp_bitcoin_chart_restart() {
 		// Remove /data dir.
-		if ( self::removeDir( WBC__PLUGIN_DATA_DIR ) ) {
+		if ( self::remove_dir( WBC__PLUGIN_DATA_DIR ) ) {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
 
@@ -146,7 +146,7 @@ class WP_Bitcoin_Chart {
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $cache ) {
 			$now_time    = time();
-			$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
+			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
 			if ( file_exists( $filename ) and ( $now_time - $last_access ) > $periods ) {
 				$output_text = file_get_contents( $filename );
 				return $output_text;
@@ -399,7 +399,7 @@ EOT;
 		}
 
 		// 最後にアクセスした時間を取得します.
-		$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
+		$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
 		$now_time    = time();
 
 		// Interval is too short.
@@ -432,11 +432,11 @@ EOT;
 				return 3;
 			}
 
-			// アクセス直前の時間をcheck_periodsに設定します.
+			// アクセス直前の時間を_periodsに設定します.
 			$last_access = $now_time;
 
 			// 現在時刻を最後にアクセスした時間とします.
-			update_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ), $last_access );
+			update_option( 'wp_bitcoin_chart__periods_' . strval( $periods ), $last_access );
 
 			// Finished.
 			return 99;
@@ -524,10 +524,10 @@ EOT;
 		if ( empty( $atts['periods'] ) or ! in_array( $atts['periods'], array( 300, 1800, 3600, 86400 ) ) ) {
 			unset( $atts['periods'] );
 		}
-		if ( empty( $atts['from'] ) or self::checkDateFormat( $atts['from'] ) ) {
+		if ( empty( $atts['from'] ) or self::check_date_format( $atts['from'] ) ) {
 			unset( $atts['from'] );
 		}
-		if ( empty( $atts['to'] ) or self::checkDateFormat( $atts['to'] ) ) {
+		if ( empty( $atts['to'] ) or self::check_date_format( $atts['to'] ) ) {
 			unset( $atts['to'] );
 		}
 
@@ -557,7 +557,7 @@ EOT;
 
 		$result = array(
 			'chart' => $chart,
-			'atts'  => $atts
+			'atts'  => $atts,
 		);
 
 		wp_send_json( $result );
@@ -570,43 +570,50 @@ EOT;
 	 * @return boolean
 	 */
 	public static function check_date_format( $date ) {
-		return $date === date( 'Y-m-d', strtotime( $date ) );
+		return date( 'Y-m-d', strtotime( $date ) ) === $date;
 	}
 
 	/**
-	 * Check Datetime Format.
+	 *  Datetime Format.
 	 *
 	 * @param  datetime $datetime Input datetime.
 	 * @return boolean
 	 */
 	public static function check_datetime_format( $datetime ) {
-		return $datetime === date( 'Y-m-d H:i:s', strtotime( $datetime ) );
+		return date( 'Y-m-d H:i:s', strtotime( $datetime ) ) === $datetime;
 	}
 
 	/**
 	 * 指定したキーの値を取得する。2次元配列のみ対応.
 	 * array_columnがPHP5.5以下で使えないのでコピペ.
 	 *
-	 * @param array target_data 値を取り出したい多次元配列.
-	 * @param mixed column_key  値を返したいカラム.
-	 * @param mixed index_key   返す配列のインデックスとして使うカラム.
-	 * return array             入力配列の単一のカラムを表す値の配列を返し.
+	 * @param array $target_data 値を取り出したい多次元配列.
+	 * @param mixed $column_key  値を返したいカラム.
+	 * @param mixed $index_key   返す配列のインデックスとして使うカラム.
+	 * @return array             入力配列の単一のカラムを表す値の配列を返し.
 	 */
 	public static function array_column( $target_data, $column_key, $index_key = null ) {
 
-			if (is_array($target_data) === FALSE || count($target_data) === 0) return FALSE;
-
-			$result = array();
-			foreach ($target_data as $array) {
-				if (array_key_exists($column_key, $array) === FALSE) continue;
-				if (is_null($index_key) === FALSE && array_key_exists($index_key, $array) === TRUE) {
-					$result[$array[$index_key]] = $array[$column_key];
-					continue;
-				}
-				$result[] = $array[$column_key];
+			if ( false === is_array( $target_data ) || 0 === count( $target_data ) ) {
+				return false;
 			}
 
-			if (count($result) === 0) return FALSE;
+			$result = array();
+			foreach ( $target_data as $array ) {
+				if ( false === array_key_exists( $column_key, $array ) ) {
+					continue;
+				}
+				if ( false === is_null( $index_key ) and true === array_key_exists( $index_key, $array ) ) {
+					$result[ $array[ $index_key ] ] = $array[ $column_key ];
+					continue;
+				}
+				$result[] = $array[ $column_key ];
+			}
+
+			if ( 0 === count( $result ) ) {
+				return false;
+			}
+
 			return $result;
 	}
 
@@ -618,7 +625,7 @@ EOT;
 	 */
 	public static function remove_dir( $dir_path ) {
 		$filepath = $dir_path . "*";
-		foreach( glob( $filepath ) as $file ) {
+		foreach ( glob( $filepath ) as $file ) {
 			unlink( $file );
 		}
 		return rmdir( $dir_path );
