@@ -89,7 +89,7 @@ class WP_Bitcoin_Chart {
 
 	public static function wp_bitcoin_chart_restart() {
 		// dataディレクトリの削除
-		if ( rmdir( WBC__PLUGIN_DATA_DIR ) ) {
+		if ( self::removeDir( WBC__PLUGIN_DATA_DIR ) ) {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
 
@@ -576,4 +576,11 @@ EOT;
 			return $result;
 	}
 
+	public static function removeDir( $dir_path ) {
+		$filepath = $dir_path . "*";
+		foreach( glob( $filepath ) as $file ) {
+			unlink( $file );
+		}
+		return rmdir( $dir_path );
+	}
 }
