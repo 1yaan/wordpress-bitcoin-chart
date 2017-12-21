@@ -87,8 +87,13 @@ class WP_Bitcoin_Chart {
 		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
 	}
 
+	/**
+	 * WP Bitcoin Chart restart.
+	 *
+	 * @return void
+	 */
 	public static function wp_bitcoin_chart_restart() {
-		// dataディレクトリの削除
+		// Remove /data dir.
 		if ( self::removeDir( WBC__PLUGIN_DATA_DIR ) ) {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
@@ -100,10 +105,25 @@ class WP_Bitcoin_Chart {
 		update_option( WBC__DEFAULT_PERIODS_86400_NAME, WBC__DEFAULT_CHART_START );
 	}
 
+	/**
+	 * Get cache json filename.
+	 *
+	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @return string
+	 */
 	public static function get_cache_json_filename( $periods ) {
 		return WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
 	}
 
+	/**
+	 * Get cache htm filename.
+	 *
+	 * @param  string  $name      id name.
+	 * @param  integer $periods   取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  date    $from_date from data.
+	 * @param  date    $to_date   to data.
+	 * @return string
+	 */
 	public static function get_cache_htm_filename( $name, $periods, $from_date = null, $to_date = null ) {
 		return WBC__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . 'from' . $from_date . 'to' . $to_date . '.htm';
 	}
@@ -581,6 +601,12 @@ EOT;
 			return $result;
 	}
 
+	/**
+	 * Remove dir.
+	 *
+	 * @param  string $dir_path target dir path.
+	 * @return boolean
+	 */
 	public static function removeDir( $dir_path ) {
 		$filepath = $dir_path . "*";
 		foreach( glob( $filepath ) as $file ) {
