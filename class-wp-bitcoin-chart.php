@@ -218,7 +218,7 @@ EOT;
 		$output_text .= $scripts_text;
 
 		file_put_contents( $filename, $output_text );
-		chmod( $filename , 0755);
+		chmod( $filename, 0755 );
 
 		return $output_text;
 	}
@@ -323,7 +323,7 @@ EOT;
 					// from よりも前のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
-				} else if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+				} elseif ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
 					// to よりも後のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
@@ -334,8 +334,8 @@ EOT;
 					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
 				}
 			}
-		} else if ( $next ) {
-			// 保存されているデータの更新
+		} elseif ( $next ) {
+			// 保存されているデータの更新.
 			self::get_cryptowatch_data( $periods );
 			self::get_data_label( $periods, $from_timestamp, $to_timestamp, false );
 		}
@@ -367,7 +367,7 @@ EOT;
 					if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
 						// from よりも前のデータは削除する.
 						unset( $all_data[ $data_timestamp ] );
-					} else if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+					} elseif ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
 						// to よりも後のデータは削除する.
 						unset( $all_data[ $data_timestamp ] );
 					}
@@ -375,8 +375,8 @@ EOT;
 			}
 
 			$result = self::array_column( $all_data, $assort );
-		} else if ( $next ) {
-			// 保存されているデータの更新
+		} elseif ( $next ) {
+			// 保存されているデータの更新.
 			self::get_cryptowatch_data( $periods );
 			self::get_data_label( $periods, $assort, $from_timestamp, $to_timestamp, false );
 		}
@@ -427,7 +427,7 @@ EOT;
 			}
 
 			$result = file_put_contents( $filename, json_encode( $periods_data ) );
-			chmod( $filename , 0755);
+			chmod( $filename, 0755 );
 			if ( false === $result ) {
 				return 3;
 			}
@@ -462,8 +462,8 @@ EOT;
 		wp_enqueue_script( 'wpbitcoinchartjs' );
 
 		$params = array(
-			'ajax_url' => admin_url( 'admin-ajax.php' ),
-			'_security' => wp_create_nonce( 'wp-bitcoin-chart-nonce' ),
+			'ajax_url'   => admin_url( 'admin-ajax.php' ),
+			'_security'  => wp_create_nonce( 'wp-bitcoin-chart-nonce' ),
 			'loader_url' => plugins_url( 'img/loader_blue_32.gif', __FILE__ ),
 		);
 
@@ -509,12 +509,12 @@ EOT;
 		return self::output_chart( $atts, $cache );
 	}
 
-/**
- * WP Bitcoin Chart ajax get data action.
- * Only Ajax.
- *
- * @return void wp_send_json
- */
+	/**
+	 * WP Bitcoin Chart ajax get data action.
+	 * Only Ajax.
+	 *
+	 * @return void wp_send_json
+	 */
 	public static function wp_bitcoin_chart_get_json_data() {
 		// ブログの外部からのリクエストを間違って処理しないように AJAX リクエストを検証します.
 		check_ajax_referer( 'wp-bitcoin-chart-nonce', '_security' );
@@ -553,24 +553,33 @@ EOT;
 			'wp-bitcoin-chart-view'
 		);
 
-		wp_send_json( array( 'chart' => self::get_chart( $atts ), 'atts' => $atts ) );
+		$chart = self::get_chart( $atts );
+
+		$result = array(
+			'chart' => $chart,
+			'atts'  => $atts
+		);
+
+		wp_send_json( $result );
 	}
 
 	/**
 	 * Check Date Format.
+	 *
 	 * @param  date $date Input datetime.
 	 * @return boolean
 	 */
-	public static function checkDateFormat( $date ) {
+	public static function check_date_format( $date ) {
 		return $date === date( 'Y-m-d', strtotime( $date ) );
 	}
 
 	/**
 	 * Check Datetime Format.
+	 *
 	 * @param  datetime $datetime Input datetime.
 	 * @return boolean
 	 */
-	public static function checkDatetimeFormat( $datetime ) {
+	public static function check_datetime_format( $datetime ) {
 		return $datetime === date( 'Y-m-d H:i:s', strtotime( $datetime ) );
 	}
 
@@ -607,7 +616,7 @@ EOT;
 	 * @param  string $dir_path target dir path.
 	 * @return boolean
 	 */
-	public static function removeDir( $dir_path ) {
+	public static function remove_dir( $dir_path ) {
 		$filepath = $dir_path . "*";
 		foreach( glob( $filepath ) as $file ) {
 			unlink( $file );
