@@ -408,8 +408,7 @@ EOT;
 		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
-		$json = @file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
-
+		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $periods ) . '&after=' . strval( $last_access ) );
 		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw   = json_decode( $json, true );
 

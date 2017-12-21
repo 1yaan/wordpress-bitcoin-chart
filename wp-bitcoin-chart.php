@@ -45,6 +45,8 @@ if ( ! function_exists( 'add_action' ) ) {
 	exit;
 }
 
+ini_set( 'allow_url_fopen', true );
+
 // This plugin version.
 define( 'WBC__VERSION', '0.1' );
 // The absolute path of the directory that contains the file, with trailing slash ("/").
