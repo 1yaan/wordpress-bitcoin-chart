@@ -8,11 +8,18 @@
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
-
 ?>
 <div class="wrap">
 
 	<h2>WP Bitcoin Chart</h2>
+
+	<?php
+		if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
+			WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
+			echo "<p>初期化しました！</p>";
+		}
+	?>
+
 	<p>WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。</p>
 
 	<div class="wp_bitcoin_chart_settings_main">
@@ -21,12 +28,7 @@
 			<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
 			<figure>
 				<?php
-				$cache = true;
-				if ( defined( 'WP_DEBUG' ) ) {
-					$cache = false;
-				}
-
-				echo WP_Bitcoin_Chart::output_chart( array(
+				echo WP_Bitcoin_Chart::wp_bitcoin_chart_view_shortcode( array(
 					'name'          => 'WPBITCHART2',
 					'periods'       => WBC__DEFAULT_CHART_PERIODS,
 					'op_color'      => 'PINK',
@@ -36,7 +38,7 @@
 					'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 					'to'            => date( 'Y-m-d' ),
 					'tool_position' => 'none', // none, top, bottom or both.
-				), $cache );
+				) );
 				?>
 				<figcaption>上の例のショートコードから表示されるグラフ</figcaption>
 			</figure>
@@ -180,6 +182,16 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<h3>データの初期化</h3>
+			<p>ボタンをクリックして、データを初期化してください。</p>
+			<form action="" method="post">
+				<?php
+					// おまじない
+					wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
+				?>
+				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="初期化" /></p>
+			</form>
 		</section>
 	</div>
 	<div class="wp_bitcoin_chart_settings_right">
