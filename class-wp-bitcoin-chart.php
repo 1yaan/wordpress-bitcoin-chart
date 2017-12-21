@@ -157,7 +157,7 @@ class WP_Bitcoin_Chart {
 					<option value="300">10 min</option>
 					<option value="1800">30 min</option>
 					<option value="3600">1 hour</option>
-					<option value="86400">1 day</option>
+					<option value="86400" selected="selected">1 day</option>
 				</select>
 			</span>
 		</p>
@@ -210,9 +210,11 @@ EOT;
 	 * @return string
 	 */
 	public static function get_chart( $atts ) {
+		$from_timestamp = null;
 		if ( ! empty( $atts['from'] ) ) {
 			$from_timestamp = strtotime( $atts['from'] );
 		}
+		$to_timestamp = null;
 		if ( ! empty( $atts['to'] ) ) {
 			$to_timestamp = strtotime( $atts['to'] );
 		}
@@ -333,7 +335,7 @@ EOT;
 	 */
 	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null, $next = true ) {
 
-		$filename = self::get_cache_json_filename( $periods, $from_timestamp, $to_timestamp );
+		$filename = self::get_cache_json_filename( $periods );
 		$result   = array();
 
 		if ( null !== $assort and file_exists( $filename ) ) {
@@ -372,7 +374,7 @@ EOT;
 	 */
 	public static function get_cryptowatch_data( $periods = WBC__DEFAULT_CHART_PERIODS ) {
 		// No periods. Exist.
-		if ( empty( $periods ) or ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
+		if ( ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
 			return 1;
 		}
 
@@ -409,16 +411,19 @@ EOT;
 			if ( false === $result ) {
 				return 3;
 			}
+
+			// アクセス直前の時間をcheck_periodsに設定します.
+			$last_access = $now_time;
+
+			// 現在時刻を最後にアクセスした時間とします.
+			update_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ), $last_access );
+
+			// Finished.
+			return 99;
 		}
 
-		// アクセス直前の時間をcheck_periodsに設定します.
-		$last_access = $now_time;
-
-		// 現在時刻を最後にアクセスした時間とします.
-		update_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ), $last_access );
-
-		// Finished.
-		return 99;
+		// Failed.
+		return 4;
 	}
 
 	/**
