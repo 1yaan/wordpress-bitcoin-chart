@@ -48,40 +48,16 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_activation() {
-		// Insert options.
-		$wp_bitcoin_chart_check_periods_300   = get_option( WBC__DEFAULT_PERIODS_300_NAME );
-		$wp_bitcoin_chart_check_periods_1800  = get_option( WBC__DEFAULT_PERIODS_1800_NAME );
-		$wp_bitcoin_chart_check_periods_3600  = get_option( WBC__DEFAULT_PERIODS_3600_NAME );
-		$wp_bitcoin_chart_check_periods_86400 = get_option( WBC__DEFAULT_PERIODS_86400_NAME );
-
-		if ( ! $wp_bitcoin_chart_check_periods_300 ) {
-			$wp_bitcoin_chart_check_periods_300 = WBC__DEFAULT_CHART_START;
-		}
-		if ( ! $wp_bitcoin_chart_check_periods_1800 ) {
-			$wp_bitcoin_chart_check_periods_1800 = WBC__DEFAULT_CHART_START;
-		}
-		if ( ! $wp_bitcoin_chart_check_periods_3600 ) {
-			$wp_bitcoin_chart_check_periods_3600 = WBC__DEFAULT_CHART_START;
-		}
-		if ( ! $wp_bitcoin_chart_check_periods_86400 ) {
-			$wp_bitcoin_chart_check_periods_86400 = WBC__DEFAULT_CHART_START;
-		}
-
-		update_option( WBC__DEFAULT_PERIODS_300_NAME, $wp_bitcoin_chart_check_periods_300 );
-		update_option( WBC__DEFAULT_PERIODS_1800_NAME, $wp_bitcoin_chart_check_periods_1800 );
-		update_option( WBC__DEFAULT_PERIODS_3600_NAME, $wp_bitcoin_chart_check_periods_3600 );
-		update_option( WBC__DEFAULT_PERIODS_86400_NAME, $wp_bitcoin_chart_check_periods_86400 );
-
 		// Check data directory.
 		if ( ! file_exists( WBC__PLUGIN_DATA_DIR ) ) {
-			mkdir( WBC__PLUGIN_DATA_DIR, 0777 );
+			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
 
-		// 有効下時点でのデータを保持しておく.
-		self::get_cryptowatch_data( 300 );
-		self::get_cryptowatch_data( 1800 );
-		self::get_cryptowatch_data( 3600 );
-		self::get_cryptowatch_data( 86400 );
+		// Insert options.
+		update_option( WBC__DEFAULT_PERIODS_300_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_1800_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_3600_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_86400_NAME, WBC__DEFAULT_CHART_START );
 	}
 
 	/**
@@ -90,13 +66,11 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_deactivation() {
-		if ( defined( 'WP_DEBUG' ) ) {
-			// WP_DEBUGが設定されていたら、フラグを削除する.
-			delete_option( WBC__DEFAULT_PERIODS_300_NAME );
-			delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
-			delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
-			delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
-		}
+		// WP_DEBUGが設定されていたら、フラグを削除する.
+		delete_option( WBC__DEFAULT_PERIODS_300_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
+		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
 	}
 
 	/**
@@ -113,6 +87,27 @@ class WP_Bitcoin_Chart {
 		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
 	}
 
+	public static function wp_bitcoin_chart_restart() {
+		// dataディレクトリの削除
+		if ( rmdir( WBC__PLUGIN_DATA_DIR ) ) {
+			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
+		}
+
+		// Insert options.
+		update_option( WBC__DEFAULT_PERIODS_300_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_1800_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_3600_NAME, WBC__DEFAULT_CHART_START );
+		update_option( WBC__DEFAULT_PERIODS_86400_NAME, WBC__DEFAULT_CHART_START );
+	}
+
+	public static function get_cache_json_filename( $periods ) {
+		return WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+	}
+
+	public static function get_cache_htm_filename( $name, $periods, $from_date = null, $to_date = null ) {
+		return WBC__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . 'from' . $from_date . 'to' . $to_date . '.htm';
+	}
+
 	/**
 	 * Get output string for chart.
 	 *
@@ -125,14 +120,14 @@ class WP_Bitcoin_Chart {
 		$periods     = $atts['periods'];
 		$from_date   = $atts['from'];
 		$to_date     = $atts['to'];
-		$filename    = WBC__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . '.htm';
+		$filename    = self::get_cache_htm_filename( $name, $periods, $from_date, $to_date );
 		$output_text = '';
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $cache ) {
 			$now_time    = time();
 			$last_access = get_option( 'wp_bitcoin_chart_check_periods_' . strval( $periods ) );
-			if ( ( $now_time - $last_access ) > $periods and file_exists( $filename ) ) {
+			if ( file_exists( $filename ) and ( $now_time - $last_access ) > $periods ) {
 				$output_text = file_get_contents( $filename );
 				return $output_text;
 			}
@@ -156,27 +151,27 @@ class WP_Bitcoin_Chart {
 	<input type="hidden" name="vo" value="{$atts['vo']}">
 	<input type="hidden" name="tool_position" value="{$atts['tool_position']}">
 	<div class="field has-addons">
-	  <p class="control">
-	    <span class="select">
-	      <select name="periods" class="param-field">
-	        <option value="300">10 min</option>
-	        <option value="1800">30 min</option>
+		<p class="control">
+			<span class="select">
+				<select name="periods" class="param-field">
+					<option value="300">10 min</option>
+					<option value="1800">30 min</option>
 					<option value="3600">1 hour</option>
 					<option value="86400">1 day</option>
-	      </select>
-	    </span>
-	  </p>
-	  <p class="control">
-	    <input name="from" id='${name}-from-input' class='input param-field' value='${from_date}'>
-	  </p>
+				</select>
+			</span>
+		</p>
+		<p class="control">
+			<input name="from" id='${name}-from-input' class='input param-field' value='${from_date}'>
+		</p>
 		<p class="control">
 			<input name="to" id='${name}-from-input' class='input param-field' value='${to_date}'>
-	  </p>
-	  <p class="control">
-	    <a class="button wp-bitcoin-chart-refresh-button" form-name="{$atts['name']}_button">
-	      <i class="fa fa-refresh"></i> 表示
-	    </a>
-	  </p>
+		</p>
+		<p class="control">
+			<a class="button wp-bitcoin-chart-refresh-button" form-name="{$atts['name']}_button">
+				<i class="fa fa-refresh"></i> 表示
+			</a>
+		</p>
 	</div>
 </form>
 EOT;
@@ -203,6 +198,7 @@ EOT;
 		$output_text .= $scripts_text;
 
 		file_put_contents( $filename, $output_text );
+		chmod( $filename , 0755);
 
 		return $output_text;
 	}
@@ -285,14 +281,15 @@ EOT;
 	/**
 	 * Get only label data.
 	 *
-	 * @param  integer   $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer   $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @param  timestamp $from_timestamp 開始時間.
 	 * @param  timestamp $to_timestamp   終了時間.
+	 * @param  boolean   $next           次の処理をするかどうか.
 	 * @return array
 	 */
-	public static function get_data_label( $periods = WBC__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null ) {
+	public static function get_data_label( $periods = WBC__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null, $next = true ) {
 
-		$filename = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+		$filename = self::get_cache_json_filename( $periods );
 		$all_data = array();
 
 		if ( file_exists( $filename ) ) {
@@ -304,8 +301,7 @@ EOT;
 					// from よりも前のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
-				}
-				if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+				} else if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
 					// to よりも後のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
@@ -316,6 +312,10 @@ EOT;
 					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
 				}
 			}
+		} else if ( $next ) {
+			// 保存されているデータの更新
+			self::get_cryptowatch_data( $periods );
+			self::get_data_label( $periods, $from_timestamp, $to_timestamp, false );
 		}
 
 		return $all_data;
@@ -324,15 +324,16 @@ EOT;
 	/**
 	 * Get only single graph data.
 	 *
-	 * @param  integer   $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  integer   $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
+	 * @param  integer   $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer   $assort         取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
 	 * @param  timestamp $from_timestamp 開始時間.
 	 * @param  timestamp $to_timestamp   終了時間.
+	 * @param  boolean   $next           次の処理をするかどうか.
 	 * @return array
 	 */
-	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null ) {
+	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null, $next = true ) {
 
-		$filename = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+		$filename = self::get_cache_json_filename( $periods, $from_timestamp, $to_timestamp );
 		$result   = array();
 
 		if ( null !== $assort and file_exists( $filename ) ) {
@@ -344,8 +345,7 @@ EOT;
 					if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
 						// from よりも前のデータは削除する.
 						unset( $all_data[ $data_timestamp ] );
-					}
-					if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+					} else if ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
 						// to よりも後のデータは削除する.
 						unset( $all_data[ $data_timestamp ] );
 					}
@@ -353,6 +353,10 @@ EOT;
 			}
 
 			$result = self::array_column( $all_data, $assort );
+		} else if ( $next ) {
+			// 保存されているデータの更新
+			self::get_cryptowatch_data( $periods );
+			self::get_data_label( $periods, $assort, $from_timestamp, $to_timestamp, false );
 		}
 
 		return $result;
@@ -377,7 +381,7 @@ EOT;
 		$now_time    = time();
 
 		// Interval is too short.
-		if ( ! defined( 'WP_DEBUG' ) and ( $now_time - $last_access ) < $periods ) {
+		if ( ( $now_time - $last_access ) < $periods ) {
 			return 2;
 		}
 
@@ -391,7 +395,7 @@ EOT;
 
 			$periods_keys = self::array_column( $cw['result'][ strval( $periods ) ], 0 );
 			$periods_data = array_combine( $periods_keys, $cw['result'][ strval( $periods ) ] );
-			$filename     = WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
+			$filename     = self::get_cache_json_filename( $periods );
 
 			if ( file_exists( $filename ) ) {
 				// 2つの配列のデータをマージする.
@@ -401,6 +405,7 @@ EOT;
 			}
 
 			$result = file_put_contents( $filename, json_encode( $periods_data ) );
+			chmod( $filename , 0755);
 			if ( false === $result ) {
 				return 3;
 			}
@@ -532,7 +537,7 @@ EOT;
 	 * @return boolean
 	 */
 	public static function checkDateFormat( $date ) {
-    return $date === date( 'Y-m-d', strtotime( $date ) );
+		return $date === date( 'Y-m-d', strtotime( $date ) );
 	}
 
 	/**
@@ -555,20 +560,20 @@ EOT;
 	 */
 	public static function array_column( $target_data, $column_key, $index_key = null ) {
 
-	    if (is_array($target_data) === FALSE || count($target_data) === 0) return FALSE;
+			if (is_array($target_data) === FALSE || count($target_data) === 0) return FALSE;
 
-	    $result = array();
-	    foreach ($target_data as $array) {
-        if (array_key_exists($column_key, $array) === FALSE) continue;
-        if (is_null($index_key) === FALSE && array_key_exists($index_key, $array) === TRUE) {
-          $result[$array[$index_key]] = $array[$column_key];
-          continue;
-        }
-        $result[] = $array[$column_key];
-	    }
+			$result = array();
+			foreach ($target_data as $array) {
+				if (array_key_exists($column_key, $array) === FALSE) continue;
+				if (is_null($index_key) === FALSE && array_key_exists($index_key, $array) === TRUE) {
+					$result[$array[$index_key]] = $array[$column_key];
+					continue;
+				}
+				$result[] = $array[$column_key];
+			}
 
-	    if (count($result) === 0) return FALSE;
-	    return $result;
+			if (count($result) === 0) return FALSE;
+			return $result;
 	}
 
 }
