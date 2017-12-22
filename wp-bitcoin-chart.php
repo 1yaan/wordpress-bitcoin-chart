@@ -8,13 +8,14 @@
  * that starts the plugin.
  *
  * Plugin Name: WP Bitcoin Chart
- * Plugin URI:  https://github.com/1yaan/wp-bitcoin-chart
+ * Plugin URI:  https://1yaan.github.io/wp-bitcoin-chart/
  * Description: This is WordPress plugin. This plugin views BTC/JPY chart by Chart.js
  * Version:     0.1.0
  * Author:      1yaan
  * Author URI:  https://github.com/1yaan
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl.html
+ * Domain Path: /languages/
  * Text Domain: wp_bitcoin_chart
  *
  * @link        https://github.com/1yaan/wp-bitcoin-chart

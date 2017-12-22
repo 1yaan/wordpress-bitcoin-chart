@@ -168,6 +168,8 @@
 					<article class="tile is-child notification is-white">
 						<p class="title">ショートコード 例</p>
 						<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
+						<p class="title">Themeファイル内でショートコードを利用する場合 例</p>
+						<pre><?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]'); ?></pre>
 						<figure>
 							<div class='wp-bitcoin-chart-field'>
 								<canvas id='WPBITCHART2'></canvas>
