@@ -41,6 +41,10 @@ WordPress は do_shortcode という関数を準備してくれていますの�
   <?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]'); ?>
   ```
 
+### CSSについて
+
+表示されるチャートに独自のCSSを適用したい場合は、設定画面にて、「独自のCSSを使用しますか？」に「使用します」のチェックをつけて登録してください。
+
 ## License
 
 [GNU General Public License version 2 or later](http://www.gnu.org/licenses/gpl-2.0.html)
