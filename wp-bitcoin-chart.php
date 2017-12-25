@@ -67,11 +67,6 @@ define( 'WBC__DEFAULT_LP_COLOR', 'Blue' );
 define( 'WBC__DEFAULT_CP_COLOR', 'Yellow' );
 define( 'WBC__DEFAULT_VO_COLOR', 'Magenta' );
 
-define( 'WBC__DEFAULT_PERIODS_300_NAME', 'wp_bitcoin_chart_check_periods_300' );
-define( 'WBC__DEFAULT_PERIODS_1800_NAME', 'wp_bitcoin_chart_check_periods_1800' );
-define( 'WBC__DEFAULT_PERIODS_3600_NAME', 'wp_bitcoin_chart_check_periods_3600' );
-define( 'WBC__DEFAULT_PERIODS_86400_NAME', 'wp_bitcoin_chart_check_periods_86400' );
-
 register_activation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_activation' ) );
 register_deactivation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_deactivation' ) );
 

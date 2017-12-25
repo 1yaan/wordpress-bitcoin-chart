@@ -46,16 +46,8 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wp_bitcoin_chart_activation() {
-		// data directory.
-		if ( ! file_exists( WBC__PLUGIN_DATA_DIR ) ) {
-			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
-		}
-
-		// Insert options.
-		update_option( WBC__DEFAULT_PERIODS_300_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_1800_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_3600_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_86400_NAME, WBC__DEFAULT_CHART_START );
+		// Restart.
+		self::wp_bitcoin_chart_restart();
 	}
 
 	/**
@@ -65,10 +57,7 @@ class WP_Bitcoin_Chart {
 	 */
 	public static function wp_bitcoin_chart_deactivation() {
 		// WP_DEBUGが設定されていたら、フラグを削除する.
-		delete_option( WBC__DEFAULT_PERIODS_300_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
+		self::wbc_delete_options();
 	}
 
 	/**
@@ -79,10 +68,7 @@ class WP_Bitcoin_Chart {
 	public static function wp_bitcoin_chart_uninstall() {
 		// Delete options.
 		// True, if option is successfully deleted. False on failure, or option does not exist.
-		delete_option( WBC__DEFAULT_PERIODS_300_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_1800_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_3600_NAME );
-		delete_option( WBC__DEFAULT_PERIODS_86400_NAME );
+		self::wbc_delete_options();
 	}
 
 	/**
@@ -96,11 +82,47 @@ class WP_Bitcoin_Chart {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
 
+		print_r( 'before=' . get_option( 'wp_bitcoin_chart_check_periods_300' ) );
+
 		// Insert options.
-		update_option( WBC__DEFAULT_PERIODS_300_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_1800_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_3600_NAME, WBC__DEFAULT_CHART_START );
-		update_option( WBC__DEFAULT_PERIODS_86400_NAME, WBC__DEFAULT_CHART_START );
+		self::wbc_init_options();
+
+		print_r( 'after=' . get_option( 'wp_bitcoin_chart_check_periods_300' ) );
+	}
+
+	/**
+	 * WP Bitcoin Chart initialize options.
+	 *
+	 * @return void
+	 */
+	public static function wbc_init_options() {
+		print_r( 'WBC__DEFAULT_CHART_START=' . WBC__DEFAULT_CHART_START );
+
+		update_option( 'wp_bitcoin_chart_check_periods_300', WBC__DEFAULT_CHART_START );
+		update_option( 'wp_bitcoin_chart_check_periods_1800', WBC__DEFAULT_CHART_START );
+		update_option( 'wp_bitcoin_chart_check_periods_3600', WBC__DEFAULT_CHART_START );
+		update_option( 'wp_bitcoin_chart_check_periods_86400', WBC__DEFAULT_CHART_START );
+	}
+
+	/**
+	 * WP Bitcoin Chart initialize options.
+	 *
+	 * @return void
+	 */
+	public static function wbc_init_option( $periods = WBC__DEFAULT_CHART_PERIODS, $start_unixtime = WBC__DEFAULT_CHART_START ) {
+		update_option( 'wp_bitcoin_chart__periods_' . strval( $periods ), WBC__DEFAULT_CHART_START );
+	}
+
+	/**
+	 * WP Bitcoin Chart delete options.
+	 *
+	 * @return void
+	 */
+	public static function wbc_delete_options() {
+		delete_option( 'wp_bitcoin_chart_check_periods_300' );
+		delete_option( 'wp_bitcoin_chart_check_periods_1800' );
+		delete_option( 'wp_bitcoin_chart_check_periods_3600' );
+		delete_option( 'wp_bitcoin_chart_check_periods_86400' );
 	}
 
 	/**
@@ -236,13 +258,13 @@ EOT;
 	 * @return string
 	 */
 	public static function get_chart( $atts ) {
-		$from_timestamp = null;
+		$from_unixtime = null;
 		if ( ! empty( $atts['from'] ) ) {
-			$from_timestamp = strtotime( $atts['from'] );
+			$from_unixtime = strtotime( $atts['from'] );
 		}
-		$to_timestamp = null;
+		$to_unixtime = null;
 		if ( ! empty( $atts['to'] ) ) {
-			$to_timestamp = strtotime( $atts['to'] );
+			$to_unixtime = strtotime( $atts['to'] );
 		}
 
 		$periods  = $atts['periods'];
@@ -251,7 +273,7 @@ EOT;
 		// ラベルの取得.
 		// データの取得.
 
-		$labels   = self::get_data_label( $periods, $from_timestamp, $to_timestamp );
+		$labels   = self::get_data_label( $periods, $from_unixtime, $to_unixtime );
 		$datasets = array();
 
 		// どのデータを表示するのかを識別して設定する.
@@ -259,7 +281,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Open Price',
 				'borderColor' => $atts['op_color'],
-				'data'        => self::get_graph_data( $periods, 1, $from_timestamp, $to_timestamp ),
+				'data'        => self::get_graph_data( $periods, 1, $from_unixtime, $to_unixtime ),
 				'drawBorder'  => false,
 			);
 		}
@@ -267,7 +289,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'High Price',
 				'borderColor' => $atts['hp_color'],
-				'data'        => self::get_graph_data( $periods, 2, $from_timestamp, $to_timestamp ),
+				'data'        => self::get_graph_data( $periods, 2, $from_unixtime, $to_unixtime ),
 				'drawBorder'  => false,
 			);
 		}
@@ -275,7 +297,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Low Price',
 				'borderColor' => $atts['lp_color'],
-				'data'        => self::get_graph_data( $periods, 3, $from_timestamp, $to_timestamp ),
+				'data'        => self::get_graph_data( $periods, 3, $from_unixtime, $to_unixtime ),
 				'drawBorder'  => false,
 			);
 		}
@@ -283,7 +305,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Close Price',
 				'borderColor' => $atts['cp_color'],
-				'data'        => self::get_graph_data( $periods, 4, $from_timestamp, $to_timestamp ),
+				'data'        => self::get_graph_data( $periods, 4, $from_unixtime, $to_unixtime ),
 				'drawBorder'  => false,
 			);
 		}
@@ -291,7 +313,7 @@ EOT;
 			$datasets[] = array(
 				'label'       => 'Volume',
 				'borderColor' => $atts['vo_color'],
-				'data'        => self::get_graph_data( $periods, 5, $from_timestamp, $to_timestamp ),
+				'data'        => self::get_graph_data( $periods, 5, $from_unixtime, $to_unixtime ),
 				'drawBorder'  => false,
 			);
 		}
@@ -315,12 +337,12 @@ EOT;
 	 * Get only label data.
 	 *
 	 * @param  integer   $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  timestamp $from_timestamp 開始時間.
-	 * @param  timestamp $to_timestamp   終了時間.
+	 * @param  timestamp $from_unixtime  開始時間.
+	 * @param  timestamp $to_unixtime    終了時間.
 	 * @param  boolean   $next           次の処理をするかどうか.
 	 * @return array
 	 */
-	public static function get_data_label( $periods = WBC__DEFAULT_CHART_PERIODS, $from_timestamp = null, $to_timestamp = null, $next = true ) {
+	public static function get_data_label( $periods = WBC__DEFAULT_CHART_PERIODS, $from_unixtime = null, $to_unixtime = null, $next = true ) {
 
 		$filename = self::get_cache_json_filename( $periods );
 		$all_data = array();
@@ -329,26 +351,26 @@ EOT;
 			$all_data = file_get_contents( $filename );
 			$all_data = array_keys( json_decode( $all_data, true ) );
 			// 時刻を読めるように変換.
-			foreach ( $all_data as $key => $data_timestamp ) {
-				if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
+			foreach ( $all_data as $key => $data_unixtime ) {
+				if ( ! empty( $from_unixtime ) and $data_unixtime < $from_unixtime ) {
 					// from よりも前のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
-				} elseif ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+				} elseif ( ! empty( $to_unixtime ) and $data_unixtime > $to_unixtime ) {
 					// to よりも後のデータは削除する.
 					unset( $all_data[ $key ] );
 					continue;
 				}
 				if ( WBC__CHART_PERIODS_ONE_DAY == $periods ) {
-					$all_data[ $key ] = date( 'n月j日', $data_timestamp );
+					$all_data[ $key ] = date( 'n月j日', $data_unixtime );
 				} else {
-					$all_data[ $key ] = date( 'n月j日 H:i', $data_timestamp );
+					$all_data[ $key ] = date( 'n月j日 H:i', $data_unixtime );
 				}
 			}
 		} elseif ( $next ) {
 			// 保存されているデータの更新.
-			self::get_cryptowatch_data( $periods );
-			self::get_data_label( $periods, $from_timestamp, $to_timestamp, false );
+			self::get_cryptowatch_data( $periods, true );
+			self::get_data_label( $periods, $from_unixtime, $to_unixtime, false );
 		}
 
 		return $all_data;
@@ -359,12 +381,12 @@ EOT;
 	 *
 	 * @param  integer   $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
 	 * @param  integer   $assort         取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
-	 * @param  timestamp $from_timestamp 開始時間.
-	 * @param  timestamp $to_timestamp   終了時間.
+	 * @param  timestamp $from_unixtime  開始時間.
+	 * @param  timestamp $to_unixtime    終了時間.
 	 * @param  boolean   $next           次の処理をするかどうか.
 	 * @return array
 	 */
-	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_timestamp = null, $to_timestamp = null, $next = true ) {
+	public static function get_graph_data( $periods = WBC__DEFAULT_CHART_PERIODS, $assort = null, $from_unixtime = null, $to_unixtime = null, $next = true ) {
 
 		$filename = self::get_cache_json_filename( $periods );
 		$result   = array();
@@ -373,14 +395,14 @@ EOT;
 			$all_data = file_get_contents( $filename );
 			$all_data = json_decode( $all_data, true );
 			// from to の対応をする.
-			if ( ! empty( $from_timestamp ) or ! empty( $to_timestamp ) ) {
-				foreach ( $all_data as $data_timestamp => $data ) {
-					if ( ! empty( $from_timestamp ) and $data_timestamp < $from_timestamp ) {
+			if ( ! empty( $from_unixtime ) or ! empty( $to_unixtime ) ) {
+				foreach ( $all_data as $data_unixtime => $data ) {
+					if ( ! empty( $from_unixtime ) and $data_unixtime < $from_unixtime ) {
 						// from よりも前のデータは削除する.
-						unset( $all_data[ $data_timestamp ] );
-					} elseif ( ! empty( $to_timestamp ) and $data_timestamp > $to_timestamp ) {
+						unset( $all_data[ $data_unixtime ] );
+					} elseif ( ! empty( $to_unixtime ) and $data_unixtime > $to_unixtime ) {
 						// to よりも後のデータは削除する.
-						unset( $all_data[ $data_timestamp ] );
+						unset( $all_data[ $data_unixtime ] );
 					}
 				}
 			}
@@ -388,8 +410,8 @@ EOT;
 			$result = self::array_column( $all_data, $assort );
 		} elseif ( $next ) {
 			// 保存されているデータの更新.
-			self::get_cryptowatch_data( $periods );
-			self::get_data_label( $periods, $assort, $from_timestamp, $to_timestamp, false );
+			self::get_cryptowatch_data( $periods, true );
+			self::get_data_label( $periods, $assort, $from_unixtime, $to_unixtime, false );
 		}
 
 		return $result;
@@ -401,16 +423,22 @@ EOT;
 	 * データが取得できなくなるまで取得します.
 	 *
 	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  boolean $clear   キャッシュデータをクリアするか.
 	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
 	 */
-	public static function get_cryptowatch_data( $periods = WBC__DEFAULT_CHART_PERIODS ) {
+	public static function get_cryptowatch_data( $periods = WBC__DEFAULT_CHART_PERIODS, $clear = false ) {
 		// No periods. Exist.
 		if ( ! in_array( $periods, array( 300, 1800, 3600, 86400 ) ) ) {
 			return 1;
 		}
 
 		// 最後にアクセスした時間を取得します.
-		$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
+		if ( $clear ) {
+			self::wbc_init_option( $periods, strtotime( '+1 month' ) );
+			return self::get_cryptowatch_data( $periods, false );
+		} else {
+			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
+		}
 		$now_time    = time();
 
 		// Interval is too short.
