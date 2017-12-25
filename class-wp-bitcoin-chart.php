@@ -107,6 +107,8 @@ class WP_Bitcoin_Chart {
 	/**
 	 * WP Bitcoin Chart initialize options.
 	 *
+	 * @param  integer $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer $start_unixtime 開始時刻のUNIX時間.
 	 * @return void
 	 */
 	public static function wbc_init_option( $periods = WBC__DEFAULT_CHART_PERIODS, $start_unixtime = WBC__DEFAULT_CHART_START ) {
@@ -267,12 +269,11 @@ EOT;
 			$to_unixtime = strtotime( $atts['to'] );
 		}
 
-		$periods  = $atts['periods'];
-
 		// JSONファイルの更新.
 		// ラベルの取得.
 		// データの取得.
 
+		$periods  = $atts['periods'];
 		$labels   = self::get_data_label( $periods, $from_unixtime, $to_unixtime );
 		$datasets = array();
 
@@ -439,7 +440,8 @@ EOT;
 		} else {
 			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
 		}
-		$now_time    = time();
+
+		$now_time = time();
 
 		// Interval is too short.
 		if ( ( $now_time - $last_access ) < $periods ) {
