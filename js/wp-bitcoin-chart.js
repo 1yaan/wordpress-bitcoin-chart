@@ -4,7 +4,37 @@ jQuery(document).ready(function() {
     e.preventDefault();
     wp_bitcoin_chart_data( this );
   });
+  jQuery( '.wbc-change-periods' ).on( 'change', function(e) {
+    e.preventDefault();
+    set_wp_bitcoin_chart_default_data( this );
+  });
 });
+
+/**
+ * WP Bitcoin Chart data.
+ *
+ * @param  Object target_this
+ * @return void
+ */
+function set_wp_bitcoin_chart_default_data( target_this ) {
+  var wbc_form_id        = jQuery( target_this ).parents( 'form' ).attr( 'field-name' );
+  var periods            = jQuery( '#' + wbc_form_id + '-periods' ).val();
+  var from_default       = jQuery( '#' + wbc_form_id + '-from-default' ).val();
+  var to_default         = jQuery( '#' + wbc_form_id + '-to-default' ).val();
+  var from_default_short = jQuery( '#' + wbc_form_id + '-from-default-short' ).val();
+  var to_default_short   = jQuery( '#' + wbc_form_id + '-to-default-short' ).val();
+  console.log( [ wbc_form_id, periods, from_default, to_default, from_default_short, to_default_short ] );
+
+  if ( periods == '86400' ) {
+    // 1day用の日付
+    jQuery( '#' + wbc_form_id + '-from-input' ).val( from_default );
+    jQuery( '#' + wbc_form_id + '-to-input' ).val( to_default );
+  } else {
+    // 短い日付
+    jQuery( '#' + wbc_form_id + '-from-input' ).val( from_default_short );
+    jQuery( '#' + wbc_form_id + '-to-input' ).val( to_default_short );
+  }
+}
 
 /**
  * WP Bitcoin Chart data.
@@ -38,8 +68,8 @@ function wp_bitcoin_chart_data( target_this ) {
       // jQuery( '#' + post_id ).show();
 
       var ctx = document.getElementById(post_id).getContext('2d');
-    	var chart = new Chart(ctx, res['atts']['chart']);
-      chart.update();
+    	var chart = new Chart(ctx, res['chart']);
+      //chart.update();
 
       console.log( 'ajax success' );
     },

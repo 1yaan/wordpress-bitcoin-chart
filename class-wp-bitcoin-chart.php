@@ -141,6 +141,10 @@ class WP_Bitcoin_Chart {
 		$filename    = self::get_cache_htm_filename( $name, $periods, $from_date, $to_date );
 		$output_text = '';
 
+		// 短いperiods用の日付.
+		$from_date_short = date( 'Y-m-d', strtotime( $atts['to'] . ' -1 day' ) );
+		$to_date_short   = $atts['to'];
+
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $cache ) {
 			$now_time    = time();
@@ -171,7 +175,7 @@ class WP_Bitcoin_Chart {
 	<div class="field has-addons">
 		<p class="control">
 			<span class="select">
-				<select name="periods" class="param-field">
+				<select name="periods" id="${name}-periods" class="param-field wbc-change-periods">
 					<option value="300">10 min</option>
 					<option value="1800">30 min</option>
 					<option value="3600">1 hour</option>
@@ -180,10 +184,14 @@ class WP_Bitcoin_Chart {
 			</span>
 		</p>
 		<p class="control">
-			<input name="from" id='${name}-from-input' class='input param-field' value='${from_date}'>
+			<input type="text" name="from" id='${name}-from-input' class='input param-field' value='${from_date}'>
+			<input type="hidden" name="from_default" id='${name}-from-default' value='${from_date}'>
+			<input type="hidden" name="from_default_short" id='${name}-from-default-short' value='${from_date_short}'>
 		</p>
 		<p class="control">
-			<input name="to" id='${name}-from-input' class='input param-field' value='${to_date}'>
+			<input type="text" name="to" id='${name}-from-input' class='input param-field' value='${to_date}'>
+			<input type="hidden" name="to_default" id='${name}-to-default' value='${to_date}'>
+			<input type="hidden" name="to_default_short" id='${name}-to-default-short' value='${to_date_short}'>
 		</p>
 		<p class="control">
 			<a class="button wp-bitcoin-chart-refresh-button" form-name="{$atts['name']}_button">
@@ -238,6 +246,11 @@ EOT;
 		}
 
 		$periods  = $atts['periods'];
+
+		// JSONファイルの更新.
+		// ラベルの取得.
+		// データの取得.
+
 		$labels   = self::get_data_label( $periods, $from_timestamp, $to_timestamp );
 		$datasets = array();
 
@@ -532,14 +545,15 @@ EOT;
 		if ( empty( $atts['periods'] ) or ! in_array( $atts['periods'], array( 300, 1800, 3600, 86400 ) ) ) {
 			unset( $atts['periods'] );
 		}
-		if ( empty( $atts['from'] ) or self::check_date_format( $atts['from'] ) ) {
+		if ( empty( $atts['from'] ) or ! self::is_date_format( $atts['from'] ) ) {
 			unset( $atts['from'] );
 		}
-		if ( empty( $atts['to'] ) or self::check_date_format( $atts['to'] ) ) {
+		if ( empty( $atts['to'] ) or ! self::is_date_format( $atts['to'] ) ) {
 			unset( $atts['to'] );
 		}
 
-		$atts = shortcode_atts(
+		$atts = wp_parse_args(
+			$atts,
 			array(
 				'name'          => WBC__DEFAULT_CHART_NAME,
 				'periods'       => WBC__DEFAULT_CHART_PERIODS,
@@ -556,9 +570,7 @@ EOT;
 				'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 				'to'            => date( 'Y-m-d' ),
 				'tool_position' => 'top', // none, top, bottom or both.
-			),
-			$atts,
-			'wp-bitcoin-chart-view'
+			)
 		);
 
 		$chart = self::get_chart( $atts );
@@ -572,22 +584,22 @@ EOT;
 	}
 
 	/**
-	 * Check Date Format.
+	 * Is Date Format.
 	 *
 	 * @param  date $date Input datetime.
 	 * @return boolean
 	 */
-	public static function check_date_format( $date ) {
+	public static function is_date_format( $date ) {
 		return date( 'Y-m-d', strtotime( $date ) ) === $date;
 	}
 
 	/**
-	 *  Datetime Format.
+	 *  Is Datetime Format.
 	 *
 	 * @param  datetime $datetime Input datetime.
 	 * @return boolean
 	 */
-	public static function check_datetime_format( $datetime ) {
+	public static function is_datetime_format( $datetime ) {
 		return date( 'Y-m-d H:i:s', strtotime( $datetime ) ) === $datetime;
 	}
 
