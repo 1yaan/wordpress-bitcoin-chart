@@ -263,10 +263,6 @@ EOT;
 			$to_unixtime = strtotime( $atts['to'] );
 		}
 
-		// JSONファイルの更新.
-		// ラベルの取得.
-		// データの取得.
-
 		$periods  = $atts['periods'];
 		$labels   = self::get_data_label( $periods, $from_unixtime, $to_unixtime );
 		$datasets = array();
