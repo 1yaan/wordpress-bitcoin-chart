@@ -188,48 +188,46 @@
 					<article class="tile is-child notification is-white">
 						<p class="title">出力されるHTMLの例</p>
 						<p>ショートコードを設置すると、以下のようなHTMLが出力されます。ソースコードは必ず div class="wp-bitcoin-chart-field" に囲まれます。独自のCSSを設定する場合の目安としてお使いください。</p>
-						<pre>
-							&lt;div class='wp-bitcoin-chart-field'&gt;&lt;form action="#" class="wp-bitcoin-chart-form" field-name="WPBITCHART2"&gt;
-								&lt;input type="hidden" name="name" value="WPBITCHART2"&gt;
-								&lt;input type="hidden" name="op_color" value="PINK"&gt;
-								&lt;input type="hidden" name="hp_color" value="PURPLE"&gt;
-								&lt;input type="hidden" name="lp_color" value="Blue"&gt;
-								&lt;input type="hidden" name="cp_color" value="Yellow"&gt;
-								&lt;input type="hidden" name="vo_color" value="Magenta"&gt;
-								&lt;input type="hidden" name="op" value="1"&gt;
-								&lt;input type="hidden" name="hp" value="1"&gt;
-								&lt;input type="hidden" name="lp" value="0"&gt;
-								&lt;input type="hidden" name="cp" value="0"&gt;
-								&lt;input type="hidden" name="vo" value="0"&gt;
-								&lt;input type="hidden" name="tool_position" value="top"&gt;
-								&lt;div class="field has-addons"&gt;
-									&lt;p class="control"&gt;
-										&lt;span class="select"&gt;
-											&lt;select name="periods" class="param-field"&gt;
-												&lt;option value="300"&gt;10 min&lt;/option&gt;
-												&lt;option value="1800"&gt;30 min&lt;/option&gt;
-												&lt;option value="3600"&gt;1 hour&lt;/option&gt;
-												&lt;option value="86400" selected="selected"&gt;1 day&lt;/option&gt;
-											&lt;/select&gt;
-										&lt;/span&gt;
-									&lt;/p&gt;
-									&lt;p class="control"&gt;
-										&lt;input name="from" id='WPBITCHART2-from-input' class='input param-field' value='2017-11-25'&gt;
-									&lt;/p&gt;
-									&lt;p class="control"&gt;
-										&lt;input name="to" id='WPBITCHART2-from-input' class='input param-field' value='2017-12-25'&gt;
-									&lt;/p&gt;
-									&lt;p class="control"&gt;
-										&lt;a class="button wp-bitcoin-chart-refresh-button" form-name="WPBITCHART2_button"&gt;
-											&lt;i class="fa fa-refresh"&gt;&lt;/i&gt; 表示
-										&lt;/a&gt;
-									&lt;/p&gt;
-								&lt;/div&gt;
-							&lt;/form&gt;&lt;canvas id='WPBITCHART2'&gt;&lt;/canvas&gt;&lt;/div&gt;&lt;script&gt;
-								var ctx = document.getElementById('WPBITCHART2').getContext('2d');
-								var chart = new Chart(ctx, {"type":"line","data":{"labels":["11\u670825\u65e5","11\u670826\u65e5","11\u670827\u65e5","11\u670828\u65e5","11\u670829\u65e5","11\u670830\u65e5","12\u67081\u65e5","12\u67082\u65e5","12\u67083\u65e5","12\u67084\u65e5","12\u67085\u65e5","12\u67086\u65e5","12\u67087\u65e5","12\u67088\u65e5","12\u67089\u65e5","12\u670810\u65e5","12\u670811\u65e5","12\u670812\u65e5","12\u670813\u65e5","12\u670814\u65e5","12\u670815\u65e5","12\u670816\u65e5","12\u670817\u65e5","12\u670818\u65e5","12\u670819\u65e5","12\u670820\u65e5","12\u670821\u65e5","12\u670822\u65e5"],"datasets":[{"label":"Open Price","borderColor":"PINK","data":[893818,915908,973806,1037890,1084999,1141802,1134017,1171219,1235995,1230501,1282000,1303500,1325099,1563054,2208435,1986014,1790008,1737000,1932952,1963999,1897232,1910738,2022685,2196503,2203500,2167104,2098325,1939115],"drawBorder":false},{"label":"High Price","borderColor":"PURPLE","data":[925019,976950,1044500,1092800,1145999,1317140,1273402,1239711,1255000,1327536,1308000,1332497,1568878,2298580,2312100,1999000,1830000,1994000,1987773,1981010,1937500,2066666,2215250,2278193,2219850,2227000,2101019,2038542],"drawBorder":false}],"options":{"title":{"display":true,"text":"BTC\/JPY"}}}});
-							&lt;/script&gt;
-						</pre>
+						<pre>&lt;div class='wp-bitcoin-chart-field'&gt;&lt;form action="#" class="wp-bitcoin-chart-form" field-name="WPBITCHART2"&gt;
+	&lt;input type="hidden" name="name" value="WPBITCHART2"&gt;
+	&lt;input type="hidden" name="op_color" value="PINK"&gt;
+	&lt;input type="hidden" name="hp_color" value="PURPLE"&gt;
+	&lt;input type="hidden" name="lp_color" value="Blue"&gt;
+	&lt;input type="hidden" name="cp_color" value="Yellow"&gt;
+	&lt;input type="hidden" name="vo_color" value="Magenta"&gt;
+	&lt;input type="hidden" name="op" value="1"&gt;
+	&lt;input type="hidden" name="hp" value="1"&gt;
+	&lt;input type="hidden" name="lp" value="0"&gt;
+	&lt;input type="hidden" name="cp" value="0"&gt;
+	&lt;input type="hidden" name="vo" value="0"&gt;
+	&lt;input type="hidden" name="tool_position" value="top"&gt;
+	&lt;div class="field has-addons"&gt;
+		&lt;p class="control"&gt;
+			&lt;span class="select"&gt;
+				&lt;select name="periods" class="param-field"&gt;
+					&lt;option value="300"&gt;10 min&lt;/option&gt;
+					&lt;option value="1800"&gt;30 min&lt;/option&gt;
+					&lt;option value="3600"&gt;1 hour&lt;/option&gt;
+					&lt;option value="86400" selected="selected"&gt;1 day&lt;/option&gt;
+				&lt;/select&gt;
+			&lt;/span&gt;
+		&lt;/p&gt;
+		&lt;p class="control"&gt;
+			&lt;input name="from" id='WPBITCHART2-from-input' class='input param-field' value='2017-11-25'&gt;
+		&lt;/p&gt;
+		&lt;p class="control"&gt;
+			&lt;input name="to" id='WPBITCHART2-from-input' class='input param-field' value='2017-12-25'&gt;
+		&lt;/p&gt;
+		&lt;p class="control"&gt;
+			&lt;a class="button wp-bitcoin-chart-refresh-button" form-name="WPBITCHART2_button"&gt;
+				&lt;i class="fa fa-refresh"&gt;&lt;/i&gt; 表示
+			&lt;/a&gt;
+		&lt;/p&gt;
+	&lt;/div&gt;
+&lt;/form&gt;&lt;canvas id='WPBITCHART2'&gt;&lt;/canvas&gt;&lt;/div&gt;&lt;script&gt;
+	var ctx = document.getElementById('WPBITCHART2').getContext('2d');
+	var chart = new Chart(ctx, {"type":"line","data":{"labels":["11\u670825\u65e5","11\u670826\u65e5","11\u670827\u65e5","11\u670828\u65e5","11\u670829\u65e5","11\u670830\u65e5","12\u67081\u65e5","12\u67082\u65e5","12\u67083\u65e5","12\u67084\u65e5","12\u67085\u65e5","12\u67086\u65e5","12\u67087\u65e5","12\u67088\u65e5","12\u67089\u65e5","12\u670810\u65e5","12\u670811\u65e5","12\u670812\u65e5","12\u670813\u65e5","12\u670814\u65e5","12\u670815\u65e5","12\u670816\u65e5","12\u670817\u65e5","12\u670818\u65e5","12\u670819\u65e5","12\u670820\u65e5","12\u670821\u65e5","12\u670822\u65e5"],"datasets":[{"label":"Open Price","borderColor":"PINK","data":[893818,915908,973806,1037890,1084999,1141802,1134017,1171219,1235995,1230501,1282000,1303500,1325099,1563054,2208435,1986014,1790008,1737000,1932952,1963999,1897232,1910738,2022685,2196503,2203500,2167104,2098325,1939115],"drawBorder":false},{"label":"High Price","borderColor":"PURPLE","data":[925019,976950,1044500,1092800,1145999,1317140,1273402,1239711,1255000,1327536,1308000,1332497,1568878,2298580,2312100,1999000,1830000,1994000,1987773,1981010,1937500,2066666,2215250,2278193,2219850,2227000,2101019,2038542],"drawBorder":false}],"options":{"title":{"display":true,"text":"BTC\/JPY"}}}});
+&lt;/script&gt;</pre>
 					</article>
 				</div>
 			</div>
