@@ -67,11 +67,20 @@ define( 'WBC__DEFAULT_LP_COLOR', 'Blue' );
 define( 'WBC__DEFAULT_CP_COLOR', 'Yellow' );
 define( 'WBC__DEFAULT_VO_COLOR', 'Magenta' );
 
-register_activation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_activation' ) );
-register_deactivation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_deactivation' ) );
+/*
+ * The code that runs during plugin activation.
+ */
+require_once WBC__PLUGIN_DIR . 'includes/class-wbc-activator.php';
+register_activation_hook( __FILE__, array( 'WBC_Activator', 'activate' ) );
 
-require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
-add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
+/*
+ * The code that runs during plugin activation.
+ */
+require_once WBC__PLUGIN_DIR . 'includes/class-wbc-deactivator.php';
+register_deactivation_hook( __FILE__, array( 'WBC_Deactivator', 'deactivate' ) );
+
+require_once WBC__PLUGIN_DIR . 'includes/class-wp-bitcoin-chart.php';
+$wbc = new WP_Bitcoin_Chart();
 
 if ( is_admin() ) {
 	require_once WBC__PLUGIN_DIR . 'admin/class-wbc-admin.php';
