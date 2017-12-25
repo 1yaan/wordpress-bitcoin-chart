@@ -16,9 +16,34 @@
 
 	<?php
 	if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
-		WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
-		echo '<p>初期化しました！</p>';
+		print_r($_REQUEST);
+		$button_name = $_POST['Submit'];
+
+		if ( 'Initialization' == $button_name ) {
+			WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
+			?>
+			<div class="updated fade">
+				<p><strong>保存していたデータを全て削除し、初期化しました。</strong></p>
+			</div>
+			<?php
+		}
+		if ( 'Settings' == $button_name ) {
+			if ( array_key_exists( 'wp_bitcoin_chart_css', $_POST) ) {
+				$wp_bitcoin_chart_css = $_POST['wp_bitcoin_chart_css'];
+			} else {
+				$wp_bitcoin_chart_css = 0;
+			}
+
+			update_option( 'wp_bitcoin_chart_css', $wp_bitcoin_chart_css );
+			?>
+			<div class="updated fade">
+				<p><strong>オプションを登録しました。</strong></p>
+			</div>
+			<?php
+		}
 	}
+
+	$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
 	?>
 
 	<p>WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。</p>
@@ -184,14 +209,34 @@
 				</tbody>
 			</table>
 
-			<h3>データの初期化</h3>
-			<p>ボタンをクリックして、データを初期化してください。</p>
 			<form action="" method="post">
 				<?php
 				// おまじない.
 				wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 				?>
-				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="初期化" /></p>
+				<h3>オプションの設定</h3>
+				<?php
+				$checked = checked( $wp_bitcoin_chart_css, 1 );
+				echo <<<EOD
+<table class="form-table">
+	<tr valign="top">
+		<th>独自のCSSを使用しますか？</th>
+		<td>
+			<label>使用します
+				<input type="checkbox" name="wp_bitcoin_chart_css" {$checked} value="1">
+			</label>
+		</td>
+	</tr>
+</table>
+EOD;
+?>
+				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Settings" /></p>
+
+				<hr>
+
+				<h3>データの初期化</h3>
+				<p>ボタンをクリックして、データを初期化してください。</p>
+				<p class="submit"><input type="submit" name="Submit" class="button-primary" value="Initialization" /></p>
 			</form>
 		</section>
 	</div>

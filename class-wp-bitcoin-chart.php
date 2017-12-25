@@ -15,22 +15,12 @@
 class WP_Bitcoin_Chart {
 
 	/**
-	 * Initial setting Flag to  that init is executed only once.
-	 *
-	 * @access private
-	 * @var boolean
-	 */
-	private static $initiated = false;
-
-	/**
 	 * First executed
 	 *
 	 * @return void
 	 */
 	public static function init() {
-		if ( ! self::$initiated ) {
-			self::init_hooks();
-		}
+		self::init_hooks();
 	}
 
 	/**
@@ -39,7 +29,15 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	private static function init_hooks() {
-		self::$initiated = true;
+		// Add Action.
+		add_action( 'wp_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
+		add_action( 'admin_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
+		add_action( 'wp_ajax_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
+		add_action( 'wp_ajax_nopriv_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
+
+		// Exp: [wp_bitcoin_chart_view]
+		// ショートコードで画面にグラフを表示する.
+		add_shortcode( 'wp_bitcoin_chart_view', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_view_shortcode' ) );
 	}
 
 	/**
@@ -451,6 +449,17 @@ EOT;
 	 * @return void
 	 */
 	public static function register_jquery() {
+
+		$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
+
+		if ( empty( $wp_bitcoin_chart_css ) ) {
+			// 独自のCSSを使用しない場合は、bulma.ioのCSSを使う.
+			wp_register_style( 'wbc_style', plugins_url( 'css/wbc_style.css', __FILE__ ) );
+			wp_enqueue_style( 'wbc_style' );
+			wp_register_style( 'fontawesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
+			wp_enqueue_style( 'fontawesome' );
+		}
+
 		wp_register_script( 'momentjs', 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js', array(), '0.1.0' );
 		wp_enqueue_script( 'momentjs' );
 

@@ -70,6 +70,6 @@ class WBC_Admin {
 	 * @return void
 	 */
 	public function display_plugin_admin_page() {
-		include_once( WBC__PLUGIN_DIR . 'views/settings.php' );
+		include_once( WBC__PLUGIN_DIR . 'admin/includes/settings.php' );
 	}
 }

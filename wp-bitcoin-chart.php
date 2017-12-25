@@ -74,7 +74,6 @@ define( 'WBC__DEFAULT_PERIODS_86400_NAME', 'wp_bitcoin_chart_check_periods_86400
 
 register_activation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_activation' ) );
 register_deactivation_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_deactivation' ) );
-register_uninstall_hook( __FILE__, array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_uninstall' ) );
 
 require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
 add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
@@ -83,13 +82,3 @@ if ( is_admin() ) {
 	require_once WBC__PLUGIN_DIR . 'admin/class-wbc-admin.php';
 	$wbc_admin = new WBC_Admin();
 }
-
-// Add Action.
-add_action( 'wp_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
-add_action( 'admin_enqueue_scripts', array( 'WP_Bitcoin_Chart', 'register_jquery' ) );
-add_action( 'wp_ajax_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
-add_action( 'wp_ajax_nopriv_wp_bitcoin_chart', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_get_json_data' ) );
-
-// Exp: [wp_bitcoin_chart_view]
-// ショートコードで画面にグラフを表示する.
-add_shortcode( 'wp_bitcoin_chart_view', array( 'WP_Bitcoin_Chart', 'wp_bitcoin_chart_view_shortcode' ) );
