@@ -16,7 +16,6 @@
 
 	<?php
 	if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
-		print_r($_REQUEST);
 		$button_name = $_POST['Submit'];
 
 		if ( 'Initialization' == $button_name ) {
@@ -28,7 +27,7 @@
 			<?php
 		}
 		if ( 'Settings' == $button_name ) {
-			if ( array_key_exists( 'wp_bitcoin_chart_css', $_POST) ) {
+			if ( array_key_exists( 'wp_bitcoin_chart_css', $_POST ) ) {
 				$wp_bitcoin_chart_css = $_POST['wp_bitcoin_chart_css'];
 			} else {
 				$wp_bitcoin_chart_css = 0;
