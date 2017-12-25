@@ -82,12 +82,8 @@ class WP_Bitcoin_Chart {
 			mkdir( WBC__PLUGIN_DATA_DIR, 0755 );
 		}
 
-		print_r( 'before=' . get_option( 'wp_bitcoin_chart_check_periods_300' ) );
-
 		// Insert options.
 		self::wbc_init_options();
-
-		print_r( 'after=' . get_option( 'wp_bitcoin_chart_check_periods_300' ) );
 	}
 
 	/**
@@ -96,8 +92,6 @@ class WP_Bitcoin_Chart {
 	 * @return void
 	 */
 	public static function wbc_init_options() {
-		print_r( 'WBC__DEFAULT_CHART_START=' . WBC__DEFAULT_CHART_START );
-
 		update_option( 'wp_bitcoin_chart_check_periods_300', WBC__DEFAULT_CHART_START );
 		update_option( 'wp_bitcoin_chart_check_periods_1800', WBC__DEFAULT_CHART_START );
 		update_option( 'wp_bitcoin_chart_check_periods_3600', WBC__DEFAULT_CHART_START );
