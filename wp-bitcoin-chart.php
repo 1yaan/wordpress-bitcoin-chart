@@ -80,8 +80,8 @@ require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart.php' );
 add_action( 'init', array( 'WP_Bitcoin_Chart', 'init' ) );
 
 if ( is_admin() ) {
-	require_once( WBC__PLUGIN_DIR . 'class-wp-bitcoin-chart-admin.php' );
-	add_action( 'init', array( 'WP_Bitcoin_Chart_Admin', 'init' ) );
+	require_once WBC__PLUGIN_DIR . 'admin/class-wbc-admin.php';
+	$wbc_admin = new WBC_Admin();
 }
 
 // Add Action.
