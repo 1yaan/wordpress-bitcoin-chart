@@ -113,12 +113,12 @@ class WBC_Data {
 	/**
 	 * Set atts.
 	 *
-	 * attsを設定します. from, to, periods等のプロパティも設定します.
+	 * Setting atts. from, to, periods等のプロパティも設定します.
 	 *
 	 * @param  array $atts Input.
 	 * @return void
 	 */
-	public function setAtts( $atts ) {
+	public function set_atts( $atts ) {
 		$this->atts = $atts;
 
 		if ( ! empty( $atts['from'] ) and WBC_Common::is_date_format( $atts['from'] ) ) {
@@ -133,7 +133,10 @@ class WBC_Data {
 	}
 
 	/**
-	 * make_data_file.
+	 * Make data file.
+	 *
+	 * @access public
+	 * @since  1.0.0
 	 * @return void
 	 */
 	public function make_data_file() {
@@ -141,7 +144,10 @@ class WBC_Data {
 	}
 
 	/**
-	 * get_market_fluctuations.
+	 * Get market fluctuations.
+	 *
+	 * @access public
+	 * @since  1.0.0
 	 * @return void
 	 */
 	public function get_market_fluctuations() {
@@ -149,7 +155,10 @@ class WBC_Data {
 	}
 
 	/**
-	 * get_now_price.
+	 * Get now price.
+	 *
+	 * @access public
+	 * @since  1.0.0
 	 * @return void
 	 */
 	public function get_now_price() {
@@ -321,7 +330,7 @@ class WBC_Data {
 	 */
 	public function get_chart( $atts = null ) {
 		if ( ! empty( $atts ) ) {
-			$this->setAtts( $atts );
+			$this->set_atts( $atts );
 		}
 
 		$labels   = $this->get_label();
@@ -389,7 +398,7 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  0.1.0
-	 * @param  array   $atts  User defined attributes in shortcode tag.
+	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
 	public function output_chart( $atts ) {

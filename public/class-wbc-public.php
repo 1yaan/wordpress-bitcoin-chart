@@ -116,7 +116,7 @@ class WBC_Public {
 		);
 
 		$wbc_data = new WBC_Data();
-		$result = array(
+		$result   = array(
 			'chart' => $wbc_data->get_chart( $atts ),
 			'atts'  => $atts,
 		);
