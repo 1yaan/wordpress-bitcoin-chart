@@ -10,7 +10,7 @@
  * Plugin Name: WP Bitcoin Chart
  * Plugin URI:  https://1yaan.github.io/wp-bitcoin-chart/
  * Description: This is WordPress plugin. This plugin views BTC/JPY chart by Chart.js
- * Version:     0.1.0
+ * Version:     1.0.0
  * Author:      1yaan
  * Author URI:  https://github.com/1yaan
  * License:     GPLv2 or later
@@ -81,6 +81,7 @@ register_deactivation_hook( __FILE__, array( 'WBC_Deactivator', 'deactivate' ) )
 
 require_once WBC__PLUGIN_DIR . 'includes/class-wp-bitcoin-chart.php';
 $wbc = new WP_Bitcoin_Chart();
+$wbc->run();
 
 if ( is_admin() ) {
 	require_once WBC__PLUGIN_DIR . 'admin/class-wbc-admin.php';

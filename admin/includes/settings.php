@@ -4,7 +4,7 @@
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
- * @version   0.1
+ * @version   1.0.0
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
@@ -19,7 +19,7 @@
 		$button_name = $_POST['Submit'];
 
 		if ( 'Initialization' == $button_name ) {
-			WP_Bitcoin_Chart::wp_bitcoin_chart_restart();
+			WBC_Common::wp_bitcoin_chart_restart();
 			?>
 			<div class="updated fade">
 				<p><strong>保存していたデータを全て削除し、初期化しました。</strong></p>
@@ -53,7 +53,8 @@
 			<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
 			<figure>
 				<?php
-				echo WP_Bitcoin_Chart::wp_bitcoin_chart_view_shortcode( array(
+				$wbc_public = new WBC_Public();
+				echo $wbc_public->wp_bitcoin_chart_view_shortcode( array(
 					'name'          => 'WPBITCHART2',
 					'periods'       => WBC__DEFAULT_CHART_PERIODS,
 					'op_color'      => 'PINK',

@@ -3,7 +3,7 @@
  * WP Bitcoin Chart Admin.
  *
  * @since      0.1.0
- * @version    0.1
+ * @version    1.0.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -30,7 +30,7 @@ class WBC_Admin {
 	 * Initializes WordPress hooks
 	 *
 	 * @access private
-	 * @since 0.1
+	 * @since  0.1.0
 	 * @return void
 	 */
 	private function define_admin_hooks() {
@@ -42,7 +42,7 @@ class WBC_Admin {
 	 * Add action links.
 	 *
 	 * @access public
-	 * @since 0.1
+	 * @since  0.1.0
 	 * @param  array $links Plugin index links.
 	 * @return array
 	 */
@@ -55,7 +55,7 @@ class WBC_Admin {
 	 * Add plugin admin menu pages.
 	 *
 	 * @access public
-	 * @since 0.1
+	 * @since  0.1
 	 * @return void
 	 */
 	public function add_plugin_admin_menu() {
@@ -66,10 +66,19 @@ class WBC_Admin {
 	 * Render the settings page for this plugin.
 	 *
 	 * @access public
-	 * @since 0.1
+	 * @since  0.1
 	 * @return void
 	 */
 	public function display_plugin_admin_page() {
 		include_once( WBC__PLUGIN_DIR . 'admin/includes/settings.php' );
+	}
+
+	/**
+	 * Run.
+	 *
+	 * @access public
+	 * @since  1.0.0
+	 */
+	public function run() {
 	}
 }
