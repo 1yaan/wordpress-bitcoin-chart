@@ -63,14 +63,16 @@ function wp_bitcoin_chart_data( target_this ) {
   .then(
     // Success callback
     function( res ) {
-      // グラフの表示
-      // jQuery( '.wp_bitcoin_chart_loading_img' ).remove();
-      // jQuery( '#' + post_id ).show();
+      var canvasField = jQuery( '#' + post_id );
+      // 現在のデータを2とする.
+      canvasField.attr("id", post_id + '2');
+      // 2のフィールドの隣に同じcanvasを作る
+      canvasField.after("<canvas id='" + post_id + "'></canvas>");
+      // 2のフィールドを消す
+      canvasField.remove();
 
       var ctx = document.getElementById(post_id).getContext('2d');
     	var chart = new Chart(ctx, res['chart']);
-      //chart.update();
-
       console.log( 'ajax success' );
     },
     // Failed callback
