@@ -42,7 +42,13 @@ class WBC_Public {
 
 		// Exp: [wp_bitcoin_chart_view].
 		// ショートコードで画面にグラフを表示する.
-		add_shortcode( 'wp_bitcoin_chart_view', array( $this, 'wp_bitcoin_chart_view_shortcode' ) );
+		add_shortcode( 'wp_bitcoin_chart_view', array( $this, 'wp_bitcoin_chart_view' ) );
+		// ショートコードで相場変動を表示する.
+		add_shortcode( 'wp_bitcoin_chart_market_price', array( $this, 'wp_bitcoin_chart_market_price' ) );
+		// ショートコードで画面に最終取引価格を表示する.
+		add_shortcode( 'wp_bitcoin_chart_transaction_price', array( $this, 'wp_bitcoin_chart_transaction_price' ) );
+
+
 	}
 
 	/**
@@ -125,6 +131,32 @@ class WBC_Public {
 	}
 
 	/**
+	 * WP Bitcoin Chart Market Price shortcode
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function wp_bitcoin_chart_market_price( $atts ) {
+		$wbc_data = new WBC_Data();
+		return $wbc_data->output_market_price( $atts );
+	}
+
+	/**
+	 * WP Bitcoin Chart Market Transaction shortcode
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function wp_bitcoin_chart_transaction_price( $atts ) {
+		$wbc_data = new WBC_Data();
+		return $wbc_data->output_transaction_price( $atts );
+	}
+
+	/**
 	 * WP Bitcoin Chart view shortcode
 	 *
 	 * @access public
@@ -132,7 +164,7 @@ class WBC_Public {
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public function wp_bitcoin_chart_view_shortcode( $atts ) {
+	public function wp_bitcoin_chart_view( $atts ) {
 		// ショートコードの変数 foo と bar を使用することを宣言し、さらに初期値を設定する.
 		$atts = shortcode_atts(
 			array(

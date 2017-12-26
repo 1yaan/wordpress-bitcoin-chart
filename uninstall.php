@@ -21,3 +21,5 @@ delete_option( 'wp_bitcoin_chart_check_periods_300' );
 delete_option( 'wp_bitcoin_chart_check_periods_1800' );
 delete_option( 'wp_bitcoin_chart_check_periods_3600' );
 delete_option( 'wp_bitcoin_chart_check_periods_86400' );
+delete_option( 'wp_bitcoin_chart__summary' );
+delete_option( 'wp_bitcoin_chart__price' );

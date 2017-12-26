@@ -17,6 +17,15 @@
 class WBC_Data {
 
 	/**
+	 * Field name.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    integer
+	 */
+	private $field_name = 0;
+
+	/**
 	 * Periods
 	 *
 	 * @access private
@@ -121,6 +130,9 @@ class WBC_Data {
 	public function set_atts( $atts ) {
 		$this->atts = $atts;
 
+		if ( ! empty( $atts['name'] ) ) {
+			$this->field_name = $atts['name'];
+		}
 		if ( ! empty( $atts['from'] ) and WBC_Common::is_date_format( $atts['from'] ) ) {
 			$this->from_unixtime = strtotime( $atts['from'] );
 		}
@@ -133,14 +145,35 @@ class WBC_Data {
 	}
 
 	/**
+	 * Get from date
+	 *
+	 * @return date
+	 */
+	public function get_from() {
+		return date('Y-m-d', $this->from_unixtime);
+	}
+
+	/**
+	 * Get to date
+	 *
+	 * @return date
+	 */
+	public function get_to() {
+		return date('Y-m-d', $this->to_unixtime);
+	}
+
+	/**
 	 * Make data file.
 	 *
 	 * @access public
 	 * @since  1.0.0
 	 * @return void
 	 */
-	public function make_data_file() {
+	public function make_data_file( $filename, $write_data ) {
 		// 該当のファイルを作成/更新します.
+		$result = file_put_contents( $filename, $periods_data );
+		chmod( $filename, 0755 );
+		return $result;
 	}
 
 	/**
@@ -255,6 +288,88 @@ class WBC_Data {
 	}
 
 	/**
+	 * Receive Cryptowatch Price.
+	 * 市場の最終価格を返します。
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return integer
+	 */
+	public function receive_cryptowatch_price() {
+
+		$last_access = get_option( 'wp_bitcoin_chart__price' );
+
+		// 通信する.
+		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price' );
+		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw   = json_decode( $json, true );
+
+
+		/*
+			{
+			  "result": {
+			    "price": 780.63
+			  }
+			}
+		 */
+
+		$price = 0;
+
+		if ( ! empty( $cw['result']['price'] ) ) {
+			$price    = $cw['result']['price'];
+			$now_time = time();
+			update_option( 'wp_bitcoin_chart__price', $now_time );
+		}
+
+		return $price;
+	}
+
+	/**
+	 * Receive Cryptowatch Price.
+	 * 市場の最終価格を返します。
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return array
+	 */
+	public function receive_cryptowatch_summary() {
+
+		$last_access = get_option( 'wp_bitcoin_chart__summary' );
+
+		// 通信する.
+		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary' );
+		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw   = json_decode( $json, true );
+
+		/*
+			{
+			  "result": {
+			    "price":{
+			      "last": 780.31,
+			      "high": 790.34,
+			      "low": 772.76,
+			      "change": {
+			        "percentage": 0.0014373838,
+			        "absolute": 1.12
+			      }
+			    },
+			    "volume": 5345.0415
+			  }
+			}
+		 */
+
+		$summary = array();
+
+		if ( ! empty( $cw['result']['price'] ) ) {
+			$summary  = $cw['result']['price'];
+			$now_time = time();
+			update_option( 'wp_bitcoin_chart__summary', $now_time );
+		}
+
+		return $summary;
+	}
+
+	/**
 	 * Receive cryptowatch data.
 	 * Cryptowatch.jpからデータを取得します.この処理は再帰的な処理を含みます.
 	 * データが取得できなくなるまで取得します.
@@ -300,7 +415,7 @@ class WBC_Data {
 				$periods_data = array_merge( $all_data, $periods_data );
 			}
 
-			$result = file_put_contents( $filename, json_encode( $periods_data ) );
+			$result = $this->make_data_file( $filename, json_encode( $periods_data ) );
 			chmod( $filename, 0755 );
 			if ( false === $result ) {
 				return 3;
@@ -394,6 +509,69 @@ class WBC_Data {
 	}
 
 	/**
+	 * Get output string Market price.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function output_market_price( $atts ) {
+		$filename    = WBC_Common::get_cache_market_filename();
+		$output_text = '';
+
+		if ( $this->is_cache ) {
+			$now_time    = time();
+			$last_access = get_option( 'wp_bitcoin_chart__market_price' );
+			// キャッシュは5分とする.
+			if ( file_exists( $filename ) and ( $now_time - $last_access ) > 300 ) {
+				$output_text = file_get_contents( $filename );
+				return $output_text;
+			}
+		}
+
+		// 市場にアクセスする.
+		$cw_summary  = $this->receive_cryptowatch_summary();
+		$output_text = number_format( $cw_summary['low'] ) . ' - ' . number_format( $cw_summary['high'] );
+
+		file_put_contents( $filename, $output_text );
+		chmod( $filename, 0755 );
+
+		return $output_text;
+	}
+
+	/**
+	 * Get output string Transaction price.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function output_transaction_price( $atts ) {
+		$filename    = WBC_Common::get_cache_transaction_filename();
+		$output_text = '';
+
+		if ( $this->is_cache ) {
+			$now_time = time();
+			$last_access = get_option( 'wp_bitcoin_chart__transaction_price' );
+			if ( file_exists( $filename ) and ( $now_time - $last_access ) > 300 ) {
+				$output_text = file_get_contents( $filename );
+				return $output_text;
+			}
+		}
+
+		// 市場にアクセスする.
+		$cw_market_price = $this->receive_cryptowatch_price();
+		$output_text     = number_format( $cw_market_price );
+
+		file_put_contents( $filename, $output_text );
+		chmod( $filename, 0755 );
+
+		return $output_text;
+	}
+
+	/**
 	 * Get output string for chart.
 	 *
 	 * @access public
@@ -402,22 +580,26 @@ class WBC_Data {
 	 * @return string
 	 */
 	public function output_chart( $atts ) {
-		$name        = $atts['name'];
-		$periods     = $atts['periods'];
-		$from_date   = $atts['from'];
-		$to_date     = $atts['to'];
-		$filename    = WBC_Common::get_cache_htm_filename( $name, $periods, $from_date, $to_date );
+		if ( ! empty( $atts ) ) {
+			$this->set_atts( $atts );
+		}
+
+		$filename    = WBC_Common::get_cache_htm_filename( $this->field_name, $this->periods, $this->get_from(), $this->get_to() );
 		$output_text = '';
 
 		// 短いperiods用の日付.
-		$from_date_short = date( 'Y-m-d', strtotime( $atts['to'] . ' -1 day' ) );
-		$to_date_short   = $atts['to'];
+		$from_date       = $this->get_from();
+		$to_date         = $this->get_to();
+
+		$from_date_short = date( 'Y-m-d', strtotime( $this->get_to() . ' -1 day' ) );
+		$to_date         = $this->get_to();
+		$to_date_short   = $this->get_to();
 
 		// キャッシュが有効の場合は、キャッシュを利用する.
 		if ( $this->is_cache ) {
 			$now_time    = time();
-			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $periods ) );
-			if ( file_exists( $filename ) and ( $now_time - $last_access ) > $periods ) {
+			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $this->periods ) );
+			if ( file_exists( $filename ) and ( $now_time - $last_access ) > $this->periods ) {
 				$output_text = file_get_contents( $filename );
 				return $output_text;
 			}
@@ -427,23 +609,23 @@ class WBC_Data {
 
 		// ツール部分のHTML.
 		$tools_text = <<<EOT
-<form action="#" class="wp-bitcoin-chart-form" field-name="{$atts['name']}">
-	<input type="hidden" name="name" value="{$atts['name']}">
-	<input type="hidden" name="op_color" value="{$atts['op_color']}">
-	<input type="hidden" name="hp_color" value="{$atts['hp_color']}">
-	<input type="hidden" name="lp_color" value="{$atts['lp_color']}">
-	<input type="hidden" name="cp_color" value="{$atts['cp_color']}">
-	<input type="hidden" name="vo_color" value="{$atts['vo_color']}">
-	<input type="hidden" name="op" value="{$atts['op']}">
-	<input type="hidden" name="hp" value="{$atts['hp']}">
-	<input type="hidden" name="lp" value="{$atts['lp']}">
-	<input type="hidden" name="cp" value="{$atts['cp']}">
-	<input type="hidden" name="vo" value="{$atts['vo']}">
-	<input type="hidden" name="tool_position" value="{$atts['tool_position']}">
+<form action="#" class="wp-bitcoin-chart-form" field-name="{$this->field_name}">
+	<input type="hidden" name="name" value="{$this->field_name}">
+	<input type="hidden" name="op_color" value="{$this->atts['op_color']}">
+	<input type="hidden" name="hp_color" value="{$this->atts['hp_color']}">
+	<input type="hidden" name="lp_color" value="{$this->atts['lp_color']}">
+	<input type="hidden" name="cp_color" value="{$this->atts['cp_color']}">
+	<input type="hidden" name="vo_color" value="{$this->atts['vo_color']}">
+	<input type="hidden" name="op" value="{$this->atts['op']}">
+	<input type="hidden" name="hp" value="{$this->atts['hp']}">
+	<input type="hidden" name="lp" value="{$this->atts['lp']}">
+	<input type="hidden" name="cp" value="{$this->atts['cp']}">
+	<input type="hidden" name="vo" value="{$this->atts['vo']}">
+	<input type="hidden" name="tool_position" value="{$this->atts['tool_position']}">
 	<div class="field has-addons">
 		<p class="control">
 			<span class="select">
-				<select name="periods" id="${name}-periods" class="param-field wbc-change-periods">
+				<select name="periods" id="{$this->field_name}-periods" class="param-field wbc-change-periods">
 					<option value="300">5 min</option>
 					<option value="1800">30 min</option>
 					<option value="3600">1 hour</option>
@@ -452,17 +634,17 @@ class WBC_Data {
 			</span>
 		</p>
 		<p class="control">
-			<input type="text" name="from" id='${name}-from-input' class='input param-field' value='${from_date}'>
-			<input type="hidden" name="from_default" id='${name}-from-default' value='${from_date}'>
-			<input type="hidden" name="from_default_short" id='${name}-from-default-short' value='${from_date_short}'>
+			<input type="text" name="from" id='{$this->field_name}-from-input' class='input param-field' value='{$from_date}'>
+			<input type="hidden" name="from_default" id='{$this->field_name}-from-default' value='${from_date}'>
+			<input type="hidden" name="from_default_short" id='{$this->field_name}-from-default-short' value='${from_date_short}'>
 		</p>
 		<p class="control">
-			<input type="text" name="to" id='${name}-from-input' class='input param-field' value='${to_date}'>
-			<input type="hidden" name="to_default" id='${name}-to-default' value='${to_date}'>
-			<input type="hidden" name="to_default_short" id='${name}-to-default-short' value='${to_date_short}'>
+			<input type="text" name="to" id='{$this->field_name}-from-input' class='input param-field' value='${to_date}'>
+			<input type="hidden" name="to_default" id='{$this->field_name}-to-default' value='${to_date}'>
+			<input type="hidden" name="to_default_short" id='{$this->field_name}-to-default-short' value='${to_date_short}'>
 		</p>
 		<p class="control">
-			<a class="button wp-bitcoin-chart-refresh-button" form-name="{$atts['name']}_button">
+			<a class="button wp-bitcoin-chart-refresh-button" form-name="{$this->field_name}_button">
 				<i class="fa fa-refresh"></i> 表示
 			</a>
 		</p>
@@ -473,7 +655,7 @@ EOT;
 		// スクリプト部分のHTML.
 		$scripts_text = <<<EOT
 <script>
-	var ctx = document.getElementById('${name}').getContext('2d');
+	var ctx = document.getElementById('{$this->field_name}').getContext('2d');
 	var chart = new Chart(ctx, ${chart});
 </script>
 EOT;
@@ -484,7 +666,7 @@ EOT;
 		if ( 'top' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
 			$output_text .= $tools_text;
 		}
-		$output_text .= "<canvas id='${name}'></canvas>";
+		$output_text .= "<canvas id='{$this->field_name}'></canvas>";
 		if ( 'bottom' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
 			$output_text .= $tools_text;
 		}

@@ -135,6 +135,28 @@ class WBC_Common {
 	}
 
 	/**
+	 * Get cache transaction filename.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return string
+	 */
+	public static function get_cache_transaction_filename() {
+		return WBC__PLUGIN_DATA_DIR . 'cw_transaction.json';
+	}
+
+	/**
+	 * Get cache market filename.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return string
+	 */
+	public static function get_cache_market_filename() {
+		return WBC__PLUGIN_DATA_DIR . 'cw_market.json';
+	}
+
+	/**
 	 * Get cache json filename.
 	 *
 	 * @access public
