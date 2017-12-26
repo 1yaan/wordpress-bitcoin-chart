@@ -4,7 +4,7 @@
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
- * @version   1.0.0
+ * @version   1.1.0
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
@@ -54,7 +54,7 @@
 			<figure>
 				<?php
 				$wbc_public = new WBC_Public();
-				echo $wbc_public->wp_bitcoin_chart_view_shortcode( array(
+				echo $wbc_public->wp_bitcoin_chart_view( array(
 					'name'          => 'WPBITCHART2',
 					'periods'       => WBC__DEFAULT_CHART_PERIODS,
 					'op_color'      => 'PINK',

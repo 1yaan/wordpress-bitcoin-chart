@@ -3,7 +3,7 @@
  * Common class.
  *
  * @since      0.1.0
- * @version    1.0.0
+ * @version    1.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -138,7 +138,7 @@ class WBC_Common {
 	 * Get cache transaction filename.
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @return string
 	 */
 	public static function get_cache_transaction_filename() {
@@ -149,7 +149,7 @@ class WBC_Common {
 	 * Get cache market filename.
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @return string
 	 */
 	public static function get_cache_market_filename() {

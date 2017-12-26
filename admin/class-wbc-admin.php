@@ -3,7 +3,7 @@
  * WP Bitcoin Chart Admin.
  *
  * @since      0.1.0
- * @version    1.0.0
+ * @version    1.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}

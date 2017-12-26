@@ -3,7 +3,7 @@
  * Data class.
  *
  * @since      0.1.0
- * @version    1.0.0
+ * @version    1.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -150,16 +150,16 @@ class WBC_Data {
 	 * @return date
 	 */
 	public function get_from() {
-		return date('Y-m-d', $this->from_unixtime);
+		return date( 'Y-m-d', $this->from_unixtime );
 	}
 
 	/**
-	 * Get to date
+	 * Get to date.
 	 *
 	 * @return date
 	 */
 	public function get_to() {
-		return date('Y-m-d', $this->to_unixtime);
+		return date( 'Y-m-d', $this->to_unixtime );
 	}
 
 	/**
@@ -167,11 +167,13 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  1.0.0
-	 * @return void
+	 * @param  string  $filename   ファイル名
+	 * @param  string  $write_data ファイルの内容
+	 * @return boolean
 	 */
 	public function make_data_file( $filename, $write_data ) {
 		// 該当のファイルを作成/更新します.
-		$result = file_put_contents( $filename, $periods_data );
+		$result = file_put_contents( $filename, $write_data );
 		chmod( $filename, 0755 );
 		return $result;
 	}
@@ -292,7 +294,7 @@ class WBC_Data {
 	 * 市場の最終価格を返します。
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @return integer
 	 */
 	public function receive_cryptowatch_price() {
@@ -300,19 +302,9 @@ class WBC_Data {
 		$last_access = get_option( 'wp_bitcoin_chart__price' );
 
 		// 通信する.
-		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price' );
-		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw   = json_decode( $json, true );
-
-
-		/*
-			{
-			  "result": {
-			    "price": 780.63
-			  }
-			}
-		 */
-
+		$json  = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price' );
+		$json  = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw    = json_decode( $json, true );
 		$price = 0;
 
 		if ( ! empty( $cw['result']['price'] ) ) {
@@ -326,10 +318,10 @@ class WBC_Data {
 
 	/**
 	 * Receive Cryptowatch Price.
-	 * 市場の最終価格を返します。
+	 * 市場の最終価格を返します.
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @return array
 	 */
 	public function receive_cryptowatch_summary() {
@@ -512,7 +504,7 @@ class WBC_Data {
 	 * Get output string Market price.
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
@@ -544,7 +536,7 @@ class WBC_Data {
 	 * Get output string Transaction price.
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */

@@ -3,7 +3,7 @@
  * WordPress Bitcoin Chart Plugin Public functions.
  *
  * @since      0.1.0
- * @version    1.0.0
+ * @version    1.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -134,7 +134,7 @@ class WBC_Public {
 	 * WP Bitcoin Chart Market Price shortcode
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
@@ -147,7 +147,7 @@ class WBC_Public {
 	 * WP Bitcoin Chart Market Transaction shortcode
 	 *
 	 * @access public
-	 * @since  0.1.0
+	 * @since  1.1.0
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
