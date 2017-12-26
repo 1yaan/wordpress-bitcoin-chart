@@ -47,8 +47,6 @@ class WBC_Public {
 		add_shortcode( 'wp_bitcoin_chart_market_price', array( $this, 'wp_bitcoin_chart_market_price' ) );
 		// ショートコードで画面に最終取引価格を表示する.
 		add_shortcode( 'wp_bitcoin_chart_transaction_price', array( $this, 'wp_bitcoin_chart_transaction_price' ) );
-
-
 	}
 
 	/**

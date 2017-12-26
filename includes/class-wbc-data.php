@@ -167,8 +167,8 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  1.0.0
-	 * @param  string  $filename   ファイル名
-	 * @param  string  $write_data ファイルの内容
+	 * @param  string $filename   ファイル名.
+	 * @param  string $write_data ファイルの内容.
 	 * @return boolean
 	 */
 	public function make_data_file( $filename, $write_data ) {
@@ -329,27 +329,9 @@ class WBC_Data {
 		$last_access = get_option( 'wp_bitcoin_chart__summary' );
 
 		// 通信する.
-		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary' );
-		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw   = json_decode( $json, true );
-
-		/*
-			{
-			  "result": {
-			    "price":{
-			      "last": 780.31,
-			      "high": 790.34,
-			      "low": 772.76,
-			      "change": {
-			        "percentage": 0.0014373838,
-			        "absolute": 1.12
-			      }
-			    },
-			    "volume": 5345.0415
-			  }
-			}
-		 */
-
+		$json    = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary' );
+		$json    = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw      = json_decode( $json, true );
 		$summary = array();
 
 		if ( ! empty( $cw['result']['price'] ) ) {
@@ -545,7 +527,7 @@ class WBC_Data {
 		$output_text = '';
 
 		if ( $this->is_cache ) {
-			$now_time = time();
+			$now_time    = time();
 			$last_access = get_option( 'wp_bitcoin_chart__transaction_price' );
 			if ( file_exists( $filename ) and ( $now_time - $last_access ) > 300 ) {
 				$output_text = file_get_contents( $filename );
@@ -582,7 +564,6 @@ class WBC_Data {
 		// 短いperiods用の日付.
 		$from_date       = $this->get_from();
 		$to_date         = $this->get_to();
-
 		$from_date_short = date( 'Y-m-d', strtotime( $this->get_to() . ' -1 day' ) );
 		$to_date         = $this->get_to();
 		$to_date_short   = $this->get_to();
