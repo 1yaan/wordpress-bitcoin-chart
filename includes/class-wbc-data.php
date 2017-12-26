@@ -16,12 +16,67 @@
  */
 class WBC_Data {
 
+	/**
+	 * Periods
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    integer
+	 */
 	private $periods = 0;
+
+	/**
+	 * Assort.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    integer
+	 */
 	private $assort = 0;
+
+	/**
+	 * From Unixtime.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    integer
+	 */
 	private $from_unixtime = 0;
+
+	/**
+	 * To Unixtime.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    integer
+	 */
 	private $to_unixtime = 0;
+
+	/**
+	 * Cache flag.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    boolean
+	 */
 	private $is_cache = true;
+
+	/**
+	 * Cache flag.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    array
+	 */
 	private $atts;
+
+	/**
+	 * Chart data.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 * @var    array
+	 */
 	private $chartdata;
 
 	/**
@@ -29,10 +84,10 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  0.1.0
-	 * @param  integer $from_unixtime 開始時間のUNIXTIME
-	 * @param  integer $to_unixtime   終了時間のUNIXTIME
-	 * @param  integer $peridos       データ間隔
-	 * @param  integer $assort        表示するグラフの種類
+	 * @param  integer $from_unixtime 開始時間のUNIXTIME.
+	 * @param  integer $to_unixtime   終了時間のUNIXTIME.
+	 * @param  integer $peridos       データ間隔.
+	 * @param  integer $assort        表示するグラフの種類.
 	 */
 	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null ) {
 		// 表示内容をreturnする.
@@ -77,14 +132,26 @@ class WBC_Data {
 		}
 	}
 
+	/**
+	 * make_data_file.
+	 * @return void
+	 */
 	public function make_data_file() {
 		// 該当のファイルを作成/更新します.
 	}
 
+	/**
+	 * get_market_fluctuations.
+	 * @return void
+	 */
 	public function get_market_fluctuations() {
 		// 24時間の市場の相場変動を取得します.
 	}
 
+	/**
+	 * get_now_price.
+	 * @return void
+	 */
 	public function get_now_price() {
 		// 一番最新のデータの価格を取得します.
 	}
@@ -368,7 +435,7 @@ class WBC_Data {
 		<p class="control">
 			<span class="select">
 				<select name="periods" id="${name}-periods" class="param-field wbc-change-periods">
-					<option value="300">10 min</option>
+					<option value="300">5 min</option>
 					<option value="1800">30 min</option>
 					<option value="3600">1 hour</option>
 					<option value="86400" selected="selected">1 day</option>

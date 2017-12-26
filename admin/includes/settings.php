@@ -40,9 +40,9 @@
 			</div>
 			<?php
 		}
+	} else {
+		$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
 	}
-
-	$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
 	?>
 
 	<p>WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。</p>
