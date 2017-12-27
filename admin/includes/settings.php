@@ -61,7 +61,7 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 							<div>
 								<label>独自のCSSを使用しますか？
 								<?php
-								$checked = checked( $wp_bitcoin_chart_css, 1, false);
+								$checked = checked( $wp_bitcoin_chart_css, 1, false );
 								echo <<<EOD
 <input type="checkbox" name="wp_bitcoin_chart_css" {$checked} value="1">
 EOD;
@@ -118,10 +118,10 @@ EOD;
 							<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 							<!-- github-docs -->
 							<ins class="adsbygoogle"
-							     style="display:block"
-							     data-ad-client="ca-pub-0119304545599366"
-							     data-ad-slot="8330348600"
-							     data-ad-format="auto"></ins>
+									 style="display:block"
+									 data-ad-client="ca-pub-0119304545599366"
+									 data-ad-slot="8330348600"
+									 data-ad-format="auto"></ins>
 							<script>
 							(adsbygoogle = window.adsbygoogle || []).push({});
 							</script>
