@@ -118,10 +118,10 @@ EOD;
 							<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 							<!-- github-docs -->
 							<ins class="adsbygoogle"
-									 style="display:block"
-									 data-ad-client="ca-pub-0119304545599366"
-									 data-ad-slot="8330348600"
-									 data-ad-format="auto"></ins>
+									style="display:block"
+									data-ad-client="ca-pub-0119304545599366"
+									data-ad-slot="8330348600"
+									data-ad-format="auto"></ins>
 							<script>
 							(adsbygoogle = window.adsbygoogle || []).push({});
 							</script>
