@@ -59,7 +59,7 @@ class WBC_Admin {
 	 * @return void
 	 */
 	public function add_plugin_admin_menu() {
-		add_menu_page( 'WP Bitcoin Chart', 'WP Bitcoin Chart', 'manage_options', WBC__PLUGIN_NAME, array( $this, 'display_plugin_admin_page' ), WBC__PLUGIN_DIR_URL . 'img/bitcoin.png' );
+		add_menu_page( 'WP Bitcoin Chart', 'WP Bitcoin Chart', 'manage_options', WBC__PLUGIN_NAME, array( $this, 'display_plugin_admin_page' ), WBC__PLUGIN_DIR_URL . 'public/img/bitcoin.png' );
 	}
 
 	/**
