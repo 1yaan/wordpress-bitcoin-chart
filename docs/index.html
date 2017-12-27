@@ -112,9 +112,13 @@
 	</section>
 
 	<div class="box cta">
-		<p class="has-text-centered">
-			<span class="tag is-primary">Latest</span> Version 0.1.0 画面に複数件のグラフが挿入できるようになりました！ refs <a href="https://github.com/1yaan/wp-bitcoin-chart/issues/7" target="_blank">#7</a>
-		</p>
+		<div class="container">
+			<p>
+				<span class="tag is-primary">Latest</span> Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.2" target="_blank">1.2.0</a> 管理画面がきれいになりました.<br>
+				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.1" target="_blank">1.1.0</a> 現在の市場価格、24時間の相場変動をテキストで表示できるようになりました.<br>
+				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.0" target="_blank">1.0.0</a> プレリリースしました.
+			</p>
+		</div>
 	</div>
 
 	<section class="container">
@@ -163,13 +167,31 @@
 		</div>
 
 		<div class="sandbox">
+						<div class="tile is-ancestor">
+				<div class="tile is-parent">
+					<article class="tile is-child notification is-white">
+						<p class="title">ショートコードについて</p>
+						<p class="subtitle">このプラグインには3つのショートコードが設定されています。</p>
+						<ul>
+							<li>グラフを表示するショートコード [wp_bitcoin_chart_view]</li>
+							<li>最終取引価格を表示するショートコード [wp_bitcoin_chart_transaction_price]</li>
+							<li>24時間の相場変動を表示するショートコード [wp_bitcoin_chart_market_price]</li>
+						</ul>
+						<p></p>
+					</article>
+				</div>
+			</div>
 			<div class="tile is-ancestor">
 				<div class="tile is-parent">
 					<article class="tile is-child notification is-white">
-						<p class="title">ショートコード 例</p>
+						<p class="title">グラフを表示するショートコード 例</p>
+						<p>グラフを表示するショートコードのみ、パラメーターを設定することができます。パラメーターによって、いろいろな種類のグラフを表示することができます.</p>
 						<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
 						<p class="title">Themeファイル内でショートコードを利用する場合 例</p>
-						<pre><?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]'); ?></pre>
+						<p>WordPressでは、テーマの中にプラグインのショートコードを設置する関数が準備されています。このdo_shortcodeをテーマファイル内に設置することで、ショートコードを利用することができます.</p>
+						<pre>&lt;?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]'); ?&gt;</pre>
+						<br>
+						<p class="title">グラフの表示 例</p>
 						<figure>
 							<div class='wp-bitcoin-chart-field'>
 								<form action="#" class="wp-bitcoin-chart-form" field-name="WPBITCHART2">
@@ -379,7 +401,32 @@
 	&lt;/div&gt;
 &lt;/form&gt;&lt;canvas id='WPBITCHART2'&gt;&lt;/canvas&gt;&lt;/div&gt;&lt;script&gt;
 	var ctx = document.getElementById('WPBITCHART2').getContext('2d');
-	var chart = new Chart(ctx, {"type":"line","data":{"labels":["11\u670825\u65e5","11\u670826\u65e5","11\u670827\u65e5","11\u670828\u65e5","11\u670829\u65e5","11\u670830\u65e5","12\u67081\u65e5","12\u67082\u65e5","12\u67083\u65e5","12\u67084\u65e5","12\u67085\u65e5","12\u67086\u65e5","12\u67087\u65e5","12\u67088\u65e5","12\u67089\u65e5","12\u670810\u65e5","12\u670811\u65e5","12\u670812\u65e5","12\u670813\u65e5","12\u670814\u65e5","12\u670815\u65e5","12\u670816\u65e5","12\u670817\u65e5","12\u670818\u65e5","12\u670819\u65e5","12\u670820\u65e5","12\u670821\u65e5","12\u670822\u65e5"],"datasets":[{"label":"Open Price","borderColor":"PINK","data":[893818,915908,973806,1037890,1084999,1141802,1134017,1171219,1235995,1230501,1282000,1303500,1325099,1563054,2208435,1986014,1790008,1737000,1932952,1963999,1897232,1910738,2022685,2196503,2203500,2167104,2098325,1939115],"drawBorder":false},{"label":"High Price","borderColor":"PURPLE","data":[925019,976950,1044500,1092800,1145999,1317140,1273402,1239711,1255000,1327536,1308000,1332497,1568878,2298580,2312100,1999000,1830000,1994000,1987773,1981010,1937500,2066666,2215250,2278193,2219850,2227000,2101019,2038542],"drawBorder":false}],"options":{"title":{"display":true,"text":"BTC\/JPY"}}}});
+	var chart = new Chart(ctx, {
+		"type":"line",
+		"data":{
+			"labels":["11\u670825\u65e5","11\u670826\u65e5","11\u670827\u65e5",...],
+			"datasets":[
+				{
+					"label":"Open Price",
+					"borderColor":"PINK",
+					"data":[893818,915908,973806,...],
+					"drawBorder":false
+				},
+				{
+					"label":"High Price",
+					"borderColor":"PURPLE",
+					"data":[925019,976950,1044500,...],
+					"drawBorder":false
+				}
+			],
+			"options":{
+				"title":{
+					"display":true,
+					"text":"BTC\/JPY"
+				}
+			}
+		}
+	});
 &lt;/script&gt;</pre>
 					</article>
 				</div>

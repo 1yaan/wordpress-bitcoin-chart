@@ -34,16 +34,16 @@ An automated testing status of *master* branch: [![Build Status](https://travis-
   [wp_bitcoin_chart_view name="WPBITCHART3" cp=1 lp=1 hp_color="GREEN" cp_color="YELLOW" hp_color="TURQUOISE"]
   ```
 
-24時間の相場変動を表示するショートコード.
-
-  ```
-  [wp_bitcoin_chart__summary]
-  ```
-
 最終取引価格を表示するショートコード.
 
   ```
-  [wp_bitcoin_chart__price]
+  [wp_bitcoin_chart_transaction_price]
+  ```
+
+24時間の相場変動を表示するショートコード.
+
+  ```
+  [wp_bitcoin_chart_market_price]
   ```
 
 ### Themeに直接挿入する場合
