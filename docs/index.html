@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>WP Bitcoin Chart Example</title>
+	<title>WordPress Bitcoin Chart Plugin Example</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.3/moment.min.js"></script>
@@ -173,9 +173,9 @@
 						<p class="title">ショートコードについて</p>
 						<p class="subtitle">このプラグインには3つのショートコードが設定されています。</p>
 						<ul>
-							<li>グラフを表示するショートコード [wp_bitcoin_chart_view]</li>
-							<li>最終取引価格を表示するショートコード [wp_bitcoin_chart_transaction_price]</li>
-							<li>24時間の相場変動を表示するショートコード [wp_bitcoin_chart_market_price]</li>
+							<li>グラフを表示するショートコード <code>[wp_bitcoin_chart_view]</code></li>
+							<li>最終取引価格を表示するショートコード <code>[wp_bitcoin_chart_transaction_price]</code></li>
+							<li>24時間の相場変動を表示するショートコード <code>[wp_bitcoin_chart_market_price]</code></li>
 						</ul>
 						<p></p>
 					</article>
@@ -186,10 +186,10 @@
 					<article class="tile is-child notification is-white">
 						<p class="title">グラフを表示するショートコード 例</p>
 						<p>グラフを表示するショートコードのみ、パラメーターを設定することができます。パラメーターによって、いろいろな種類のグラフを表示することができます.</p>
-						<pre>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</pre>
+						<pre><code>[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]</code></pre>
 						<p class="title">Themeファイル内でショートコードを利用する場合 例</p>
 						<p>WordPressでは、テーマの中にプラグインのショートコードを設置する関数が準備されています。このdo_shortcodeをテーマファイル内に設置することで、ショートコードを利用することができます.</p>
-						<pre>&lt;?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]'); ?&gt;</pre>
+						<pre><code>&lt;?php echo do_shortcode('[wp_bitcoin_chart_view name="WPBITCHART2" op=1 hp=1 op_color="PINK" hp_color="PURPLE" tool_position="none"]'); ?&gt;</code></pre>
 						<br>
 						<p class="title">グラフの表示 例</p>
 						<figure>
@@ -363,7 +363,7 @@
 							ソースコードは必ず div class="wp-bitcoin-chart-field" に囲まれます。<br>
 							独自のCSSを設定する場合の目安としてお使いください。
 						</p>
-						<pre>&lt;div class='wp-bitcoin-chart-field'&gt;&lt;form action="#" class="wp-bitcoin-chart-form" field-name="WPBITCHART2"&gt;
+						<pre><code>&lt;div class='wp-bitcoin-chart-field'&gt;&lt;form action="#" class="wp-bitcoin-chart-form" field-name="WPBITCHART2"&gt;
 	&lt;input type="hidden" name="name" value="WPBITCHART2"&gt;
 	&lt;input type="hidden" name="op_color" value="PINK"&gt;
 	&lt;input type="hidden" name="hp_color" value="PURPLE"&gt;
@@ -427,7 +427,7 @@
 			}
 		}
 	});
-&lt;/script&gt;</pre>
+&lt;/script&gt;</code></pre>
 					</article>
 				</div>
 			</div>

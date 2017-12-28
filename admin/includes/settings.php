@@ -47,7 +47,10 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 		$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
 	}
 	?>
-	<p>WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。</p>
+	<p>
+		WP Bitcoin Chartは、ショートコードを使用することで簡単にBTC/JPYのグラフを投稿記事の中や固定ページに埋め込むことができるツールです。<br>
+		詳しい説明は<a href="https://1yaan.github.io/wp-bitcoin-chart/" target="_blank">こちら</a>をご確認ください。
+	</p>
 	<hr class="wp-header-end">
 
 	<div id="poststuff" class="metabox-holder has-right-sidebar">
