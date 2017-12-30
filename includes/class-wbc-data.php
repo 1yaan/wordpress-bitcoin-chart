@@ -3,7 +3,7 @@
  * Data class.
  *
  * @since      0.1.0
- * @version    1.1.0
+ * @version    2.0.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}

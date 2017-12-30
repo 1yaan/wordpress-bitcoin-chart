@@ -9,14 +9,14 @@
  *
  * Plugin Name: WP Bitcoin Chart
  * Plugin URI:  https://1yaan.github.io/wp-bitcoin-chart/
- * Description: This is WordPress plugin. This plugin views BTC/JPY chart by Chart.js
- * Version:     1.0.0
+ * Description: This plugin displays the data of cryptowatch.jp using Chartjs.
+ * Version:     2.0.0
  * Author:      1yaan
  * Author URI:  https://github.com/1yaan
  * License:     GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl.html
  * Domain Path: /languages/
- * Text Domain: wp_bitcoin_chart
+ * Text Domain: wp-bitcoin-chart
  *
  * @link        https://github.com/1yaan/wp-bitcoin-chart
  * @since       0.1.0
@@ -49,7 +49,7 @@ if ( ! function_exists( 'add_action' ) ) {
 ini_set( 'allow_url_fopen', true );
 
 // This plugin version.
-define( 'WBC__VERSION', '0.1' );
+define( 'WBC__VERSION', '2.0.0' );
 // The absolute path of the directory that contains the file, with trailing slash ("/").
 define( 'WBC__PLUGIN_NAME', 'wp-bitcoin-chart' );
 define( 'WBC__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
