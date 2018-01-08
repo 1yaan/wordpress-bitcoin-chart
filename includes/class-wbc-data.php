@@ -115,7 +115,7 @@ class WBC_Data {
 		if ( ! empty( $peridos ) ) {
 			$this->peridos = $peridos;
 		} else {
-			$this->peridos = WBC__DEFAULT_CHART_PERIODS;
+			$this->peridos = DAY_IN_SECONDS;
 		}
 	}
 
@@ -227,7 +227,7 @@ class WBC_Data {
 					unset( $all_data[ $key ] );
 					continue;
 				}
-				if ( WBC__CHART_PERIODS_ONE_DAY == $this->periods ) {
+				if ( DAY_IN_SECONDS == $this->periods ) {
 					$all_data[ $key ] = date( 'n月j日', $data_unixtime );
 				} else {
 					$all_data[ $key ] = date( 'n月j日 H:i', $data_unixtime );
@@ -302,6 +302,7 @@ class WBC_Data {
 		$last_access = get_option( 'wp_bitcoin_chart__price' );
 
 		// 通信する.
+		/*
 		$json  = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price' );
 		$json  = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw    = json_decode( $json, true );
@@ -309,6 +310,33 @@ class WBC_Data {
 
 		if ( ! empty( $cw['result']['price'] ) ) {
 			$price    = $cw['result']['price'];
+			$now_time = time();
+			update_option( 'wp_bitcoin_chart__price', $now_time );
+		}
+
+		return $price;
+		*/
+
+		$url  = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price';
+
+		$args = array(
+			'blocking'    => true,
+			'sslverify'   => false,
+			'httpversion' => '1.0',
+			'headers'     => array(
+				'Content-Type'  => 'application/json',
+			),
+		);
+
+		$response = wp_remote_get( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			echo "Something went wrong: $error_message";
+		}
+
+		if ( ! empty( $response['result']['price'] ) ) {
+			$price    = $response['result']['price'];
 			$now_time = time();
 			update_option( 'wp_bitcoin_chart__price', $now_time );
 		}

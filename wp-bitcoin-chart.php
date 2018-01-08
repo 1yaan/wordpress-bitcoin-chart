@@ -56,8 +56,6 @@ define( 'WBC__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WBC__PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 define( 'WBC__PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 define( 'WBC__PLUGIN_DATA_DIR', plugin_dir_path( __FILE__ ) . 'data/' );
-define( 'WBC__DEFAULT_CHART_PERIODS', 86400 );
-define( 'WBC__CHART_PERIODS_ONE_DAY', 86400 );
 define( 'WBC__DEFAULT_CHART_START', 1483319400 ); // January 2, 2017 AM 10: 10 is my son's 11th birthday.
 define( 'WBC__DEFAULT_CHART_NAME', 'WPBITCHART' );
 define( 'WBC__DEFAULT_OP_COLOR', 'Red' );

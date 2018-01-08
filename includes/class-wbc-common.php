@@ -116,7 +116,7 @@ class WBC_Common {
 	 * @param  integer $start_unixtime 開始時刻のUNIX時間.
 	 * @return void
 	 */
-	public static function wbc_init_option( $periods = WBC__DEFAULT_CHART_PERIODS, $start_unixtime = WBC__DEFAULT_CHART_START ) {
+	public static function wbc_init_option( $periods = DAY_IN_SECONDS, $start_unixtime = WBC__DEFAULT_CHART_START ) {
 		update_option( 'wp_bitcoin_chart__periods_' . strval( $periods ), WBC__DEFAULT_CHART_START );
 	}
 

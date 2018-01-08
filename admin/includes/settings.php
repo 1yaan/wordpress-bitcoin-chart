@@ -147,7 +147,7 @@ EOD;
 								$wbc_public = new WBC_Public();
 								echo $wbc_public->wp_bitcoin_chart_view( array(
 									'name'          => 'WPBITCHART2',
-									'periods'       => WBC__DEFAULT_CHART_PERIODS,
+									'periods'       => DAY_IN_SECONDS,
 									'op_color'      => 'PINK',
 									'hp_color'      => 'PURPLE',
 									'op'            => 1,

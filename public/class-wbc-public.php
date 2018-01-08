@@ -102,7 +102,7 @@ class WBC_Public {
 			$_POST,
 			array(
 				'name'          => WBC__DEFAULT_CHART_NAME,
-				'periods'       => WBC__DEFAULT_CHART_PERIODS,
+				'periods'       => DAY_IN_SECONDS,
 				'op_color'      => WBC__DEFAULT_OP_COLOR,
 				'hp_color'      => WBC__DEFAULT_HP_COLOR,
 				'lp_color'      => WBC__DEFAULT_LP_COLOR,
@@ -167,7 +167,7 @@ class WBC_Public {
 		$atts = shortcode_atts(
 			array(
 				'name'          => WBC__DEFAULT_CHART_NAME,
-				'periods'       => WBC__DEFAULT_CHART_PERIODS,
+				'periods'       => DAY_IN_SECONDS,
 				'op_color'      => WBC__DEFAULT_OP_COLOR,
 				'hp_color'      => WBC__DEFAULT_HP_COLOR,
 				'lp_color'      => WBC__DEFAULT_LP_COLOR,
