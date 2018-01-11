@@ -312,7 +312,7 @@ class WBC_Data {
 			'sslverify'   => false,
 			'httpversion' => '1.0',
 			'headers'     => array(
-				'Content-Type'  => 'application/json',
+				'Content-Type' => 'application/json',
 			),
 		);
 
@@ -362,7 +362,7 @@ class WBC_Data {
 			'sslverify'   => false,
 			'httpversion' => '1.0',
 			'headers'     => array(
-				'Content-Type'  => 'application/json',
+				'Content-Type' => 'application/json',
 			),
 		);
 
@@ -379,7 +379,7 @@ class WBC_Data {
 		$cw   = json_decode( $json, true );
 
 		if ( ! empty( $cw['result']['price'] ) ) {
-			$summary  = $cw['result']['price'];
+			$summary = $cw['result']['price'];
 
 			// アクセス時間を更新.
 			$now_time = time();
@@ -426,7 +426,7 @@ class WBC_Data {
 			'sslverify'   => false,
 			'httpversion' => '1.0',
 			'headers'     => array(
-				'Content-Type'  => 'application/json',
+				'Content-Type' => 'application/json',
 			),
 		);
 
