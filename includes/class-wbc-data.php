@@ -299,26 +299,14 @@ class WBC_Data {
 	 */
 	public function receive_cryptowatch_price() {
 
+		// アクセス時間を取得.
 		$last_access = get_option( 'wp_bitcoin_chart__price' );
 
-		// 通信する.
-		/*
-		$json  = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price' );
-		$json  = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw    = json_decode( $json, true );
+		// 初期値.
+		$url   = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price';
 		$price = 0;
 
-		if ( ! empty( $cw['result']['price'] ) ) {
-			$price    = $cw['result']['price'];
-			$now_time = time();
-			update_option( 'wp_bitcoin_chart__price', $now_time );
-		}
-
-		return $price;
-		*/
-
-		$url  = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price';
-
+		// 通信設定.
 		$args = array(
 			'blocking'    => true,
 			'sslverify'   => false,
@@ -328,6 +316,7 @@ class WBC_Data {
 			),
 		);
 
+		// 通信する.
 		$response = wp_remote_get( $url, $args );
 
 		if ( is_wp_error( $response ) ) {
@@ -335,8 +324,14 @@ class WBC_Data {
 			echo "Something went wrong: $error_message";
 		}
 
-		if ( ! empty( $response['result']['price'] ) ) {
-			$price    = $response['result']['price'];
+		// json decord.
+		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw   = json_decode( $json, true );
+
+		if ( ! empty( $cw['result']['price'] ) ) {
+			$price = $cw['result']['price'];
+
+			// アクセス時間を更新.
 			$now_time = time();
 			update_option( 'wp_bitcoin_chart__price', $now_time );
 		}
@@ -354,16 +349,39 @@ class WBC_Data {
 	 */
 	public function receive_cryptowatch_summary() {
 
+		// アクセス時間を取得.
 		$last_access = get_option( 'wp_bitcoin_chart__summary' );
 
-		// 通信する.
-		$json    = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary' );
-		$json    = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw      = json_decode( $json, true );
+		// 初期値.
+		$url     = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary';
 		$summary = array();
+
+		// 通信設定.
+		$args = array(
+			'blocking'    => true,
+			'sslverify'   => false,
+			'httpversion' => '1.0',
+			'headers'     => array(
+				'Content-Type'  => 'application/json',
+			),
+		);
+
+		// 通信する.
+		$response = wp_remote_get( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			echo "Something went wrong: $error_message";
+		}
+
+		// json decord.
+		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$cw   = json_decode( $json, true );
 
 		if ( ! empty( $cw['result']['price'] ) ) {
 			$summary  = $cw['result']['price'];
+
+			// アクセス時間を更新.
 			$now_time = time();
 			update_option( 'wp_bitcoin_chart__summary', $now_time );
 		}
@@ -400,8 +418,27 @@ class WBC_Data {
 		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
-		$json = file_get_contents( 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $this->periods ) . '&after=' . strval( $last_access ) );
-		$json = mb_convert_encoding( $json, 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+		$url = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $this->periods ) . '&after=' . strval( $last_access );
+
+		// 通信設定.
+		$args = array(
+			'blocking'    => true,
+			'sslverify'   => false,
+			'httpversion' => '1.0',
+			'headers'     => array(
+				'Content-Type'  => 'application/json',
+			),
+		);
+
+		// 通信する.
+		$response = wp_remote_get( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			echo "Something went wrong: $error_message";
+		}
+
+		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 		$cw   = json_decode( $json, true );
 
 		if ( ! empty( $cw['result'][ strval( $this->periods ) ] ) ) {
