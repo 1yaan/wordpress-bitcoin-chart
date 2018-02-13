@@ -19,7 +19,7 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 	<h1 class-"wp-heading-inline">WP Bitcoin Chart</h1>
 	<?php
 	if ( ! empty( $_POST ) and check_admin_referer( 'wp-bitcoin-chart-settings', 'wbc-nonce' ) ) {
-		$button_name = $_POST['Submit'];
+		$button_name = sanitize_text_field( $_POST['Submit'] );
 
 		if ( 'Initialization' == $button_name ) {
 			WBC_Common::wp_bitcoin_chart_restart();
@@ -31,7 +31,7 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 		}
 		if ( 'Settings' == $button_name ) {
 			if ( array_key_exists( 'wp_bitcoin_chart_css', $_POST ) ) {
-				$wp_bitcoin_chart_css = $_POST['wp_bitcoin_chart_css'];
+				$wp_bitcoin_chart_css = sanitize_text_field( $_POST['wp_bitcoin_chart_css'] );
 			} else {
 				$wp_bitcoin_chart_css = 0;
 			}
