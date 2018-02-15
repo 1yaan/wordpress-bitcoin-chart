@@ -137,22 +137,22 @@ class WBC_Common {
 	 *
 	 * @access public
 	 * @since  1.1.0
-	 * @param  string  $market     市場.
-	 * @param  string  $exchange   為替.
-	 * @param  string  $this_month 対象の月 date('Ym')形式 ex) 201801.
-	 * @param  string  $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
+	 * @param  string $market     市場.
+	 * @param  string $exchange   為替.
+	 * @param  string $this_month 対象の月 date('Ym')形式 ex) 201801.
+	 * @param  string $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
 	 * @return string
 	 */
-	public static function get_cache_transaction_filename( $market = "bitflyer", $exchange = "btcjpy", $this_month = null, $now_time = null ) {
+	public static function get_cache_transaction_filename( $market = 'bitflyer', $exchange = 'btcjpy', $this_month = null, $now_time = null ) {
 		if ( empty( $this_month ) ) {
-			$this_month = date('Ym');
+			$this_month = date( 'Ym' );
 		}
 		if ( empty( $now_time ) ) {
-			$now_time = date('YmdH');
+			$now_time = date( 'YmdH' );
 		}
 
-		// ex) your_dir/wp-bitcoin-chart/data/201801/transaction/cw_bitflyer_btcjpy_2018010100.json
-		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . "transaction" . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
+		// ex) your_dir/wp-bitcoin-chart/data/201801/transaction/cw_bitflyer_btcjpy_2018010100.json .
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'transaction' . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
 	}
 
 	/**
@@ -160,22 +160,22 @@ class WBC_Common {
 	 *
 	 * @access public
 	 * @since  1.1.0
-	 * @param  string  $market     市場.
-	 * @param  string  $exchange   為替.
-	 * @param  string  $this_month 対象の月 date('Ym')形式 ex) 201801.
-	 * @param  string  $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
+	 * @param  string $market     市場.
+	 * @param  string $exchange   為替.
+	 * @param  string $this_month 対象の月 date('Ym')形式 ex) 201801.
+	 * @param  string $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
 	 * @return string
 	 */
-	public static function get_cache_market_filename( $market = "bitflyer", $exchange = "btcjpy", $this_month = null, $now_time = null ) {
+	public static function get_cache_market_filename( $market = 'bitflyer', $exchange = 'btcjpy', $this_month = null, $now_time = null ) {
 		if ( empty( $this_month ) ) {
-			$this_month = date('Ym');
+			$this_month = date( 'Ym' );
 		}
 		if ( empty( $now_time ) ) {
-			$now_time = date('YmdH');
+			$now_time = date( 'YmdH' );
 		}
 
-		// ex) your_dir/wp-bitcoin-chart/data/201801/market/cw_bitflyer_btcjpy_2018010100.json
-		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . "market" . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
+		// ex) your_dir/wp-bitcoin-chart/data/201801/market/cw_bitflyer_btcjpy_2018010100.json .
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'market' . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
 	}
 
 	/**
@@ -189,16 +189,44 @@ class WBC_Common {
 	 * @param  string  $market        市場.
 	 * @param  string  $exchange      為替.
 	 * @param  string  $this_month    対象の月 date('Ym')形式 ex) 201801.
-	 * @param  string  $now_time      今の日時 date('YmdH')形式 ex) 2018010100.
 	 * @return string
 	 */
-	public static function get_cache_chart_filename( $periods, $from_unixtime, $to_unixtime, $market = "bitflyer", $exchange = "btcjpy", $datatype = "market", $this_month = null ) {
+	public static function get_cache_chart_filename( $periods, $from_unixtime, $to_unixtime, $market = 'bitflyer', $exchange = 'btcjpy', $this_month = null ) {
 		if ( empty( $this_month ) ) {
-			$this_month = date('Ym');
+			$this_month = date( 'Ym' );
 		}
 
-		// ex) your_dir/wp-bitcoin-chart/data/201801/chart/cw_bitflyer_btcjpy_300_2018010100.json
-		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'chart' . DIRECTORY_SEPARATOR
-						. 'cw_' . $market . '_' . $exchange . '_' .  strval( $periods ) . '_from' .  strval( $from_unixtime ) . '_to' .  strval( $to_unixtime ) . '.json';
+		// ex) your_dir/wp-bitcoin-chart/data/201801/chart/cw_bitflyer_btcjpy_300_2018010100.json .
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'chart' . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' .  strval( $periods ) . '_from' .  strval( $from_unixtime ) . '_to' .  strval( $to_unixtime ) . '.json';
 	}
+
+	/**
+	 * Remote get.
+	 *
+	 * @param  string $url
+	 * @return string
+	 */
+	public static function wbc_remote_get( $url ) {
+
+		// 通信設定.
+		$args = array(
+			'blocking'    => true,
+			'sslverify'   => false,
+			'httpversion' => '1.0',
+			'headers'     => array(
+				'Content-Type' => 'application/json',
+			),
+		);
+
+		// 通信する.
+		$response = wp_remote_get( $url, $args );
+
+		if ( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message();
+			echo 'Something went wrong: $error_message';
+		}
+
+		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
+	}
+
 }

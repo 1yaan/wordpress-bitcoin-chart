@@ -2,9 +2,9 @@
 /**
  * Data class.
  *
- * receive_*** cwからのデータ取得.
- * get_***     データを整えて返す キャッシュ関連処理.
- * output_***  データをHTML/表示加工して返す.
+ * Function group receive_*** cwからのデータ取得.
+ * Function group get_***     データを整えて返す キャッシュ関連処理.
+ * Function group output_***  データをHTML/表示加工して返す.
  *
  * @since      0.1.0
  * @version    2.1.0
@@ -30,7 +30,7 @@ class WBC_Data {
 	private $field_name = 0;
 
 	/**
-	 * Periods
+	 * Periods.
 	 *
 	 * @access private
 	 * @since  1.0.0
@@ -39,22 +39,22 @@ class WBC_Data {
 	private $periods = 0;
 
 	/**
-	 * Market
+	 * Market.
 	 *
 	 * @access private
 	 * @since  2.0.0
 	 * @var    integer
 	 */
-	private $market = "";
+	private $market = '';
 
 	/**
-	 * Exchange
+	 * Exchange.
 	 *
 	 * @access private
 	 * @since  2.0.0
 	 * @var    integer
 	 */
-	private $exchange = "";
+	private $exchange = '';
 
 	/**
 	 * Assort.
@@ -93,7 +93,7 @@ class WBC_Data {
 	private $is_cache = true;
 
 	/**
-	 * Cache flag.
+	 * Atts.
 	 *
 	 * @access private
 	 * @since  1.0.0
@@ -119,11 +119,14 @@ class WBC_Data {
 	 * @param  integer $to_unixtime   終了時間のUNIXTIME.
 	 * @param  integer $peridos       データ間隔.
 	 * @param  integer $assort        表示するグラフの種類.
+	 * @param  boolean $is_cache      キャッシュを使用するか.
 	 */
-	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null, $market = null, $exchange = null  ) {
+	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null, $market = null, $exchange = null, $is_cache = true ) {
 		// 表示内容をreturnする.
 		if ( defined( 'WP_DEBUG' ) ) {
 			$this->is_cache = false;
+		} else {
+			$this->is_cache = $is_cache;
 		}
 		if ( ! empty( $from_unixtime ) ) {
 			$this->from_unixtime = $from_unixtime;
@@ -213,119 +216,6 @@ class WBC_Data {
 	}
 
 	/**
-	 * Receive Cryptowatch Price.
-	 * 市場の最終価格を返します。
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @param  string $exchange 交換.
-	 * @param  string $market   市場.
-	 * @return string json
-	 */
-	public function receive_cryptowatch_price() {
-		// 初期値.
-		$url   = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/price';
-		$price = 0;
-
-		// 通信設定.
-		$args = array(
-			'blocking'    => true,
-			'sslverify'   => false,
-			'httpversion' => '1.0',
-			'headers'     => array(
-				'Content-Type' => 'application/json',
-			),
-		);
-
-		// 通信する.
-		$response = wp_remote_get( $url, $args );
-
-		if ( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			echo "Something went wrong: $error_message";
-		}
-
-		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-	}
-
-	/**
-	 * Receive Cryptowatch Summary.
-	 * 市場の24時間の平均価格を返します.
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @param  string $exchange 交換.
-	 * @param  string $market   市場.
-	 * @return string json
-	 */
-	public function receive_cryptowatch_summary() {
-		// 初期値.
-		$url     = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/summary';
-		$summary = array();
-
-		// 通信設定.
-		$args = array(
-			'blocking'    => true,
-			'sslverify'   => false,
-			'httpversion' => '1.0',
-			'headers'     => array(
-				'Content-Type' => 'application/json',
-			),
-		);
-
-		// 通信する.
-		$response = wp_remote_get( $url, $args );
-
-		if ( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			echo "Something went wrong: $error_message";
-		}
-
-		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-	}
-
-	/**
-	 * Receive cryptowatch data.
-	 * Cryptowatch.jpからデータを取得します.この処理は再帰的な処理を含みます.
-	 * データが取得できなくなるまで取得します.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @return string json
-	 */
-	public function receive_cryptowatch_data() {
-		$result = array();
-
-		// No periods. Exist.
-		if ( ! in_array( $this->periods, array( 300, 1800, 3600, 86400 ) ) ) {
-			return $result;
-		}
-
-		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
-		$url = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/ohlc?periods=' . strval( $this->periods );
-
-		// 通信設定.
-		$args = array(
-			'blocking'    => true,
-			'sslverify'   => false,
-			'httpversion' => '1.0',
-			'headers'     => array(
-				'Content-Type' => 'application/json',
-			),
-		);
-
-		// 通信する.
-		$response = wp_remote_get( $url, $args );
-
-		if ( is_wp_error( $response ) ) {
-			$error_message = $response->get_error_message();
-			echo "Something went wrong: $error_message";
-		}
-
-		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-	}
-
-	/**
 	 * Get now price.
 	 *
 	 * @access public
@@ -339,7 +229,8 @@ class WBC_Data {
 		if ( $this->is_cache and file_exists( $filename ) ) {
 			$json = file_get_contents( $filename );
 		} else {
-			$json = $this->receive_cryptowatch_price();
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/price';
+			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
 				$this->make_data_file( $filename, $json );
 			}
@@ -365,7 +256,8 @@ class WBC_Data {
 		if ( $this->is_cache and file_exists( $filename ) ) {
 			$json = file_get_contents( $filename );
 		} else {
-			$json = $this->receive_cryptowatch_summary();
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/summary';
+			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
 				$this->make_data_file( $filename, $json );
 			}
@@ -393,7 +285,8 @@ class WBC_Data {
 			$json = file_get_contents( $filename );
 		} elseif ( $next ) {
 			// 保存されているデータの更新.
-			$json = $this->receive_cryptowatch_data();
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
+			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
 				$this->make_data_file( $filename, $json );
 			}
@@ -438,7 +331,8 @@ class WBC_Data {
 			$json = file_get_contents( $filename );
 		} elseif ( $next ) {
 			// 保存されているデータの更新.
-			$json = $this->receive_cryptowatch_data();
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
+			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
 				$this->make_data_file( $filename, $json );
 			}
