@@ -4,7 +4,7 @@
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
- * @version   2.0.0
+ * @version   2.1.0
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */
@@ -30,13 +30,13 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 			<?php
 		}
 		if ( 'Settings' == $button_name ) {
-			if ( array_key_exists( 'wp_bitcoin_chart_css', $_POST ) ) {
-				$wp_bitcoin_chart_css = sanitize_text_field( $_POST['wp_bitcoin_chart_css'] );
+			if ( array_key_exists( WBC__OPTION_NAME_CHART_CSS, $_POST ) ) {
+				$wp_bitcoin_chart_css = sanitize_text_field( $_POST[ WBC__OPTION_NAME_CHART_CSS ] );
 			} else {
 				$wp_bitcoin_chart_css = 0;
 			}
 
-			update_option( 'wp_bitcoin_chart_css', $wp_bitcoin_chart_css );
+			update_option( WBC__OPTION_NAME_CHART_CSS, $wp_bitcoin_chart_css );
 			?>
 			<div class="updated fade">
 				<p><strong>オプションを登録しました。</strong></p>
@@ -44,7 +44,7 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 			<?php
 		}
 	} else {
-		$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
+		$wp_bitcoin_chart_css = WBC_Common::wbc_get_option( WBC__OPTION_NAME_CHART_CSS );
 	}
 	?>
 	<p>
@@ -178,6 +178,20 @@ EOD;
 										<td>WPBITCHART</td>
 										<td>半角英数字（小文字/大文字）</td>
 										<td>それぞれのグラフで、UNIQUEになるように設定してください。</td>
+									</tr>
+									<tr>
+										<td>market</td>
+										<td>市場</td>
+										<td>bitflyer</td>
+										<td>bitflyer, gdax, bitmex等が指定可能です。</td>
+										<td>参照先の<a href="https://cryptowatch.jp/docs/api" target="_blank">cryptowatch.jp</a>をご覧ください。</td>
+									</tr>
+									<tr>
+										<td>exchange</td>
+										<td>為替の種類</td>
+										<td>btcjpy</td>
+										<td>btcjpy, btcusd等が指定可能です。</td>
+										<td>参照先の<a href="https://cryptowatch.jp/docs/api" target="_blank">cryptowatch.jp</a>をご覧ください。</td>
 									</tr>
 									<tr>
 										<td>periods</td>

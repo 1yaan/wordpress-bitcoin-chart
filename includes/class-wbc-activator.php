@@ -5,7 +5,7 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      0.1.0
- * @version    2.0.0
+ * @version    2.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}

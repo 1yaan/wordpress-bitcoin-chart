@@ -114,7 +114,9 @@
 	<div class="box cta">
 		<div class="container">
 			<p>
-				<span class="tag is-primary">Latest</span> Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/2.0" target="_blank">2.0.0</a> マーケットが選択できるようになりました.<br>
+				<span class="tag is-primary">Latest</span>
+				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/2.1" target="_blank">2.1.0</a> キャッシュデータの保持方式が変更になりました.<br>
+				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/2.0" target="_blank">2.0.0</a> マーケットが選択できるようになりました.<br>
 				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.2" target="_blank">1.2.0</a> 管理画面がきれいになりました.<br>
 				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.1" target="_blank">1.1.0</a> 現在の市場価格、24時間の相場変動をテキストで表示できるようになりました.<br>
 				Version <a href="https://github.com/1yaan/wp-bitcoin-chart/releases/tag/1.0" target="_blank">1.0.0</a> プレリリースしました.
@@ -436,7 +438,9 @@
 				<div class="tile is-parent">
 					<article class="tile is-child notification is-white">
 						<p class="title">ショートコードで使用できるパラメーター</p>
-						<p class="subtitle">ショートコードで以下のすべてのパラメーターを使用できます。</p>
+						<p class="subtitle">
+							ショートコードで以下のすべてのパラメーターを使用できます。
+						</p>
 						<div class="content">
 							<table class="table is-bordered is-striped is-narrow is-fullwidth">
 								<thead>
@@ -455,6 +459,20 @@
 										<td>WPBITCHART</td>
 										<td>半角英数字（小文字/大文字）</td>
 										<td>それぞれのグラフで、UNIQUEになるように設定してください。</td>
+									</tr>
+									<tr>
+										<td>market</td>
+										<td>市場</td>
+										<td>bitflyer</td>
+										<td>bitflyer, gdax, bitmex等が指定可能です。</td>
+										<td>参照先の<a href="https://cryptowatch.jp/docs/api" target="_blank">cryptowatch.jp</a>をご覧ください。</td>
+									</tr>
+									<tr>
+										<td>exchange</td>
+										<td>為替の種類</td>
+										<td>btcjpy</td>
+										<td>btcjpy, btcusd等が指定可能です。</td>
+										<td>参照先の<a href="https://cryptowatch.jp/docs/api" target="_blank">cryptowatch.jp</a>をご覧ください。</td>
 									</tr>
 									<tr>
 										<td>periods</td>

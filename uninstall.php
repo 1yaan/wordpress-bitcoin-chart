@@ -3,7 +3,7 @@
  * Fired when the plugin is uninstalled.
  *
  * @since      0.1.0
- * @version    2.0.0
+ * @version    2.1.0
  * @package    wp-bitcoin-chart
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @copyright  1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -15,8 +15,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-// Delete options.
-delete_option( 'wp_bitcoin_chart_css' );
+delete_option( WBC__OPTION_NAME_CHART_CSS );
+
+// Older version's options.
 delete_option( 'wp_bitcoin_chart_check_periods_300' );
 delete_option( 'wp_bitcoin_chart_check_periods_1800' );
 delete_option( 'wp_bitcoin_chart_check_periods_3600' );

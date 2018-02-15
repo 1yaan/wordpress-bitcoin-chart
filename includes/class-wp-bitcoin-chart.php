@@ -4,7 +4,7 @@
  *
  * @package   wp-bitcoin-chart
  * @author    1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
- * @version   2.0.0
+ * @version   2.1.0
  * @copyright 1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
  * @license   GPLv2 or later, {@link https://www.gnu.org/licenses/gpl.html https://www.gnu.org/licenses/gpl.html}
  */

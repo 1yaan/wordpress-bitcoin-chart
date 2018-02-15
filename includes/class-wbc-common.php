@@ -3,7 +3,7 @@
  * Common class.
  *
  * @since      0.1.0
- * @version    2.0.0
+ * @version    2.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -94,96 +94,6 @@ class WBC_Common {
 	}
 
 	/**
-	 * WP Bitcoin Chart initialize options.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @return void
-	 */
-	public static function wbc_init_options() {
-		update_option( 'wp_bitcoin_chart_check_periods_300', WBC__DEFAULT_CHART_START );
-		update_option( 'wp_bitcoin_chart_check_periods_1800', WBC__DEFAULT_CHART_START );
-		update_option( 'wp_bitcoin_chart_check_periods_3600', WBC__DEFAULT_CHART_START );
-		update_option( 'wp_bitcoin_chart_check_periods_86400', WBC__DEFAULT_CHART_START );
-	}
-
-	/**
-	 * WP Bitcoin Chart initialize options.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @param  integer $periods        取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  integer $start_unixtime 開始時刻のUNIX時間.
-	 * @return void
-	 */
-	public static function wbc_init_option( $periods = DAY_IN_SECONDS, $start_unixtime = WBC__DEFAULT_CHART_START ) {
-		update_option( 'wp_bitcoin_chart__periods_' . strval( $periods ), WBC__DEFAULT_CHART_START );
-	}
-
-	/**
-	 * WP Bitcoin Chart delete options.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @return void
-	 */
-	public static function wbc_delete_options() {
-		delete_option( 'wp_bitcoin_chart_check_periods_300' );
-		delete_option( 'wp_bitcoin_chart_check_periods_1800' );
-		delete_option( 'wp_bitcoin_chart_check_periods_3600' );
-		delete_option( 'wp_bitcoin_chart_check_periods_86400' );
-	}
-
-	/**
-	 * Get cache transaction filename.
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @return string
-	 */
-	public static function get_cache_transaction_filename() {
-		return WBC__PLUGIN_DATA_DIR . 'cw_transaction.json';
-	}
-
-	/**
-	 * Get cache market filename.
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @return string
-	 */
-	public static function get_cache_market_filename() {
-		return WBC__PLUGIN_DATA_DIR . 'cw_market.json';
-	}
-
-	/**
-	 * Get cache json filename.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @param  integer $periods 取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @return string
-	 */
-	public static function get_cache_json_filename( $periods ) {
-		return WBC__PLUGIN_DATA_DIR . 'cw_' . strval( $periods ) . '.json';
-	}
-
-	/**
-	 * Get cache htm filename.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @param  string  $name      id name.
-	 * @param  integer $periods   取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
-	 * @param  date    $from_date from data.
-	 * @param  date    $to_date   to data.
-	 * @return string
-	 */
-	public static function get_cache_htm_filename( $name, $periods, $from_date = null, $to_date = null ) {
-		return WBC__PLUGIN_DATA_DIR . 'output_' . $name . '_' . strval( $periods ) . 'from' . $from_date . 'to' . $to_date . '.htm';
-	}
-
-	/**
 	 * Remove dir.
 	 *
 	 * @access public
@@ -199,4 +109,96 @@ class WBC_Common {
 		return rmdir( $dir_path );
 	}
 
+	/**
+	 * WP Bitcoin Chart initialize options.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return void
+	 */
+	public static function wbc_init_options() {
+		// 登録データを全部削除してしまおう.
+		self::wbc_delete_options();
+	}
+
+	/**
+	 * WP Bitcoin Chart delete options.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return void
+	 */
+	public static function wbc_delete_options() {
+		delete_option( WBC__OPTION_NAME_CHART_CSS );
+	}
+
+	/**
+	 * Get cache transaction filename.
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @param  string  $market     市場.
+	 * @param  string  $exchange   為替.
+	 * @param  string  $this_month 対象の月 date('Ym')形式 ex) 201801.
+	 * @param  string  $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
+	 * @return string
+	 */
+	public static function get_cache_transaction_filename( $market = "bitflyer", $exchange = "btcjpy", $this_month = null, $now_time = null ) {
+		if ( empty( $this_month ) ) {
+			$this_month = date('Ym');
+		}
+		if ( empty( $now_time ) ) {
+			$now_time = date('YmdH');
+		}
+
+		// ex) your_dir/wp-bitcoin-chart/data/201801/transaction/cw_bitflyer_btcjpy_2018010100.json
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . "transaction" . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
+	}
+
+	/**
+	 * Get cache market filename.
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @param  string  $market     市場.
+	 * @param  string  $exchange   為替.
+	 * @param  string  $this_month 対象の月 date('Ym')形式 ex) 201801.
+	 * @param  string  $now_time   今の日時 date('YmdH')形式 ex) 2018010100.
+	 * @return string
+	 */
+	public static function get_cache_market_filename( $market = "bitflyer", $exchange = "btcjpy", $this_month = null, $now_time = null ) {
+		if ( empty( $this_month ) ) {
+			$this_month = date('Ym');
+		}
+		if ( empty( $now_time ) ) {
+			$now_time = date('YmdH');
+		}
+
+		// ex) your_dir/wp-bitcoin-chart/data/201801/market/cw_bitflyer_btcjpy_2018010100.json
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . "market" . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . $now_time . '.json';
+	}
+
+	/**
+	 * Get cache chart filename.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  integer $periods       取得するデータの時間間隔. 300, 1800, 3600, 86400のみを認めます. 初期値は86400.
+	 * @param  integer $from_unixtime データ開始時間.
+	 * @param  integer $to_unixtime   データ終了時間.
+	 * @param  string  $market        市場.
+	 * @param  string  $exchange      為替.
+	 * @param  string  $this_month    対象の月 date('Ym')形式 ex) 201801.
+	 * @param  string  $now_time      今の日時 date('YmdH')形式 ex) 2018010100.
+	 * @return string
+	 */
+	public static function get_cache_chart_filename( $periods, $from_unixtime, $to_unixtime, $market = "bitflyer", $exchange = "btcjpy", $datatype = "market", $this_month = null ) {
+		if ( empty( $this_month ) ) {
+			$this_month = date('Ym');
+		}
+
+		// ex) your_dir/wp-bitcoin-chart/data/201801/chart/cw_bitflyer_btcjpy_300_2018010100.json
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'chart' . DIRECTORY_SEPARATOR
+						. 'cw_' . $market . '_' . $exchange . '_' .  strval( $periods ) . '_from' .  strval( $from_unixtime ) . '_to' .  strval( $to_unixtime ) . '.json';
+	}
 }

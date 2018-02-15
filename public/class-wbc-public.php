@@ -3,7 +3,7 @@
  * WordPress Bitcoin Chart Plugin Public functions.
  *
  * @since      0.1.0
- * @version    2.0.0
+ * @version    2.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -58,7 +58,7 @@ class WBC_Public {
 	 */
 	public function register_jquery() {
 
-		$wp_bitcoin_chart_css = get_option( 'wp_bitcoin_chart_css' );
+		$wp_bitcoin_chart_css = WBC_Common::wbc_get_option( WBC__OPTION_NAME_CHART_CSS );
 
 		if ( empty( $wp_bitcoin_chart_css ) ) {
 			// 独自のCSSを使用しない場合は、bulma.ioのCSSを使う.
@@ -116,6 +116,8 @@ class WBC_Public {
 				'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 				'to'            => date( 'Y-m-d' ),
 				'tool_position' => 'top', // none, top, bottom or both.
+				'market'        => 'bitflyer',
+				'exchange'      => 'btcjpy',
 			)
 		);
 
@@ -181,6 +183,8 @@ class WBC_Public {
 				'from'          => date( 'Y-m-d', strtotime( '-1 month' ) ),
 				'to'            => date( 'Y-m-d' ),
 				'tool_position' => 'top', // none, top, bottom or both.
+				'market'        => 'bitflyer',
+				'exchange'      => 'btcjpy',
 			),
 			$atts,
 			'wp-bitcoin-chart-view'

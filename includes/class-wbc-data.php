@@ -2,8 +2,12 @@
 /**
  * Data class.
  *
+ * receive_*** cwからのデータ取得.
+ * get_***     データを整えて返す キャッシュ関連処理.
+ * output_***  データをHTML/表示加工して返す.
+ *
  * @since      0.1.0
- * @version    2.0.0
+ * @version    2.1.0
  * @package    wp-bitcoin-chart
  * @subpackage wp-bitcoin-chart/includes
  * @author     1yaan, {@link https://github.com/1yaan https://github.com/1yaan}
@@ -33,6 +37,24 @@ class WBC_Data {
 	 * @var    integer
 	 */
 	private $periods = 0;
+
+	/**
+	 * Market
+	 *
+	 * @access private
+	 * @since  2.0.0
+	 * @var    integer
+	 */
+	private $market = "";
+
+	/**
+	 * Exchange
+	 *
+	 * @access private
+	 * @since  2.0.0
+	 * @var    integer
+	 */
+	private $exchange = "";
 
 	/**
 	 * Assort.
@@ -98,7 +120,7 @@ class WBC_Data {
 	 * @param  integer $peridos       データ間隔.
 	 * @param  integer $assort        表示するグラフの種類.
 	 */
-	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null ) {
+	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null, $market = null, $exchange = null  ) {
 		// 表示内容をreturnする.
 		if ( defined( 'WP_DEBUG' ) ) {
 			$this->is_cache = false;
@@ -111,6 +133,12 @@ class WBC_Data {
 		}
 		if ( ! empty( $assort ) ) {
 			$this->assort = $assort;
+		}
+		if ( ! empty( $market ) ) {
+			$this->market = $market;
+		}
+		if ( ! empty( $exchange ) ) {
+			$this->exchange = $exchange;
 		}
 		if ( ! empty( $peridos ) ) {
 			$this->peridos = $peridos;
@@ -141,6 +169,12 @@ class WBC_Data {
 		}
 		if ( ! empty( $atts['periods'] ) and in_array( $atts['periods'], array( 300, 1800, 3600, 86400 ) ) ) {
 			$this->periods = $atts['periods'];
+		}
+		if ( ! empty( $atts['market'] ) ) {
+			$this->market = $atts['market'];
+		}
+		if ( ! empty( $atts['exchange'] ) ) {
+			$this->exchange = $atts['exchange'];
 		}
 	}
 
@@ -179,131 +213,18 @@ class WBC_Data {
 	}
 
 	/**
-	 * Get market fluctuations.
-	 *
-	 * @access public
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function get_market_fluctuations() {
-		// 24時間の市場の相場変動を取得します.
-	}
-
-	/**
-	 * Get now price.
-	 *
-	 * @access public
-	 * @since  1.0.0
-	 * @return void
-	 */
-	public function get_now_price() {
-		// 一番最新のデータの価格を取得します.
-	}
-
-	/**
-	 * Get only label data.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @param  boolean $next 次の処理をするかどうか.
-	 * @return array
-	 */
-	public function get_label( $next = true ) {
-
-		$filename = WBC_Common::get_cache_json_filename( $this->periods );
-		$all_data = array();
-
-		if ( file_exists( $filename ) ) {
-			$all_data = file_get_contents( $filename );
-			$all_data = array_keys( json_decode( $all_data, true ) );
-			// 時刻を読めるように変換.
-			foreach ( $all_data as $key => $data_unixtime ) {
-				if ( ! empty( $this->from_unixtime ) and $data_unixtime < $this->from_unixtime ) {
-					// from よりも前のデータは削除する.
-					unset( $all_data[ $key ] );
-					continue;
-				} elseif ( ! empty( $this->to_unixtime ) and $data_unixtime > $this->to_unixtime ) {
-					// to よりも後のデータは削除する.
-					unset( $all_data[ $key ] );
-					continue;
-				}
-				if ( DAY_IN_SECONDS == $this->periods ) {
-					$all_data[ $key ] = date( 'n月j日', $data_unixtime );
-				} else {
-					$all_data[ $key ] = date( 'n月j日 H:i', $data_unixtime );
-				}
-			}
-		} elseif ( $next ) {
-			// 保存されているデータの更新.
-			$this->receive_cryptowatch_data( $this->periods, true );
-			$this->get_label( false );
-		}
-
-		return $all_data;
-	}
-
-	/**
-	 * Get only single graph data.
-	 *
-	 * @access public
-	 * @since  0.1.0
-	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
-	 * @param  boolean $next   次の処理をするかどうか.
-	 * @return array
-	 */
-	public function get_graph_data( $assort = null, $next = true ) {
-		if ( ! empty( $assort ) ) {
-			$this->assort = $assort;
-		}
-		if ( empty( $this->assort ) ) {
-			return array();
-		}
-
-		$filename = WBC_Common::get_cache_json_filename( $this->periods );
-		$result   = array();
-
-		if ( file_exists( $filename ) ) {
-			$all_data = file_get_contents( $filename );
-			$all_data = json_decode( $all_data, true );
-
-			// from to の対応をする.
-			if ( ! empty( $this->from_unixtime ) or ! empty( $this->to_unixtime ) ) {
-				foreach ( $all_data as $data_unixtime => $data ) {
-					if ( ! empty( $this->from_unixtime ) and $data_unixtime < $this->from_unixtime ) {
-						// from よりも前のデータは削除する.
-						unset( $all_data[ $data_unixtime ] );
-					} elseif ( ! empty( $this->to_unixtime ) and $data_unixtime > $this->to_unixtime ) {
-						// to よりも後のデータは削除する.
-						unset( $all_data[ $data_unixtime ] );
-					}
-				}
-			}
-			// 該当のデータの取り出し.
-			$result = WBC_Common::array_column( $all_data, $this->assort );
-		} elseif ( $next ) {
-			// 保存されているデータの更新.
-			$this->receive_cryptowatch_data();
-			$this->get_graph_data( $this->assort, false );
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Receive Cryptowatch Price.
 	 * 市場の最終価格を返します。
 	 *
 	 * @access public
 	 * @since  1.1.0
-	 * @return integer
+	 * @param  string $exchange 交換.
+	 * @param  string $market   市場.
+	 * @return string json
 	 */
 	public function receive_cryptowatch_price() {
-
-		// アクセス時間を取得.
-		$last_access = get_option( 'wp_bitcoin_chart__price' );
-
 		// 初期値.
-		$url   = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/price';
+		$url   = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/price';
 		$price = 0;
 
 		// 通信設定.
@@ -324,36 +245,22 @@ class WBC_Data {
 			echo "Something went wrong: $error_message";
 		}
 
-		// json decord.
-		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw   = json_decode( $json, true );
-
-		if ( ! empty( $cw['result']['price'] ) ) {
-			$price = $cw['result']['price'];
-
-			// アクセス時間を更新.
-			$now_time = time();
-			update_option( 'wp_bitcoin_chart__price', $now_time );
-		}
-
-		return $price;
+		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 	}
 
 	/**
-	 * Receive Cryptowatch Price.
-	 * 市場の最終価格を返します.
+	 * Receive Cryptowatch Summary.
+	 * 市場の24時間の平均価格を返します.
 	 *
 	 * @access public
 	 * @since  1.1.0
-	 * @return array
+	 * @param  string $exchange 交換.
+	 * @param  string $market   市場.
+	 * @return string json
 	 */
 	public function receive_cryptowatch_summary() {
-
-		// アクセス時間を取得.
-		$last_access = get_option( 'wp_bitcoin_chart__summary' );
-
 		// 初期値.
-		$url     = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/summary';
+		$url     = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/summary';
 		$summary = array();
 
 		// 通信設定.
@@ -374,19 +281,7 @@ class WBC_Data {
 			echo "Something went wrong: $error_message";
 		}
 
-		// json decord.
-		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw   = json_decode( $json, true );
-
-		if ( ! empty( $cw['result']['price'] ) ) {
-			$summary = $cw['result']['price'];
-
-			// アクセス時間を更新.
-			$now_time = time();
-			update_option( 'wp_bitcoin_chart__summary', $now_time );
-		}
-
-		return $summary;
+		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 	}
 
 	/**
@@ -396,29 +291,18 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  0.1.0
-	 * @return integer response status. 1: No period. 2: Interval is too short. 3: Cannot create json file. 99: Finished.
+	 * @return string json
 	 */
 	public function receive_cryptowatch_data() {
+		$result = array();
+
 		// No periods. Exist.
 		if ( ! in_array( $this->periods, array( 300, 1800, 3600, 86400 ) ) ) {
-			return 1;
-		}
-
-		if ( ! $this->is_cache ) {
-			WBC_Common::wbc_init_option( $this->periods );
-		}
-
-		$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $this->periods ) );
-
-		$now_time = time();
-
-		// Interval is too short.
-		if ( ( $now_time - $last_access ) < $this->periods ) {
-			return 2;
+			return $result;
 		}
 
 		// https://cryptowatch.jp/bitflyer/btcjpy からデータを取得します.
-		$url = 'https://api.cryptowat.ch/markets/bitflyer/btcjpy/ohlc?periods=' . strval( $this->periods ) . '&after=' . strval( $last_access );
+		$url = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange .  '/ohlc?periods=' . strval( $this->periods );
 
 		// 通信設定.
 		$args = array(
@@ -438,60 +322,148 @@ class WBC_Data {
 			echo "Something went wrong: $error_message";
 		}
 
-		$json = mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
-		$cw   = json_decode( $json, true );
-
-		if ( ! empty( $cw['result'][ strval( $this->periods ) ] ) ) {
-
-			$periods_keys = WBC_Common::array_column( $cw['result'][ strval( $this->periods ) ], 0 );
-			$periods_data = array_combine( $periods_keys, $cw['result'][ strval( $this->periods ) ] );
-			$filename     = WBC_Common::get_cache_json_filename( $this->periods );
-
-			if ( file_exists( $filename ) ) {
-				// 2つの配列のデータをマージする.
-				$all_data     = file_get_contents( $filename );
-				$all_data     = json_decode( $all_data, true );
-				$periods_data = array_merge( $all_data, $periods_data );
-			}
-
-			$result = $this->make_data_file( $filename, json_encode( $periods_data ) );
-			chmod( $filename, 0755 );
-			if ( false === $result ) {
-				return 3;
-			}
-
-			// アクセス直前の時間を_periodsに設定します.
-			$last_access = $now_time;
-
-			// 現在時刻を最後にアクセスした時間とします.
-			update_option( 'wp_bitcoin_chart__periods_' . strval( $this->periods ), $last_access );
-
-			// Finished.
-			return 99;
-		}
-
-		// Failed.
-		return 4;
+		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );
 	}
 
 	/**
-	 * Get chart datasets and labels.
+	 * Get now price.
+	 *
+	 * @access public
+	 * @since  1.0.0
+	 * @return void
+	 */
+	public function get_now_price() {
+		// 一番最新のデータの価格を取得します.
+		$price    = 0;
+		$filename = WBC_Common::get_cache_transaction_filename( $this->market, $this->exchange );
+		if ( $this->is_cache and file_exists( $filename ) ) {
+			$json = file_get_contents( $filename );
+		} else {
+			$json = $this->receive_cryptowatch_price();
+			if ( $this->is_cache ) {
+				$this->make_data_file( $filename, $json );
+			}
+		}
+		$cw = json_decode( $json, true )
+		if ( ! empty( $cw['result']['price'] ) ) {
+			$price = $cw['result']['price'];
+		}
+		return $price;
+	}
+
+	/**
+	 * Get market fluctuations.
+	 *
+	 * @access public
+	 * @since  1.0.0
+	 * @return void
+	 */
+	public function get_market_fluctuations() {
+		// 24時間の市場の相場変動を取得します.
+		$price    = 0;
+		$filename = WBC_Common::get_cache_market_filename( $this->market, $this->exchange );
+		if ( $this->is_cache and file_exists( $filename ) ) {
+			$json = file_get_contents( $filename );
+		} else {
+			$json = $this->receive_cryptowatch_summary();
+			if ( $this->is_cache ) {
+				$this->make_data_file( $filename, $json );
+			}
+		}
+		$cw = json_decode( $json, true )
+		if ( ! empty( $cw['result']['price'] ) ) {
+			$price = $cw['result']['price'];
+		}
+		return $price;
+	}
+
+	/**
+	 * Get only label data.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @return array
+	 */
+	public function get_label() {
+
+		$filename = WBC_Common::get_cache_chart_filename( $this->periods, $this->from_unixtime, $this->to_unixtime, $this->market, $this->exchange );
+		$all_data = array();
+
+		if ( $this->is_cache and file_exists( $filename ) ) {
+			$json = file_get_contents( $filename );
+		} elseif ( $next ) {
+			// 保存されているデータの更新.
+			$json = $this->receive_cryptowatch_data();
+			if ( $this->is_cache ) {
+				$this->make_data_file( $filename, $json );
+			}
+		}
+
+		$all_data = json_decode( $json, true );
+		$periods_keys = WBC_Common::array_column( $all_data['result'][ strval( $this->periods ) ], 0 );
+
+		// 時刻を読めるように変換.
+		foreach ( $periods_keys as $key => $data_unixtime ) {
+			if ( DAY_IN_SECONDS == $this->periods ) {
+				$periods_keys[ $key ] = date( 'n月j日', $data_unixtime );
+			} else {
+				$periods_keys[ $key ] = date( 'n月j日 H:i', $data_unixtime );
+			}
+		}
+
+		return $periods_keys;
+	}
+
+	/**
+	 * Get only single graph data.
+	 *
+	 * @access public
+	 * @since  0.1.0
+	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
+	 * @param  boolean $next   次の処理をするかどうか.
+	 * @return array
+	 */
+	public function get_graph_data( $assort = null, $next = true ) {
+		if ( ! empty( $assort ) ) {
+			$this->assort = $assort;
+		}
+		if ( empty( $this->assort ) ) {
+			return array();
+		}
+
+		$filename = WBC_Common::get_cache_chart_filename( $this->periods, $this->from_unixtime, $this->to_unixtime, $this->market, $this->exchange );
+		$all_data = array();
+
+		if ( $this->is_cache and file_exists( $filename ) ) {
+			$json = file_get_contents( $filename );
+		} elseif ( $next ) {
+			// 保存されているデータの更新.
+			$json = $this->receive_cryptowatch_data();
+			if ( $this->is_cache ) {
+				$this->make_data_file( $filename, $json );
+			}
+		}
+
+		$all_data = json_decode( $json, true );
+		$result = WBC_Common::array_column( $all_data['result'][ strval( $this->periods ) ], $this->assort );
+
+		return $result;
+	}
+
+	/**
+	 * Make chart datasets and labels.
 	 *
 	 * @access public
 	 * @since  0.1.0
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public function get_chart( $atts = null ) {
-		if ( ! empty( $atts ) ) {
-			$this->set_atts( $atts );
-		}
-
+	public function make_chart() {
 		$labels   = $this->get_label();
 		$datasets = array();
 
 		// どのデータを表示するのかを識別して設定する.
-		if ( ! empty( $atts['op'] ) ) {
+		if ( ! empty( $this->atts['op'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Open Price',
 				'borderColor' => $this->atts['op_color'],
@@ -499,7 +471,7 @@ class WBC_Data {
 				'drawBorder'  => false,
 			);
 		}
-		if ( ! empty( $atts['hp'] ) ) {
+		if ( ! empty( $this->atts['hp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'High Price',
 				'borderColor' => $this->atts['hp_color'],
@@ -507,7 +479,7 @@ class WBC_Data {
 				'drawBorder'  => false,
 			);
 		}
-		if ( ! empty( $atts['lp'] ) ) {
+		if ( ! empty( $this->atts['lp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Low Price',
 				'borderColor' => $this->atts['lp_color'],
@@ -515,7 +487,7 @@ class WBC_Data {
 				'drawBorder'  => false,
 			);
 		}
-		if ( ! empty( $atts['cp'] ) ) {
+		if ( ! empty( $this->atts['cp'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Close Price',
 				'borderColor' => $this->atts['cp_color'],
@@ -523,7 +495,7 @@ class WBC_Data {
 				'drawBorder'  => false,
 			);
 		}
-		if ( ! empty( $atts['vo'] ) ) {
+		if ( ! empty( $this->atts['vo'] ) ) {
 			$datasets[] = array(
 				'label'       => 'Volume',
 				'borderColor' => $this->atts['vo_color'],
@@ -548,38 +520,6 @@ class WBC_Data {
 	}
 
 	/**
-	 * Get output string Market price.
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @param  array $atts User defined attributes in shortcode tag.
-	 * @return string
-	 */
-	public function output_market_price( $atts ) {
-		$filename    = WBC_Common::get_cache_market_filename();
-		$output_text = '';
-
-		if ( $this->is_cache ) {
-			$now_time    = time();
-			$last_access = get_option( 'wp_bitcoin_chart__market_price' );
-			// キャッシュは5分とする.
-			if ( file_exists( $filename ) and ( $now_time - $last_access ) > 300 ) {
-				$output_text = file_get_contents( $filename );
-				return $output_text;
-			}
-		}
-
-		// 市場にアクセスする.
-		$cw_summary  = $this->receive_cryptowatch_summary();
-		$output_text = number_format( $cw_summary['low'] ) . ' - ' . number_format( $cw_summary['high'] );
-
-		file_put_contents( $filename, $output_text );
-		chmod( $filename, 0755 );
-
-		return $output_text;
-	}
-
-	/**
 	 * Get output string Transaction price.
 	 *
 	 * @access public
@@ -588,26 +528,21 @@ class WBC_Data {
 	 * @return string
 	 */
 	public function output_transaction_price( $atts ) {
-		$filename    = WBC_Common::get_cache_transaction_filename();
-		$output_text = '';
+		$price = $this->get_now_price();
+		return number_format( $price );
+	}
 
-		if ( $this->is_cache ) {
-			$now_time    = time();
-			$last_access = get_option( 'wp_bitcoin_chart__transaction_price' );
-			if ( file_exists( $filename ) and ( $now_time - $last_access ) > 300 ) {
-				$output_text = file_get_contents( $filename );
-				return $output_text;
-			}
-		}
-
-		// 市場にアクセスする.
-		$cw_market_price = $this->receive_cryptowatch_price();
-		$output_text     = number_format( $cw_market_price );
-
-		file_put_contents( $filename, $output_text );
-		chmod( $filename, 0755 );
-
-		return $output_text;
+	/**
+	 * Get output string Market price.
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function output_market_price( $atts ) {
+		$price = $this->get_market_fluctuations();
+		return number_format( $price );
 	}
 
 	/**
@@ -623,7 +558,6 @@ class WBC_Data {
 			$this->set_atts( $atts );
 		}
 
-		$filename    = WBC_Common::get_cache_htm_filename( $this->field_name, $this->periods, $this->get_from(), $this->get_to() );
 		$output_text = '';
 
 		// 短いperiods用の日付.
@@ -633,17 +567,7 @@ class WBC_Data {
 		$to_date         = $this->get_to();
 		$to_date_short   = $this->get_to();
 
-		// キャッシュが有効の場合は、キャッシュを利用する.
-		if ( $this->is_cache ) {
-			$now_time    = time();
-			$last_access = get_option( 'wp_bitcoin_chart__periods_' . strval( $this->periods ) );
-			if ( file_exists( $filename ) and ( $now_time - $last_access ) > $this->periods ) {
-				$output_text = file_get_contents( $filename );
-				return $output_text;
-			}
-		}
-
-		$chart = json_encode( $this->get_chart( $atts ) );
+		$chart = json_encode( $this->make_chart() );
 
 		// ツール部分のHTML.
 		$tools_text = <<<EOT
@@ -710,9 +634,6 @@ EOT;
 		}
 		$output_text .= '</div>';
 		$output_text .= $scripts_text;
-
-		file_put_contents( $filename, $output_text );
-		chmod( $filename, 0755 );
 
 		return $output_text;
 	}
