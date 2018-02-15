@@ -44,7 +44,7 @@ wp_nonce_field( 'wp-bitcoin-chart-settings', 'wbc-nonce' );
 			<?php
 		}
 	} else {
-		$wp_bitcoin_chart_css = WBC_Common::wbc_get_option( WBC__OPTION_NAME_CHART_CSS );
+		$wp_bitcoin_chart_css = get_option( WBC__OPTION_NAME_CHART_CSS );
 	}
 	?>
 	<p>

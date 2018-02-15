@@ -115,40 +115,16 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  0.1.0
-	 * @param  integer $from_unixtime 開始時間のUNIXTIME.
-	 * @param  integer $to_unixtime   終了時間のUNIXTIME.
-	 * @param  integer $peridos       データ間隔.
-	 * @param  integer $assort        表示するグラフの種類.
-	 * @param  string  $market        市場.
-	 * @param  string  $exchange      為替.
-	 * @param  boolean $is_cache      キャッシュを使用するか.
+	 * @param  array   $atts Params.
+	 * @param  boolean $is_cache
 	 */
-	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null, $market = null, $exchange = null, $is_cache = true ) {
-		// 表示内容をreturnする.
-		if ( defined( 'WP_DEBUG' ) ) {
+	public function __construct( $atts = null, $is_cache = true ) {
+		$this->set_atts( $atts );
+
+		if ( defined( 'WP_DEBUG' ) and true == WP_DEBUG ) {
 			$this->is_cache = false;
 		} else {
 			$this->is_cache = $is_cache;
-		}
-		if ( ! empty( $from_unixtime ) ) {
-			$this->from_unixtime = $from_unixtime;
-		}
-		if ( ! empty( $to_unixtime ) ) {
-			$this->to_unixtime = $to_unixtime;
-		}
-		if ( ! empty( $assort ) ) {
-			$this->assort = $assort;
-		}
-		if ( ! empty( $market ) ) {
-			$this->market = $market;
-		}
-		if ( ! empty( $exchange ) ) {
-			$this->exchange = $exchange;
-		}
-		if ( ! empty( $peridos ) ) {
-			$this->peridos = $peridos;
-		} else {
-			$this->peridos = DAY_IN_SECONDS;
 		}
 	}
 
@@ -167,13 +143,24 @@ class WBC_Data {
 			$this->field_name = $atts['name'];
 		}
 		if ( ! empty( $atts['from'] ) and WBC_Common::is_date_format( $atts['from'] ) ) {
-			$this->from_unixtime = strtotime( $atts['from'] );
+			// データ規制 昨日までのデータしか認めない
+			if ( strtotime( 'today' ) < strtotime( $atts['from'] ) ) {
+				$this->from_unixtime = strtotime( 'yesterday noon' );
+			} else {
+				$this->from_unixtime = strtotime( $atts['from'] );
+			}
 		}
 		if ( ! empty( $atts['to'] ) and WBC_Common::is_date_format( $atts['to'] ) ) {
-			$this->to_unixtime = strtotime( $atts['to'] );
+			if ( strtotime( 'today' ) < strtotime( $atts['to'] ) ) {
+				$this->to_unixtime = strtotime( 'yesterday noon' );
+			} else {
+				$this->to_unixtime = strtotime( $atts['to'] );
+			}
 		}
 		if ( ! empty( $atts['periods'] ) and in_array( $atts['periods'], array( 300, 1800, 3600, 86400 ) ) ) {
 			$this->periods = $atts['periods'];
+		} else {
+			$this->peridos = DAY_IN_SECONDS;
 		}
 		if ( ! empty( $atts['market'] ) ) {
 			$this->market = $atts['market'];
@@ -218,7 +205,7 @@ class WBC_Data {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/price';
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				WBC_Common::make_data_file( $filename, $json );
+				$mdf = WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 		$cw = json_decode( $json, true );
@@ -244,8 +231,9 @@ class WBC_Data {
 		} else {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/summary';
 			$json = WBC_Common::wbc_remote_get( $url );
+
 			if ( $this->is_cache ) {
-				WBC_Common::make_data_file( $filename, $json );
+				$mdf = WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 		$cw = json_decode( $json, true );
@@ -269,12 +257,12 @@ class WBC_Data {
 
 		if ( $this->is_cache and file_exists( $filename ) ) {
 			$json = file_get_contents( $filename );
-		} elseif ( $next ) {
+		} else {
 			// 保存されているデータの更新.
-			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods ) . '&before=' . $this->to_unixtime . '&after=' . $this->from_unixtime;
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				WBC_Common::make_data_file( $filename, $json );
+				$mdf = WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 
@@ -299,10 +287,9 @@ class WBC_Data {
 	 * @access public
 	 * @since  0.1.0
 	 * @param  integer $assort 取得するデータの種類です. 1: Open Price, 2: High Price, 3: Low Price, 4: Close Price, 5: Volume. 先頭のデータは日付です.
-	 * @param  boolean $next   次の処理をするかどうか.
 	 * @return array
 	 */
-	public function get_graph_data( $assort = null, $next = true ) {
+	public function get_graph_data( $assort = null ) {
 		if ( ! empty( $assort ) ) {
 			$this->assort = $assort;
 		}
@@ -314,12 +301,12 @@ class WBC_Data {
 
 		if ( $this->is_cache and file_exists( $filename ) ) {
 			$json = file_get_contents( $filename );
-		} elseif ( $next ) {
+		} else {
 			// 保存されているデータの更新.
-			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
+			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods ) . '&before=' . $this->to_unixtime . '&after=' . $this->from_unixtime;
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				WBC_Common::make_data_file( $filename, $json );
+				$mdf = WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 
@@ -405,10 +392,7 @@ class WBC_Data {
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public function output_transaction_price( $atts ) {
-		if ( ! empty( $atts ) ) {
-			$this->set_atts( $atts );
-		}
+	public function output_transaction_price() {
 		$price = $this->get_now_price();
 		return number_format( $price );
 	}
@@ -421,12 +405,21 @@ class WBC_Data {
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public function output_market_price( $atts ) {
-		if ( ! empty( $atts ) ) {
-			$this->set_atts( $atts );
+	public function output_market_price() {
+		$summary = $this->get_market_fluctuations();
+
+		$result = '';
+		if ( ! empty( $summary[ 'low' ] ) ) {
+			$result .= number_format( $summary[ 'low' ] );
 		}
-		$price = $this->get_market_fluctuations();
-		return number_format( $price );
+		if ( ! empty( $summary[ 'low' ] ) or ! empty( $summary[ 'high' ] ) ) {
+			$result .= ' - ';
+		}
+		if ( ! empty( $summary[ 'high' ] ) ) {
+			$result .= number_format( $summary[ 'high' ] );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -437,11 +430,7 @@ class WBC_Data {
 	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
-	public function output_chart( $atts ) {
-		if ( ! empty( $atts ) ) {
-			$this->set_atts( $atts );
-		}
-
+	public function output_chart() {
 		$output_text = '';
 
 		// 短いperiods用の日付.
@@ -508,12 +497,12 @@ EOT;
 
 		// 画面に表示する内容を加工して整理する.
 		$output_text           = "<div class='wp-bitcoin-chart-field'>";
-		$atts['tool_position'] = strtolower( $atts['tool_position'] );
-		if ( 'top' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
+		$this->atts['tool_position'] = strtolower( $this->atts['tool_position'] );
+		if ( 'top' == $this->atts['tool_position'] or 'both' == $this->atts['tool_position'] ) {
 			$output_text .= $tools_text;
 		}
 		$output_text .= "<canvas id='{$this->field_name}'></canvas>";
-		if ( 'bottom' == $atts['tool_position'] or 'both' == $atts['tool_position'] ) {
+		if ( 'bottom' == $this->atts['tool_position'] or 'both' == $this->atts['tool_position'] ) {
 			$output_text .= $tools_text;
 		}
 		$output_text .= '</div>';

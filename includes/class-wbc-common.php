@@ -119,6 +119,14 @@ class WBC_Common {
 	 * @return boolean
 	 */
 	public static function make_data_file( $filename, $write_data ) {
+		// 該当のディレクトリが存在するかどうかのチェックとディレクトリ作成
+		$paths = explode( '/', $filename );
+		if ( count( $paths ) > 0 ) {
+			$basename = array_pop( $paths );
+			$dir      = implode( '/', $paths );
+			is_dir( $dir ) or mkdir( $dir, 0775, true );
+		}
+
 		// 該当のファイルを作成/更新します.
 		$result = file_put_contents( $filename, $write_data );
 		chmod( $filename, 0755 );
@@ -225,6 +233,7 @@ class WBC_Common {
 	 * @return string
 	 */
 	public static function wbc_remote_get( $url = '' ) {
+
 		if ( empty( $url ) ) {
 			return '';
 		}
@@ -244,7 +253,7 @@ class WBC_Common {
 
 		if ( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
-			echo 'Something went wrong: $error_message';
+			echo 'Something went wrong: ' . $error_message;
 		}
 
 		return mb_convert_encoding( $response['body'], 'UTF8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS-WIN' );

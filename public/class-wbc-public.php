@@ -58,7 +58,7 @@ class WBC_Public {
 	 */
 	public function register_jquery() {
 
-		$wp_bitcoin_chart_css = WBC_Common::wbc_get_option( WBC__OPTION_NAME_CHART_CSS );
+		$wp_bitcoin_chart_css = get_option( WBC__OPTION_NAME_CHART_CSS );
 
 		if ( empty( $wp_bitcoin_chart_css ) ) {
 			// 独自のCSSを使用しない場合は、bulma.ioのCSSを使う.
@@ -121,26 +121,13 @@ class WBC_Public {
 			)
 		);
 
-		$wbc_data = new WBC_Data();
+		$wbc_data = new WBC_Data( $atts );
 		$result   = array(
-			'chart' => $wbc_data->get_chart( $atts ),
+			'chart' => $wbc_data->make_chart(),
 			'atts'  => $atts,
 		);
 
 		wp_send_json( $result );
-	}
-
-	/**
-	 * WP Bitcoin Chart Market Price shortcode
-	 *
-	 * @access public
-	 * @since  1.1.0
-	 * @param  array $atts User defined attributes in shortcode tag.
-	 * @return string
-	 */
-	public function wp_bitcoin_chart_market_price( $atts ) {
-		$wbc_data = new WBC_Data();
-		return $wbc_data->output_market_price( $atts );
 	}
 
 	/**
@@ -152,8 +139,41 @@ class WBC_Public {
 	 * @return string
 	 */
 	public function wp_bitcoin_chart_transaction_price( $atts ) {
-		$wbc_data = new WBC_Data();
-		return $wbc_data->output_transaction_price( $atts );
+		$atts = shortcode_atts(
+			array(
+				'name'     => WBC__DEFAULT_CHART_NAME,
+				'market'   => 'bitflyer',
+				'exchange' => 'btcjpy',
+			),
+			$atts,
+			'wp-bitcoin-chart-transaction-price'
+		);
+
+		$wbc_data = new WBC_Data( $atts );
+		return $wbc_data->output_transaction_price();
+	}
+
+	/**
+	 * WP Bitcoin Chart Market Price shortcode
+	 *
+	 * @access public
+	 * @since  1.1.0
+	 * @param  array $atts User defined attributes in shortcode tag.
+	 * @return string
+	 */
+	public function wp_bitcoin_chart_market_price( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'name'     => WBC__DEFAULT_CHART_NAME,
+				'market'   => 'bitflyer',
+				'exchange' => 'btcjpy',
+			),
+			$atts,
+			'wp-bitcoin-chart-market-price'
+		);
+
+		$wbc_data = new WBC_Data( $atts );
+		return $wbc_data->output_market_price();
 	}
 
 	/**
@@ -190,7 +210,7 @@ class WBC_Public {
 			'wp-bitcoin-chart-view'
 		);
 
-		$wbc_data = new WBC_Data();
-		return $wbc_data->output_chart( $atts );
+		$wbc_data = new WBC_Data( $atts );
+		return $wbc_data->output_chart();
 	}
 }
