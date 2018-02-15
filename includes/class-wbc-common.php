@@ -110,6 +110,22 @@ class WBC_Common {
 	}
 
 	/**
+	 * Make data file.
+	 *
+	 * @access public
+	 * @since  1.0.0
+	 * @param  string $filename   ファイル名.
+	 * @param  string $write_data ファイルの内容.
+	 * @return boolean
+	 */
+	public static function make_data_file( $filename, $write_data ) {
+		// 該当のファイルを作成/更新します.
+		$result = file_put_contents( $filename, $write_data );
+		chmod( $filename, 0755 );
+		return $result;
+	}
+
+	/**
 	 * WP Bitcoin Chart initialize options.
 	 *
 	 * @access public
@@ -197,16 +213,21 @@ class WBC_Common {
 		}
 
 		// ex) your_dir/wp-bitcoin-chart/data/201801/chart/cw_bitflyer_btcjpy_300_2018010100.json .
-		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'chart' . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' .  strval( $periods ) . '_from' .  strval( $from_unixtime ) . '_to' .  strval( $to_unixtime ) . '.json';
+		return WBC__PLUGIN_DATA_DIR . $this_month . DIRECTORY_SEPARATOR . 'chart' . DIRECTORY_SEPARATOR . 'cw_' . $market . '_' . $exchange . '_' . strval( $periods ) . '_from' . strval( $from_unixtime ) . '_to' . strval( $to_unixtime ) . '.json';
 	}
 
 	/**
 	 * Remote get.
 	 *
-	 * @param  string $url
+	 * @access public
+	 * @since  2.1.0
+	 * @param  string $url Remote get url.
 	 * @return string
 	 */
-	public static function wbc_remote_get( $url ) {
+	public static function wbc_remote_get( $url = "" ) {
+		if ( empty( $url ) ) {
+			return "":
+		}
 
 		// 通信設定.
 		$args = array(

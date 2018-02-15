@@ -119,6 +119,8 @@ class WBC_Data {
 	 * @param  integer $to_unixtime   終了時間のUNIXTIME.
 	 * @param  integer $peridos       データ間隔.
 	 * @param  integer $assort        表示するグラフの種類.
+	 * @param  string  $market        市場.
+	 * @param  string  $exchange      為替.
 	 * @param  boolean $is_cache      キャッシュを使用するか.
 	 */
 	public function __construct( $from_unixtime = null, $to_unixtime = null, $peridos = null, $assort = null, $market = null, $exchange = null, $is_cache = true ) {
@@ -200,27 +202,11 @@ class WBC_Data {
 	}
 
 	/**
-	 * Make data file.
-	 *
-	 * @access public
-	 * @since  1.0.0
-	 * @param  string $filename   ファイル名.
-	 * @param  string $write_data ファイルの内容.
-	 * @return boolean
-	 */
-	public function make_data_file( $filename, $write_data ) {
-		// 該当のファイルを作成/更新します.
-		$result = file_put_contents( $filename, $write_data );
-		chmod( $filename, 0755 );
-		return $result;
-	}
-
-	/**
 	 * Get now price.
 	 *
 	 * @access public
 	 * @since  1.0.0
-	 * @return void
+	 * @return integer
 	 */
 	public function get_now_price() {
 		// 一番最新のデータの価格を取得します.
@@ -232,7 +218,7 @@ class WBC_Data {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/price';
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				$this->make_data_file( $filename, $json );
+				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 		$cw = json_decode( $json, true )
@@ -247,7 +233,7 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  1.0.0
-	 * @return void
+	 * @return integer
 	 */
 	public function get_market_fluctuations() {
 		// 24時間の市場の相場変動を取得します.
@@ -259,7 +245,7 @@ class WBC_Data {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/summary';
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				$this->make_data_file( $filename, $json );
+				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 		$cw = json_decode( $json, true )
@@ -288,7 +274,7 @@ class WBC_Data {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				$this->make_data_file( $filename, $json );
+				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 
@@ -334,7 +320,7 @@ class WBC_Data {
 			$url  = 'https://api.cryptowat.ch/markets/' . $this->market . '/' . $this->exchange . '/ohlc?periods=' . strval( $this->periods );
 			$json = WBC_Common::wbc_remote_get( $url );
 			if ( $this->is_cache ) {
-				$this->make_data_file( $filename, $json );
+				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
 
@@ -349,7 +335,6 @@ class WBC_Data {
 	 *
 	 * @access public
 	 * @since  0.1.0
-	 * @param  array $atts User defined attributes in shortcode tag.
 	 * @return string
 	 */
 	public function make_chart() {
