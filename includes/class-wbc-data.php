@@ -221,7 +221,7 @@ class WBC_Data {
 				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
-		$cw = json_decode( $json, true )
+		$cw = json_decode( $json, true );
 		if ( ! empty( $cw['result']['price'] ) ) {
 			$price = $cw['result']['price'];
 		}
@@ -248,7 +248,7 @@ class WBC_Data {
 				WBC_Common::make_data_file( $filename, $json );
 			}
 		}
-		$cw = json_decode( $json, true )
+		$cw = json_decode( $json, true );
 		if ( ! empty( $cw['result']['price'] ) ) {
 			$price = $cw['result']['price'];
 		}
@@ -278,7 +278,7 @@ class WBC_Data {
 			}
 		}
 
-		$cw = json_decode( $json, true );
+		$cw           = json_decode( $json, true );
 		$periods_keys = WBC_Common::array_column( $cw['result'][ strval( $this->periods ) ], 0 );
 
 		// 時刻を読めるように変換.
