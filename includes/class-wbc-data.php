@@ -278,8 +278,8 @@ class WBC_Data {
 			}
 		}
 
-		$all_data = json_decode( $json, true );
-		$periods_keys = WBC_Common::array_column( $all_data['result'][ strval( $this->periods ) ], 0 );
+		$cw = json_decode( $json, true );
+		$periods_keys = WBC_Common::array_column( $cw['result'][ strval( $this->periods ) ], 0 );
 
 		// 時刻を読めるように変換.
 		foreach ( $periods_keys as $key => $data_unixtime ) {
@@ -311,7 +311,6 @@ class WBC_Data {
 		}
 
 		$filename = WBC_Common::get_cache_chart_filename( $this->periods, $this->from_unixtime, $this->to_unixtime, $this->market, $this->exchange );
-		$all_data = array();
 
 		if ( $this->is_cache and file_exists( $filename ) ) {
 			$json = file_get_contents( $filename );
@@ -324,8 +323,8 @@ class WBC_Data {
 			}
 		}
 
-		$all_data = json_decode( $json, true );
-		$result = WBC_Common::array_column( $all_data['result'][ strval( $this->periods ) ], $this->assort );
+		$cw     = json_decode( $json, true );
+		$result = WBC_Common::array_column( $cw['result'][ strval( $this->periods ) ], $this->assort );
 
 		return $result;
 	}
@@ -407,6 +406,9 @@ class WBC_Data {
 	 * @return string
 	 */
 	public function output_transaction_price( $atts ) {
+		if ( ! empty( $atts ) ) {
+			$this->set_atts( $atts );
+		}
 		$price = $this->get_now_price();
 		return number_format( $price );
 	}
@@ -420,6 +422,9 @@ class WBC_Data {
 	 * @return string
 	 */
 	public function output_market_price( $atts ) {
+		if ( ! empty( $atts ) ) {
+			$this->set_atts( $atts );
+		}
 		$price = $this->get_market_fluctuations();
 		return number_format( $price );
 	}

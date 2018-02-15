@@ -224,9 +224,9 @@ class WBC_Common {
 	 * @param  string $url Remote get url.
 	 * @return string
 	 */
-	public static function wbc_remote_get( $url = "" ) {
+	public static function wbc_remote_get( $url = '' ) {
 		if ( empty( $url ) ) {
-			return "":
+			return '':
 		}
 
 		// 通信設定.
