@@ -226,7 +226,7 @@ class WBC_Common {
 	 */
 	public static function wbc_remote_get( $url = '' ) {
 		if ( empty( $url ) ) {
-			return '':
+			return '';
 		}
 
 		// 通信設定.
